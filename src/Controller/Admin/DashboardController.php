@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\SubMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
 class DashboardController extends AbstractDashboardController
@@ -30,8 +29,10 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Dashboard');
+            ->setTitle('Dashboard')
+            ->setTranslationDomain('admin');;
     }
+
 
     public function configureMenuItems(): iterable
     {
@@ -52,6 +53,10 @@ class DashboardController extends AbstractDashboardController
         ]);
         yield MenuItem::subMenu('Gestion du site', 'fas fa-cog')->setSubItems([
             MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class)
+        ]);
+        yield MenuItem::subMenu('Toolbox', 'fas fa-toolbox')->setSubItems([
+            MenuItem::linkToUrl('EspaceTri', 'fas fa-swimmer', 'https://espacetri.fftri.com'),
+            MenuItem::linkToUrl('Blog', 'fas fa-biking', 'https://ironclub.blog')
         ]);
         yield MenuItem::linkToRoute('Retour au site', 'fas fa-home', 'home');
     }

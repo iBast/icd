@@ -70,6 +70,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $enrollments;
 
+    public const ROLES = [
+        'Utilisateur' => 'ROLE_USER',
+        'Administrateur' => 'ROLE_ADMIN',
+        'Responsable Adhésions' => 'ROLE_ADHESIONS',
+        'Président' => 'ROLE_PRESIDENT',
+        'Trésorier' => 'ROLE_TRESORIER',
+        'Secrétaire' => 'ROLE_SECRETAIRE',
+        'Communication' => 'ROLE_COMMUNICATION',
+        'Membre du comité' => 'ROLE_COMITE'
+    ];
+
     public function __construct()
     {
         $this->members = new ArrayCollection();

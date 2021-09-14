@@ -155,6 +155,13 @@ class Enrollment implements EntityInterface
      */
     private $User;
 
+    public const STATUS = [
+        'Dossier crée' => 'Dossier crée',
+        'En Attente de validation' => 'En Attente de validation',
+        'En Attente de la FFTri' => 'En Attente de la FFTri',
+        'Dossier validé' => 'Dossier Validé'
+    ];
+
     public function getId(): ?int
     {
         return $this->id;
