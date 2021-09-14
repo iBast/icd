@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		{# Run `composer require symfony/webpack-encore-bundle`
+																																																																																																																																																																																																		           and uncomment the following Encore helpers to start using Symfony UX #}
+		{% block stylesheets %}
+			<link rel="stylesheet" href="https://bootswatch.com/5/flatly/bootstrap.min.css">
+			<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+		{% endblock %}
+
+
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-3">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="{{ path('home') }}">Iron Club Dannemarie</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarColor01">
+
+					{% if app.user %}
+						<ul class="navbar-nav me-auto">
+							<li class="nav-item">
+								<a class="nav-link active" href="#">Home
+									<span class="visually-hidden">(current)</span>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">Features</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">Pricing</a>
+							</li>
+							{% if is_granted('ROLE_USER') %}
+								<li class="nav-item">
+									<a class="nav-link" href="{{ path('admin') }}">Administration</a>
+								</li>
+							{% endif %}
+
+						</ul>
+						<div class="d-flex">
+
+
+							<ul class="navbar-nav me-auto">
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+
+										Gestion du compte</a>
+									<div class="dropdown-menu">
+										<a class="dropdown-item" href="{{ path('account') }}">
+											<i class="fas fa-user-circle"></i>
+											Informations</a>
+										<a class="dropdown-item" href="{{path('member')}}">
+											<i class="fas fa-users"></i>
+											Mes membres</a>
+										<div class="dropdown-divider"></div>
+										<a href="{{ path('app_logout') }}" class="dropdown-item">
+											<i class="fas fa-sign-out-alt"></i>
+											Deconnexion</a>
+									</div>
+								</li>
+							</ul>
+
+						{% endif %}
+						{% if not app.user %}
+							<div class="d-flex ">
+								<ul class="navbar-nav me-auto">
+									<li class="nav-item">
+										<a href="{{ path('app_login') }}" class="nav-link">Se connecter</a>
+									</li>
+								</ul>
+								<a href="{{path('app_register')}}" class="btn btn-success">S'inscrire</a>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+
+			</div>
+		</nav>
+		<div class="container-fluid">
+			{% for rubrique, messages in app.flashes %}
+				<div class="alert alert-{{rubrique}} mt-3">
+					{% for message in messages %}
+						<p>{{ message}}</p>
+					{% endfor %}
+				</div>
+			{% endfor %}
+			{% block body %}{% endblock %}
+		</div>
+		{% block javascripts %}
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+		{% endblock %}
+	</body>
+</html>

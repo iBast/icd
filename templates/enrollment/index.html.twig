@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Adhésion
+{% endblock %}
+
+{% block body %}
+	{% if season == null %}
+		<div class="row">
+			<div class="col-md-6"><img src="images/assets/warning.svg" alt="warning" class="img-fluid"></div>
+			<div class="col-md-6">
+				<h1>Il n'y a pas de campagne d'adhésion en cours</h1>
+				<a href="{{path('home')}}" class="btn btn-primary">Retour à l'accueil</a>
+			</div>
+		</div>
+	{% else %}
+
+
+		<h1>Mes adhésions</h1>
+		Campagne d'adhésion pour la sasion :
+		{{season.year}}
+		<div class="row">
+			<div class="col-xl-4 col-lg-6">
+				<h2>Personnes non inscrites :
+				</h2>
+
+				{% for member in enrollments %}
+					{% if member.status == null %}
+						<div class="card border-primary  mb-3 m-auto" style="max-width: 25rem;">
+							<div class="card-header">{{member.memberId.firstName}}
+								{{member.memberId.lastName}}
+								{% if date(member.memberId.birthday) > date('-18years')  %}
+									<span class="badge bg-primary">Jeune</span>
+								{% endif %}
+							</div>
+							<div class="card-body">
+								<h4 class="card-title">Pas encore inscrit</h4>
+								<br>
+								<p class="card-text text-center">
+									<a href="{{ path('enrollment_member', { 'id': season.id, 'firstName': member.memberId.firstName, 'lastName': member.memberId.lastName }) }}" class="btn btn-light btn-lg">S'inscrire</a>
+								</p>
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</div>
+			<div class="col-xl-4 col-lg-6">
+				<h2>Inscription en cours
+				</h2>
+				{% for enrollment in enrollments %}
+					{% if enrollment.status != null and enrollment.status != 'Validé'%}
+						<div class="card text-white bg-primary mb-3 m-auto" style="max-width: 25rem;">
+							<div class="card-header">{{enrollment.memberId.firstName}}
+								{{enrollment.memberId.lastName}}</div>
+							<div class="card-body">
+								<h4 class="card-title">
+									{{enrollment.status}}</h4>
+								<p class="card-text text-end">
+									<i class="fas fa-hourglass-half fa-3x"></i>
+								</p>
+								<p class="text-center">
+									{% if enrollment.status == 'Dossier crée' %}
+										<a href="{{ path('enrollment_finalise', {'id': enrollment.id}) }}" class="btn btn-light">Accèder à la demande</a>
+									{% endif %}
+								</p>
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+
+			</div>
+			<div class="col-xl-4 col-lg-6">
+				<h2>Inscrits
+				</h2>
+				{% for enrollment in enrollments %}
+					{% if enrollment.status == 'Validé' %}
+						<div class="card text-white bg-success mb-3 m-auto" style="max-width: 25rem;">
+							<div class="card-header">{{enrollment.memberId.firstName}}
+								{{enrollment.memberId.lastName}}</div>
+							<div class="card-body">
+								<h4 class="card-title">Dossier Validé</h4>
+								<p class="card-text text-end">
+									<i class="fas fa-check fa-3x"></i>
+								</p>
+							</div>
+						{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+		{% endif %}
+	{% endblock %}

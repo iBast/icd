@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Entity;
+
+use App\Entity\EntityInterface;
+use Doctrine\ORM\Mapping as ORM;
+use App\Repository\AccountRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+
+/**
+ * @ORM\Entity(repositoryClass=AccountRepository::class)
+ */
+class Account implements EntityInterface
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $number;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Accounting::class, mappedBy="account")
+     */
+    private $accountings;
+
+    public function __construct()
+    {
+        $this->accountings = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getNumber(): ?int
+    {
+        return $this->number;
+    }
+
+    public function setNumber(int $number): self
+    {
+        $this->number = $number;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Accounting[]
+     */
+    public function getAccountings(): Collection
+    {
+        return $this->accountings;
+    }
+
+    public function addAccounting(Accounting $accounting): self
+    {
+        if (!$this->accountings->contains($accounting)) {
+            $this->accountings[] = $accounting;
+            $accounting->setAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAccounting(Accounting $accounting): self
+    {
+        if ($this->accountings->removeElement($accounting)) {
+            // set the owning side to null (unless already changed)
+            if ($accounting->getAccount() === $this) {
+                $accounting->setAccount(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getNumber() . ' ' . $this->getName();
+    }
+}

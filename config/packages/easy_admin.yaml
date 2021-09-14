@@ -1,0 +1,15 @@
+easy_admin:
+    entities:
+        Enrollment:
+            class: App\Entity\Enrollment
+            form:  # <-- 'form' is applied to both 'new' and 'edit' views
+                fields:
+                    - { property: 'season', type: 'easyadmin_autocomplete', type_options: { class: 'App\Entity\Season' } }
+        Accounting:
+            class: App\Entity\Accounting
+        Account:
+            class: App\Entity\Account
+        Season:
+            class: App\Entity\Season
+
+    # ...

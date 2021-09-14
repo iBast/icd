@@ -1,0 +1,20 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	Mon Compte
+{% endblock %}
+
+{% block body %}
+	<h1>Mon Compte</h1>
+	<h2>Informations du compte</h2>
+
+	{{ form_start(form) }}
+	{{ form_row(form.email) }}
+	{{ form_row(form.firstName) }}
+	{{ form_row(form.lastName) }}
+
+	<div class="d-grid gap-2">
+		<button type="submit" class="btn btn-lg btn-primary mt-2">Modifier les information</button>
+	</div>
+	{{ form_end(form) }}
+{% endblock %}

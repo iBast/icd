@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Adhésion
+{% endblock %}
+
+{% block body %}
+	<h1>Buletin d'adhésion</h1>
+	<p>Saison :
+		{{season.year}}</p>
+	<div class="row mx-auto mb-5">
+		<div class="col-md-5">
+			<h2>
+				Adhérent :
+				<b>
+					{{ member.firstName }}
+					{{ member.lastName }}
+				</b>
+			</h2>
+			<P>
+				Date de naissance :
+				<b>
+					{{ member.birthday | date('d/m/Y') }}
+				</b>
+			</P>
+			<P>
+				Adresse :
+				<b>
+					{{ member.adress }}
+				</b>
+			</P>
+			<P>
+				Ville :
+				<b>
+					{{ member.postCode}}
+					{{ member.city}}
+				</b>
+			</P>
+			<br>
+			<P>
+				Email :
+				<b>
+					{{ member.email}}
+				</b>
+			</P>
+			<P>
+				Téléphone portable :
+				<b>
+					{{ member.mobile}}
+				</b>
+			</P>
+			<P>
+				Téléphone fixe :
+				<b>
+					{{ member.phone}}
+				</b>
+			</P>
+			<a href="{{ path('member_add', {'id': member.id }) }}">Modier les informations</a>
+		</div>
+		<div class="col-md-5">
+			<h2>Adhésion</h2>
+			<h3>Informations sur la saison</h3>
+			<p>Tarif de l'adhésion :
+				<b>{{ season.membershipCost / 100 }}
+					€</b>
+			</p>
+			{% for licence in licences %}
+				<p>Tarif
+					{{licence.name}}
+					:
+					<b>{{ licence.cost / 100}}
+						€</b>
+				</p>
+			{% endfor %}
+			<p>Tarif de l'accès piscine :
+				<b>{{ season.swimCost / 100 }}
+					€</b>
+			</p>
+			<h3>Formulaire</h3>
+			{{form_start(form)}}
+
+			{{form_row(form.licence)}}
+			{{form_row(form.hasPoolAcces)}}
+			{{form_row(form.medicalFile)}}
+			{{form_row(form.FFTriDocFile)}}
+			{{form_row(form.hasPhotoAuthorization)}}
+			{{form_row(form.paymentMethod)}}
+			<div class="d-flex justify-content-end">
+				<button type="submit" class="btn btn-primary">
+					<i class="fas fa-angle-double-right"></i>
+					Passer à l'étape suivante
+				</button>
+			</div>
+			{{form_end(form)}}
+		</div>
+
+	</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription
+{% endblock %}
+
+{% block body %}
+	{% for flashError in app.flashes('verify_email_error') %}
+		<div class="alert alert-danger" role="alert">{{ flashError }}</div>
+	{% endfor %}
+	<img src="images/assets/finishline.svg" class="img-fluid mx-auto d-block mb-2" style="max-height:300px" alt="register">
+	<h1>Inscription</h1>
+
+	{{ form_start(registrationForm) }}
+
+	{{ form_row(registrationForm.email) }}
+	{{ form_row(registrationForm.plainPassword) }}
+	<div class="row">
+		<div class="col-md-6">{{ form_row(registrationForm.firstName) }}</div>
+		<div class="col-md-6">{{ form_row(registrationForm.lastName) }}</div>
+	</div>
+
+	<div class="d-grid gap-2">
+		<button type="submit" class="btn btn-lg btn-primary mt-2">S'inscrire</button>
+	</div>
+	{{ form_end(registrationForm) }}
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	Validation de l'adhésion
+{% endblock %}
+
+{% block body %}
+	<h1>Récapitulatif de l'adhésion</h1>
+	<div class="row">
+		<div class="col-md-6 m-auto">
+			<ul class="list-group">
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Adhésion pour
+					<span class="badge bg-primary rounded-pill">{{ enrollment.memberId.firstName }}
+						{{ enrollment.memberId.lastName }}</span>
+				</li>
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Saison
+					<span class="badge bg-primary rounded-pill">{{ enrollment.Season}}</span>
+				</li>
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Licence
+					<span class="badge bg-primary rounded-pill">{{ enrollment.licence.name }}</span>
+				</li>
+				{% if enrollment.hasPoolAcces %}
+					<li class="list-group-item d-flex justify-content-between align-items-center">
+						Accès piscie
+						<span class="badge bg-primary rounded-pill">Oui</span>
+					</li>
+				{% endif %}
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Autorisation photo
+					<span class="badge bg-primary rounded-pill">
+						{% if enrollment.hasPhotoAuthorization %}Oui
+						{% else %}
+							Non
+						{% endif %}
+					</span>
+				</li>
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Certificat médical déposé
+					<span class="badge bg-primary rounded-pill">
+						{% if enrollment.medicalAuthPath %}Oui
+						{% else %}
+							Non
+						{% endif %}
+					</span>
+				</li>
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Document FFTri déposé
+					<span class="badge bg-primary rounded-pill">
+						{% if enrollment.fftriDocPath %}Oui
+						{% else %}
+							Non
+						{% endif %}
+					</span>
+				</li>
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Montant de l'adhésion
+					<span class="badge bg-primary rounded-pill">
+						{{ enrollment.totalAmount / 100 }}
+						€
+					</span>
+				</li>
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Mode de règlement
+					<span class="badge bg-primary rounded-pill">
+						{{ enrollment.paymentMethod }}
+					</span>
+				</li>
+			</ul>
+			<br>
+			{{ form_start(form)}}
+			{{form_row(form.info_verified)}}
+			<div class="d-flex justify-content-between">
+				<a href="{{ path('enrollment_member', { 'id': enrollment.season.id, 'firstName': enrollment.memberId.firstName, 'lastName': enrollment.memberId.lastName }) }}" class="btn btn-outline-warning">Modifier la demande</a>
+				<button type="submit" class="btn btn-success">
+					Soumettre la demande d'adhésion
+				</button>
+
+			</div>
+			{{ form_end(form) }}
+		</div>
+	</div>
+
+{% endblock %}

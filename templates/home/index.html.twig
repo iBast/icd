@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!
+{% endblock %}
+
+{% block body %}
+	{% if app.user %}
+		<h1>Bonjour
+			{{ app.user.firstName }}</h1>
+		<div class="row">
+			{% include "cards/_enrollment.html.twig" %}
+			{% include "cards/_members.html.twig" %}
+
+		</div>
+
+	{% endif %}
+	{% if not app.user %}
+		<img src="images/assets/finishline.svg" class="img-fluid mx-auto d-block mb-2" style="max-height:300px" alt="register">
+		<h1 class="text-center">Bienvenue</h1>
+		<p class="text-center">Connectez vous afin d'accèder à l'application</p>
+		<div class="d-grid gap-2">
+			<a href="{{ path('app_login') }}" class="btn btn-lg btn-primary mt-5">Connexion</a>
+		</div>
+		<p class="text-center">
+			ou
+			<a href="{{ path('app_register') }}">inscrivez vous</a>
+			si vous n'avez pas encore de compte.
+		</p>
+	{% endif %}
+{% endblock %}
