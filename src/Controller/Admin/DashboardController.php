@@ -2,13 +2,14 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\User;
 use App\Entity\Member;
 use App\Entity\Season;
 use App\Entity\Account;
-use App\Entity\Accounting;
-use App\Entity\AccountingDocument;
-use App\Entity\Enrollment;
 use App\Entity\Licence;
+use App\Entity\Accounting;
+use App\Entity\Enrollment;
+use App\Entity\AccountingDocument;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -49,7 +50,9 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Journal', 'fas fa-newspaper', Accounting::class),
             MenuItem::linkToCrud('Pièces', 'fas fa-file', AccountingDocument::class)
         ]);
-        yield MenuItem::subMenu('Gestion du site', 'fas fa-cog');
+        yield MenuItem::subMenu('Gestion du site', 'fas fa-cog')->setSubItems([
+            MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class)
+        ]);
         yield MenuItem::linkToRoute('Retour au site', 'fas fa-home', 'home');
     }
 }
