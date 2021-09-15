@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!
+{% block title %}Iron Club
 {% endblock %}
 
 {% block body %}
@@ -8,7 +8,9 @@
 		<h1>Bonjour
 			{{ app.user.firstName }}</h1>
 		<div class="row">
-			{% include "cards/_enrollment.html.twig" %}
+			{% if season %}
+				{% include "cards/_enrollment.html.twig" %}
+			{% endif %}
 			{% include "cards/_members.html.twig" %}
 
 		</div>

@@ -54,12 +54,10 @@ class EnrollmentCrudController extends AbstractCrudController
     {
         // this action executes the 'renderInvoice()' method of the current CRUD controller
         $validate = Action::new('validate', 'Valider le dossier')
-            ->linkToCrudAction('validate')->displayIf(static function ($enrollment) {
-                return $enrollment->getStatus(!'En Attente de la FFTri');
-            })->setCssClass('btn btn-success');
+            ->linkToCrudAction('validate')->setCssClass('btn btn-success');
 
         $pending = Action::new('pending', 'Dossier Transmis FF Tri')
-            ->displayIf(fn ($enrollment) => $enrollment->getStatus(!'Dossier validé'))->linkToCrudAction('pending')->setCssClass('btn btn-success');
+            ->linkToCrudAction('pending')->setCssClass('btn btn-success');
 
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
@@ -70,7 +68,9 @@ class EnrollmentCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $pending)
             ->add(Crud::PAGE_DETAIL, $pending)
             ->remove(Crud::PAGE_INDEX, Action::DELETE)
-            ->remove(Crud::PAGE_INDEX, Action::EDIT);
+            ->remove(Crud::PAGE_DETAIL, Action::DELETE)
+            ->remove(Crud::PAGE_INDEX, Action::EDIT)
+            ->add(Crud::PAGE_EDIT, Action::DELETE);
     }
 
 

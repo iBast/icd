@@ -78,7 +78,8 @@ class EnrollmentManager extends AbstractManager
 
     public function validate(Enrollment $enrollment)
     {
-        $enrollment->setStatus(Enrollment::STATUS['Dossier validé']);
+        $enrollment->setStatus(Enrollment::STATUS['Dossier validé'])
+            ->setEndedAt(new DateTimeImmutable());
         $this->save($enrollment);
     }
 }

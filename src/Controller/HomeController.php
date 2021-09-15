@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\SeasonRepository;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -18,7 +19,7 @@ use Twig\Markup;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(): Response
+    public function index(SeasonRepository $seasonRepository): Response
     {
         if ($this->getUser() && $this->getUser()->isVerified() === false) {
             $message = new Markup(
@@ -27,7 +28,10 @@ class HomeController extends AbstractController
             );
             $this->addFlash('warning', $message);
         }
-        return $this->render('home/index.html.twig', []);
+        $season = $seasonRepository->findOneBy(['enrollmentStatus' => 1]);
+        return $this->render('home/index.html.twig', [
+            'season' => $season
+        ]);
     }
 
     #[Route('/mon-compte', name: 'account')]
