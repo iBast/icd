@@ -20,7 +20,7 @@
 		{{season.year}}
 		<div class="row">
 			<div class="col-xl-4 col-lg-6">
-				<h2>Personnes non inscrites :
+				<h2>Personnes non inscrites
 				</h2>
 
 				{% for member in enrollments %}
@@ -47,7 +47,7 @@
 				<h2>Inscription en cours
 				</h2>
 				{% for enrollment in enrollments %}
-					{% if enrollment.status != null and enrollment.status != 'Validé'%}
+					{% if enrollment.status != null and enrollment.status != 'Dossier Validé'%}
 						<div class="card text-white bg-primary mb-3 m-auto" style="max-width: 25rem;">
 							<div class="card-header">{{enrollment.memberId.firstName}}
 								{{enrollment.memberId.lastName}}</div>
@@ -72,7 +72,7 @@
 				<h2>Inscrits
 				</h2>
 				{% for enrollment in enrollments %}
-					{% if enrollment.status == 'Validé' %}
+					{% if enrollment.status == 'Dossier Validé' %}
 						<div class="card text-white bg-success mb-3 m-auto" style="max-width: 25rem;">
 							<div class="card-header">{{enrollment.memberId.firstName}}
 								{{enrollment.memberId.lastName}}</div>

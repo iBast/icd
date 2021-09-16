@@ -3,10 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\AccountingDocument;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class AccountingDocumentCrudController extends AbstractCrudController
 {
@@ -19,7 +22,12 @@ class AccountingDocumentCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('path', 'Chemin d\'accès'),
+            ImageField::new('path', 'Pièce')
+                ->onlyOnDetail()
+                ->setBasePath($this->getParameter('accounting_docs')),
+            TextareaField::new('accountingFile', 'Pièce')
+                ->onlyOnForms()
+                ->setFormType(\Vich\UploaderBundle\Form\Type\VichImageType::class),
             ChoiceField::new('type', 'Type')->setChoices(['Facture d\'achat' => 0, 'Facture de vente' => 1]),
             MoneyField::new('totalAmount', 'Montant total')->setCurrency('EUR'),
         ];

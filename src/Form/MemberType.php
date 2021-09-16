@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Member;
+use DateTime;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -67,7 +68,9 @@ class MemberType extends AbstractType
                 ]
             ])
             ->add('birthday', BirthdayType::class, [
-                'label' => 'Date de naissance'
+                'label' => 'Date de naissance',
+                'data' => new DateTime()
+
             ]);
         // ->add('user');
     }

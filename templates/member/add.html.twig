@@ -5,7 +5,13 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Ajouter un membre</h1>
+	<h1>
+		{% if member.id != null  %}Modification
+			{{member.firstName}}
+			{{member.lastName}}
+			{% else %}Ajouter un membre
+		{% endif %}
+	</h1>
 
 	{{form_start(form)}}
 	<div class="row">
@@ -40,7 +46,10 @@
 	</div>
 	<div class="d-flex justify-content-between mt-3 mb-5">
 		<a href="{{ path('member') }}" class="btn btn-outline-danger">Retour</a>
-		<button type="submit" class="btn btn-success">Ajouter le membre</button>
+		<button type="submit" class="btn btn-success">
+			{% if member.id != null %}Modifier les informations{% else %}Ajouter le membre
+			{% endif %}
+		</button>
 	</div>
 	{{form_end(form)}}
 {% endblock %}

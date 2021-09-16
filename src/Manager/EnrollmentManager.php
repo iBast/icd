@@ -57,7 +57,7 @@ class EnrollmentManager extends AbstractManager
             $totalAmount = $totalAmount + $season->getSwimCost();
         }
 
-        $enrollment->setStatus('Dossier crée')
+        $enrollment->setStatus(Enrollment::STATUS['Dossier crée'])
             ->setIsMember(true)
             ->setTotalAmount($totalAmount)
             ->setCreatedAt(new DateTimeImmutable());
@@ -66,7 +66,20 @@ class EnrollmentManager extends AbstractManager
 
     public function finalise(Enrollment $enrollment)
     {
-        $enrollment->setStatus('En Attente de validation');
+        $enrollment->setStatus(Enrollment::STATUS['En Attente de validation']);
+        $this->save($enrollment);
+    }
+
+    public function pending(Enrollment $enrollment)
+    {
+        $enrollment->setStatus(Enrollment::STATUS['En Attente de la FFTri']);
+        $this->save($enrollment);
+    }
+
+    public function validate(Enrollment $enrollment)
+    {
+        $enrollment->setStatus(Enrollment::STATUS['Dossier validé'])
+            ->setEndedAt(new DateTimeImmutable());
         $this->save($enrollment);
     }
 }
