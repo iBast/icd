@@ -39,7 +39,7 @@ class AccountingCrudController extends AbstractCrudController
 
         return [
             DateField::new('date', 'Date'),
-            AssociationField::new('document', 'Pièce'),
+            AssociationField::new('accountingDocuments', 'Pièce'),
             AssociationField::new('account', 'Compte'),
             TextField::new('wording', 'Libélé'),
             MoneyField::new('debit', 'Débit')->setCurrency('EUR'),
@@ -51,6 +51,6 @@ class AccountingCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            ->disable(Action::DELETE, Action::EDIT);
+            ->disable(Action::DELETE);
     }
 }

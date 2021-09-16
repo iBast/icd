@@ -3,11 +3,17 @@
 namespace App\Entity;
 
 use App\Entity\EntityInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use App\Repository\AccountingDocumentRepository;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Entity(repositoryClass=AccountingDocumentRepository::class)
+ * @Vich\Uploadable
  */
 class AccountingDocument implements EntityInterface
 {
@@ -24,6 +30,13 @@ class AccountingDocument implements EntityInterface
     private $path;
 
     /**
+     * @Vich\UploadableField(mapping="accountingFile", fileNameProperty="path")
+     * 
+     * @var File|null
+     */
+    private $accountingFile;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $type;
@@ -33,10 +46,18 @@ class AccountingDocument implements EntityInterface
      */
     private $totalAmount;
 
+
+    private $createdAt;
+
     /**
-     * @ORM\OneToOne(targetEntity=Accounting::class, mappedBy="document", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity=Accounting::class, inversedBy="accountingDocuments")
      */
     private $accounting;
+
+    public function __construct()
+    {
+        $this->accounting = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -79,24 +100,56 @@ class AccountingDocument implements EntityInterface
         return $this;
     }
 
-    public function getAccounting(): ?Accounting
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $accountingFile
+     */
+    public function setAccountingFile(?File $accountingFile = null): void
+    {
+        $this->accountingFile = $accountingFile;
+
+        if (null !== $accountingFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->createdAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getAccountingFile(): ?File
+    {
+        return $this->accountingFile;
+    }
+
+    public function __toString()
+    {
+        return $this->id . ' - ' . $this->totalAmount / 100 . ' €';
+    }
+
+    /**
+     * @return Collection|Accounting[]
+     */
+    public function getAccounting(): Collection
     {
         return $this->accounting;
     }
 
-    public function setAccounting(?Accounting $accounting): self
+    public function addAccounting(Accounting $accounting): self
     {
-        // unset the owning side of the relation if necessary
-        if ($accounting === null && $this->accounting !== null) {
-            $this->accounting->setDocument(null);
+        if (!$this->accounting->contains($accounting)) {
+            $this->accounting[] = $accounting;
         }
 
-        // set the owning side of the relation if necessary
-        if ($accounting !== null && $accounting->getDocument() !== $this) {
-            $accounting->setDocument($this);
-        }
+        return $this;
+    }
 
-        $this->accounting = $accounting;
+    public function removeAccounting(Accounting $accounting): self
+    {
+        $this->accounting->removeElement($accounting);
 
         return $this;
     }

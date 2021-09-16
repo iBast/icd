@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\EntityInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AccountingRepository;
 
@@ -23,10 +25,6 @@ class Accounting implements EntityInterface
      */
     private $date;
 
-    /**
-     * @ORM\OneToOne(targetEntity=AccountingDocument::class, inversedBy="accounting", cascade={"persist", "remove"})
-     */
-    private $document;
 
     /**
      * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="accountings")
@@ -49,6 +47,16 @@ class Accounting implements EntityInterface
      */
     private $credit;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=AccountingDocument::class, mappedBy="accounting")
+     */
+    private $accountingDocuments;
+
+    public function __construct()
+    {
+        $this->accountingDocuments = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,18 +70,6 @@ class Accounting implements EntityInterface
     public function setDate(\DateTimeImmutable $date): self
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    public function getDocument(): ?AccountingDocument
-    {
-        return $this->document;
-    }
-
-    public function setDocument(?AccountingDocument $document): self
-    {
-        $this->document = $document;
 
         return $this;
     }
@@ -129,5 +125,32 @@ class Accounting implements EntityInterface
     public function __toString()
     {
         return $this->getDate()->format('d/m/Y') . ' ' . $this->getWording() . ' ' . $this->getDebit() / 100 . ' ' . $this->getCredit() / 100;
+    }
+
+    /**
+     * @return Collection|AccountingDocument[]
+     */
+    public function getAccountingDocuments(): Collection
+    {
+        return $this->accountingDocuments;
+    }
+
+    public function addAccountingDocument(AccountingDocument $accountingDocument): self
+    {
+        if (!$this->accountingDocuments->contains($accountingDocument)) {
+            $this->accountingDocuments[] = $accountingDocument;
+            $accountingDocument->addAccounting($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAccountingDocument(AccountingDocument $accountingDocument): self
+    {
+        if ($this->accountingDocuments->removeElement($accountingDocument)) {
+            $accountingDocument->removeAccounting($this);
+        }
+
+        return $this;
     }
 }
