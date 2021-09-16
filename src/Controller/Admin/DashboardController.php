@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Member;
 use App\Entity\Season;
 use App\Entity\Account;
+use App\Entity\Invoice;
 use App\Entity\Licence;
 use App\Entity\Accounting;
 use App\Entity\Enrollment;
@@ -49,7 +50,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::subMenu('Trésorerie', 'fas fa-coins')->setSubItems([
             MenuItem::linkToCrud('Comptes', 'fas fa-list', Account::class),
             MenuItem::linkToCrud('Journal', 'fas fa-newspaper', Accounting::class),
-            MenuItem::linkToCrud('Pièces', 'fas fa-file', AccountingDocument::class)
+            MenuItem::linkToCrud('Pièces', 'fas fa-file', AccountingDocument::class),
+            MenuItem::linkToCrud('Factures', 'fas -fa-file-invoice', Invoice::class)
         ]);
         yield MenuItem::subMenu('Gestion du site', 'fas fa-cog')->setSubItems([
             MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class)
