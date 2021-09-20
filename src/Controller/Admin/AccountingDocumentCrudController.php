@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\AccountingDocument;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
@@ -16,6 +17,14 @@ class AccountingDocumentCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return AccountingDocument::class;
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // the labels used to refer to this entity in titles, buttons, etc.
+            ->setEntityLabelInSingular('Pièce')
+            ->setEntityLabelInPlural('Pièces');
     }
 
 
