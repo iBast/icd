@@ -95,6 +95,12 @@ class EnrollmentCrudController extends AbstractCrudController
         return [
             AssociationField::new('Season', 'Saison'),
             AssociationField::new('memberId', 'Membre'),
+            ImageField::new('FFTriDocPath', 'Document FFTri')
+                ->onlyOnDetail()
+                ->setBasePath($this->getParameter('enrollment_docs')),
+            ImageField::new('medicalAuthPath', 'Certificat médical')
+                ->onlyOnDetail()
+                ->setBasePath($this->getParameter('enrollment_docs')),
             ChoiceField::new('status', 'Statut')->setChoices(fn () => Enrollment::STATUS),
             BooleanField::new('isMember', 'Membre')->hideOnIndex(),
             AssociationField::new('Licence')->hideOnIndex(),
@@ -110,18 +116,12 @@ class EnrollmentCrudController extends AbstractCrudController
             TelephoneField::new('emergencyPhone', 'Numéro d\'urgence')->hideOnIndex(),
             MoneyField::new('totalAmount', 'Montant total')->setCurrency('EUR')->hideOnIndex(),
             TextField::new('paymentMethod', 'Mode de paiement')->hideOnIndex(),
-            DateField::new('paymentAt', 'Date de paiement')->hideOnIndex(),
-            DateField::new('createdAt', 'Création de la demande')->onlyOnIndex(),
+            DateField::new('paymentAt', 'Date de paiement'),
+            DateField::new('createdAt', 'Création de la demande')->hideOnIndex(),
             DateField::new('endedAt', 'Dossier validé le')->hideOnIndex(),
-            ImageField::new('medicalAuthPath', 'Certificat médical')
-                ->onlyOnDetail()
-                ->setBasePath($this->getParameter('enrollment_docs')),
             TextareaField::new('medicalFile', 'Certificat médical')
                 ->onlyOnForms()
                 ->setFormType(VichImageType::class),
-            ImageField::new('FFTriDocPath', 'Document FFTri')
-                ->onlyOnDetail()
-                ->setBasePath($this->getParameter('enrollment_docs')),
             TextareaField::new('FFTriDocFile', 'Document FFTri')
                 ->onlyOnForms()
                 ->setFormType(VichImageType::class)

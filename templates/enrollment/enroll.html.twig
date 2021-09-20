@@ -8,7 +8,7 @@
 	<p>Saison :
 		{{season.year}}</p>
 	<div class="row mx-auto mb-5">
-		<div class="col-md-5">
+		<div class="col-md-5 mb-3">
 			<h2>
 				Adhérent :
 				<b>
@@ -58,9 +58,13 @@
 		</div>
 		<div class="col-md-5">
 			<h2>Adhésion</h2>
-			<h3>Informations sur la saison</h3>
+			<h3>Tarifs pour la saison</h3>
 			<p>Tarif de l'adhésion :
 				<b>{{ season.membershipCost / 100 }}
+					€</b>
+			</p>
+			<p>Tarif de l'accès piscine :
+				<b>{{ season.swimCost / 100 }}
 					€</b>
 			</p>
 			{% for licence in licences %}
@@ -71,15 +75,22 @@
 						€</b>
 				</p>
 			{% endfor %}
-			<p>Tarif de l'accès piscine :
-				<b>{{ season.swimCost / 100 }}
-					€</b>
-			</p>
 			<h3>Formulaire</h3>
 			{{form_start(form)}}
 
 			{{form_row(form.licence)}}
 			{{form_row(form.hasPoolAcces)}}
+			{% if date(member.birthday) > date('-18years')  %}
+				{{form_row(form.hasCareAuthorization)}}
+				{{form_row(form.hasLeaveAloneAuthorization)}}
+				{{form_row(form.hasTreatment)}}
+				{{form_row(form.treatmentDetails)}}
+				{{form_row(form.hasAllergy)}}
+				{{form_row(form.AllergyDetails)}}
+				{{form_row(form.emergencyContact)}}
+				{{form_row(form.emergencyPhone)}}
+
+			{% endif %}
 			{{form_row(form.medicalFile)}}
 			{{form_row(form.FFTriDocFile)}}
 			{{form_row(form.hasPhotoAuthorization)}}

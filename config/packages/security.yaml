@@ -29,7 +29,7 @@ security:
         ROLE_SECRETAIRE: [ROLE_COMITE]
         ROLE_COMMUNICATION: [ROLE_COMITE]
         ROLE_PRESIDENT: [ROLE_ADHESIONS, ROLE_TRESORIER, ROLE_SECRETAIRE]
-        ROLE_ADMIN: [ROLE_USER]
+        ROLE_ADMIN: [ROLE_PRESIDENT]
                 # where to redirect after logout
                 # target: app_any_route
 

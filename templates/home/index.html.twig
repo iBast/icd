@@ -4,6 +4,9 @@
 {% endblock %}
 
 {% block body %}
+	{% if app.user.members == null  %}
+		pas de membres
+	{% endif %}
 	{% if app.user %}
 		<h1>Bonjour
 			{{ app.user.firstName }}</h1>

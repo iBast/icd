@@ -2,24 +2,22 @@
 
 namespace App\Controller;
 
-use App\Entity\Member;
+use DateTime;
 use App\Entity\Enrollment;
+use App\Manager\AccountManager;
 use App\Form\EnrollmentStep1Type;
 use App\Form\EnrollmentStep2Type;
-use App\Form\MemberType;
-use App\Manager\AccountManager;
+use App\Form\EnrollmentYoungType;
 use App\Manager\EnrollmentManager;
-use App\Repository\AccountRepository;
 use App\Repository\MemberRepository;
 use App\Repository\SeasonRepository;
-use App\Repository\EnrollmentRepository;
+use App\Repository\AccountRepository;
 use App\Repository\LicenceRepository;
-use DateTime;
-use DateTimeImmutable;
+use App\Repository\EnrollmentRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 
 class EnrollmentController extends AbstractController
 {
@@ -62,11 +60,15 @@ class EnrollmentController extends AbstractController
         $member = $this->memberRepository->findOneBy(['firstName' => $firstName, 'lastName' => $lastName]);
         $enrollment = $this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]);
 
+        if ($enrollment->getUser() != $this->getUser()) {
+            $this->addFlash('danger', 'Vous n\'êtes pas autorisé à inscrire ce membre');
+            return $this->redirectToRoute("home");
+        }
 
         if ($member->getBirthday() < new DateTime('-18years')) {
             $form = $this->createForm(EnrollmentStep1Type::class, $enrollment);
         } else {
-            $form = $this->createForm(MemberType::class);
+            $form = $this->createForm(EnrollmentYoungType::class, $enrollment);
         }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
