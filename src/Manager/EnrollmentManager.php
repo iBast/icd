@@ -82,4 +82,10 @@ class EnrollmentManager extends AbstractManager
             ->setEndedAt(new DateTimeImmutable());
         $this->save($enrollment);
     }
+
+    public function paymentOk(Enrollment $enrollment)
+    {
+        $enrollment->setPaymentAt(new DateTimeImmutable());
+        $this->save($enrollment);
+    }
 }

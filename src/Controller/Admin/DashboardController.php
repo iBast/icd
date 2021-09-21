@@ -45,17 +45,17 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Adhésions', 'fas fa-folder-open', Enrollment::class)
 
         ]);
-        yield MenuItem::subMenu('Tenues', 'fas fa-tshirt');
-        yield MenuItem::subMenu('Evènements', 'fas fa-calendar-alt');
+        yield MenuItem::subMenu('Tenues', 'fas fa-tshirt')->setPermission('ROLE_ADMIN');
+        yield MenuItem::subMenu('Evènements', 'fas fa-calendar-alt')->setPermission('ROLE_ADMIN');
         yield MenuItem::subMenu('Trésorerie', 'fas fa-coins')->setSubItems([
             MenuItem::linkToCrud('Comptes', 'fas fa-list', Account::class),
             MenuItem::linkToCrud('Journal', 'fas fa-newspaper', Accounting::class),
             MenuItem::linkToCrud('Pièces', 'fas fa-file', AccountingDocument::class),
             MenuItem::linkToCrud('Factures', 'fas -fa-file-invoice', Invoice::class)
-        ]);
+        ])->setPermission('ROLE_TRESORIER');
         yield MenuItem::subMenu('Gestion du site', 'fas fa-cog')->setSubItems([
             MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class)
-        ]);
+        ])->setPermission('ROLE_PRESIDENT');
         yield MenuItem::subMenu('Toolbox', 'fas fa-toolbox')->setSubItems([
             MenuItem::linkToUrl('EspaceTri', 'fas fa-swimmer', 'https://espacetri.fftri.com'),
             MenuItem::linkToUrl('Blog', 'fas fa-biking', 'https://ironclub.blog')

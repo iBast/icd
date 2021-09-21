@@ -39,7 +39,7 @@ class EnrollmentCrudController extends AbstractCrudController
             // the labels used to refer to this entity in titles, buttons, etc.
             ->setEntityLabelInSingular('Adhésion')
             ->setEntityLabelInPlural('Adhésions')
-            ->showEntityActionsInlined();
+            ->showEntityActionsAsDropdown();
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -59,6 +59,9 @@ class EnrollmentCrudController extends AbstractCrudController
         $pending = Action::new('pending', 'Dossier Transmis FF Tri')
             ->linkToCrudAction('pending')->setCssClass('btn btn-success');
 
+        $paymentOk = Action::new('paymentOk', 'Paiement fait')
+            ->linkToCrudAction('paymentOk')->setCssClass('btn btn-success');
+
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, $validate)
@@ -67,10 +70,14 @@ class EnrollmentCrudController extends AbstractCrudController
             ->add(Crud::PAGE_EDIT, $pending)
             ->add(Crud::PAGE_INDEX, $pending)
             ->add(Crud::PAGE_DETAIL, $pending)
+            ->add(Crud::PAGE_EDIT, $paymentOk)
+            ->add(Crud::PAGE_INDEX, $paymentOk)
+            ->add(Crud::PAGE_DETAIL, $paymentOk)
             ->remove(Crud::PAGE_INDEX, Action::DELETE)
             ->remove(Crud::PAGE_DETAIL, Action::DELETE)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
-            ->add(Crud::PAGE_EDIT, Action::DELETE);
+            ->add(Crud::PAGE_EDIT, Action::DELETE)
+            ->setPermissions(['pending' => 'ROLE_ADHESIONS', 'validate' => 'ROLE_ADHESIONS', 'paymentOk' => 'ROLE_TRESORIER']);
     }
 
 
@@ -79,7 +86,7 @@ class EnrollmentCrudController extends AbstractCrudController
         /** @var Enrollment */
         $enrollment = $context->getEntity()->getInstance();
         $manager->validate($enrollment);
-        return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::DETAIL)->setEntityId($enrollment->getId())->generateUrl());
+        return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::INDEX)->generateUrl());
     }
 
     public function pending(AdminContext $context, EnrollmentManager $manager, AdminUrlGenerator $adminUrlGenerator)
@@ -87,7 +94,15 @@ class EnrollmentCrudController extends AbstractCrudController
         /** @var Enrollment */
         $enrollment = $context->getEntity()->getInstance();
         $manager->pending($enrollment);
-        return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::DETAIL)->setEntityId($enrollment->getId())->generateUrl());
+        return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::INDEX)->generateUrl());
+    }
+
+    public function paymentOk(AdminContext $context, EnrollmentManager $manager, AdminUrlGenerator $adminUrlGenerator)
+    {
+        /** @var Enrollment */
+        $enrollment = $context->getEntity()->getInstance();
+        $manager->paymentOk($enrollment);
+        return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::INDEX)->generateUrl());
     }
 
     public function configureFields(string $pageName): iterable

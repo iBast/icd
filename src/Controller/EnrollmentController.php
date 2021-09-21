@@ -101,6 +101,9 @@ class EnrollmentController extends AbstractController
                 'Adhésion saison ' . $enrollment->getSeason()->getYear() . ' - ' . $enrollment->getMemberId()->getFirstName() . ' ' . $enrollment->getMemberId()->getLastName(),
                 $enrollment->getTotalAmount()
             );
+
+            $this->addFlash('success', 'Ton adhésion est enregistrée, elle sera validé prochainement, sous réserve de réception du paiement ainsi que des documents');
+            return $this->redirectToRoute('home');
         }
         return $this->render('enrollment/finalise.html.twig', [
             'enrollment' => $enrollment,

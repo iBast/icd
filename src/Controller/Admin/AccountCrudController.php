@@ -23,8 +23,7 @@ class AccountCrudController extends AbstractCrudController
         return $crud
             // the labels used to refer to this entity in titles, buttons, etc.
             ->setEntityLabelInSingular('Compte')
-            ->setEntityLabelInPlural('Comptes')
-            ->showEntityActionsInlined();
+            ->setEntityLabelInPlural('Comptes');
     }
 
     public function configureFields(string $pageName): iterable
