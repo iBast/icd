@@ -47,6 +47,7 @@ class EnrollmentCrudController extends AbstractCrudController
         return $filters
             ->add(EntityFilter::new('Season', 'Saison'))
             ->add(NullFilter::new('endedAt', 'Dossier Complet')->setChoiceLabels('Non', 'Oui'))
+            ->add()
             ->add(ChoiceFilter::new('status')->setChoices(Enrollment::STATUS));
     }
 

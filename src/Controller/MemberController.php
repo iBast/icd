@@ -54,7 +54,7 @@ class MemberController extends AbstractController
             $member->addUser($this->getUser());
             $this->manager->save($member);
             $accountManager->createAccount('411' . str_pad($member->getId(), 3, '0', STR_PAD_LEFT), 'Membre ' . $member->getFirstName() . ' ' . $member->getLastName());
-            return $this->redirectToRoute('member');
+            return $this->redirectToRoute('enrollment');
         }
 
         return $this->render('member/add.html.twig', [

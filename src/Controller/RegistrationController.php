@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
+use App\Security\LoginAuthenticator;
 use DateTime;
 use DateTimeImmutable;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
@@ -28,8 +29,12 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/inscription', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $passwordEncoder): Response
-    {
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $passwordEncoder,
+        LoginAuthenticator $authenticator,
+        UserAuthenticatorInterface $userAuthenticator
+    ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -51,6 +56,8 @@ class RegistrationController extends AbstractController
             // generate a signed url and email it to the user
             $this->sendVerifEmail($user);
             // do anything else you need here, like send an email
+
+            $userAuthenticator->authenticateUser($user, $authenticator, $request);
 
             return $this->redirectToRoute('home');
         }
