@@ -155,6 +155,11 @@ class Enrollment implements EntityInterface
      */
     private $User;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDocsValid;
+
     public const STATUS = [
         'Dossier crée' => 'Dossier crée',
         'En Attente de validation' => 'En Attente de validation',
@@ -496,5 +501,17 @@ class Enrollment implements EntityInterface
     public function getFFTriDocFile(): ?File
     {
         return $this->FFTriDocFile;
+    }
+
+    public function getIsDocsValid(): ?bool
+    {
+        return $this->isDocsValid;
+    }
+
+    public function setIsDocsValid(bool $isDocsValid): self
+    {
+        $this->isDocsValid = $isDocsValid;
+
+        return $this;
     }
 }

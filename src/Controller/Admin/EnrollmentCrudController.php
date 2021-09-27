@@ -39,7 +39,7 @@ class EnrollmentCrudController extends AbstractCrudController
             // the labels used to refer to this entity in titles, buttons, etc.
             ->setEntityLabelInSingular('Adhésion')
             ->setEntityLabelInPlural('Adhésions')
-            ->showEntityActionsAsDropdown();
+            ->showEntityActionsInlined();
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -47,18 +47,17 @@ class EnrollmentCrudController extends AbstractCrudController
         return $filters
             ->add(EntityFilter::new('Season', 'Saison'))
             ->add(NullFilter::new('endedAt', 'Dossier Complet')->setChoiceLabels('Non', 'Oui'))
-            ->add()
             ->add(ChoiceFilter::new('status')->setChoices(Enrollment::STATUS));
     }
 
     public function configureActions(Actions $actions): Actions
     {
         // this action executes the 'renderInvoice()' method of the current CRUD controller
-        $validate = Action::new('validate', 'Valider le dossier')
+        $validate = Action::new('validate', 'Valider les documents')
             ->linkToCrudAction('validate')->setCssClass('btn btn-success');
 
-        $pending = Action::new('pending', 'Dossier Transmis FF Tri')
-            ->linkToCrudAction('pending')->setCssClass('btn btn-success');
+        //$pending = Action::new('pending', 'Dossier Transmis FF Tri')
+        //->linkToCrudAction('pending')->setCssClass('btn btn-success');
 
         $paymentOk = Action::new('paymentOk', 'Paiement fait')
             ->linkToCrudAction('paymentOk')->setCssClass('btn btn-success');
@@ -68,9 +67,9 @@ class EnrollmentCrudController extends AbstractCrudController
             ->add(Crud::PAGE_EDIT, $validate)
             ->add(Crud::PAGE_INDEX, $validate)
             ->add(Crud::PAGE_DETAIL, $validate)
-            ->add(Crud::PAGE_EDIT, $pending)
-            ->add(Crud::PAGE_INDEX, $pending)
-            ->add(Crud::PAGE_DETAIL, $pending)
+            //->add(Crud::PAGE_EDIT, $pending)
+            //->add(Crud::PAGE_INDEX, $pending)
+            //->add(Crud::PAGE_DETAIL, $pending)
             ->add(Crud::PAGE_EDIT, $paymentOk)
             ->add(Crud::PAGE_INDEX, $paymentOk)
             ->add(Crud::PAGE_DETAIL, $paymentOk)
@@ -117,6 +116,7 @@ class EnrollmentCrudController extends AbstractCrudController
             ImageField::new('medicalAuthPath', 'Certificat médical')
                 ->onlyOnDetail()
                 ->setBasePath($this->getParameter('enrollment_docs')),
+            BooleanField::new('isDocsValid', 'Documents Ok'),
             ChoiceField::new('status', 'Statut')->setChoices(fn () => Enrollment::STATUS),
             BooleanField::new('isMember', 'Membre')->hideOnIndex(),
             AssociationField::new('Licence')->hideOnIndex(),

@@ -58,6 +58,9 @@ class EnrollmentController extends AbstractController
     {
         $season = $this->seasonRepository->find($id);
         $member = $this->memberRepository->findOneBy(['firstName' => $firstName, 'lastName' => $lastName]);
+        if ($this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]) == null) {
+            $this->manager->enroll($member, $this->getUser(), $season);
+        }
         $enrollment = $this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]);
 
         if ($enrollment->getUser() != $this->getUser()) {

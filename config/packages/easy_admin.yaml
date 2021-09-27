@@ -16,3 +16,5 @@ easy_admin:
             class: App\Entity\Member
         AccountingDocumnent:
             class: App\Entity\AccountingDocumnent
+    list:
+        actions: ['show', 'export']
