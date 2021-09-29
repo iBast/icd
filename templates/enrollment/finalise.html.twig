@@ -11,8 +11,15 @@
 			<ul class="list-group">
 				<li class="list-group-item d-flex justify-content-between align-items-center">
 					Adhésion pour
-					<span class="badge bg-primary rounded-pill">{{ enrollment.memberId.firstName }}
-						{{ enrollment.memberId.lastName }}</span>
+					<span class="badge bg-primary rounded-pill">
+						{% if enrollment.memberId is defined %}
+							{{ enrollment.memberId.firstName }}
+							{{ enrollment.memberId.lastName }}
+						{% else %}
+							{{ enrollment.owner.firstName }}
+							{{ enrollment.owner.lastName }}
+						{% endif %}
+					</span>
 				</li>
 				<li class="list-group-item d-flex justify-content-between align-items-center">
 					Saison
@@ -58,8 +65,7 @@
 				<li class="list-group-item d-flex justify-content-between align-items-center">
 					Montant de l'adhésion
 					<span class="badge bg-primary rounded-pill">
-						{{ enrollment.totalAmount / 100 }}
-						€
+						{{ enrollment.totalAmount | amount }}
 					</span>
 				</li>
 				<li class="list-group-item d-flex justify-content-between align-items-center">
@@ -72,8 +78,19 @@
 			<br>
 			{{ form_start(form)}}
 			{{form_row(form.info_verified)}}
+			<br>
+			{% if enrollment.paymentMethod == "Virement" %}
+				<p>IBAN : FR76 1027 8031 2300 0174 4824 528
+					<br>
+					BIC CMCIFR2A</p>
+			{% endif %}
+			<br>
 			<div class="d-flex justify-content-between">
-				<a href="{{ path('enrollment_member', { 'id': enrollment.season.id, 'firstName': enrollment.memberId.firstName, 'lastName': enrollment.memberId.lastName }) }}" class="btn btn-outline-warning">Modifier la demande</a>
+				{% if enrollment.memberId is defined %}
+					<a href="{{ path('enrollment_member', { 'id': enrollment.season.id, 'firstName': enrollment.memberId.firstName, 'lastName': enrollment.memberId.lastName }) }}" class="btn btn-outline-warning">Modifier la demande</a>
+				{% else %}
+					<a href="{{ path('enrollment_member', { 'id': enrollment.season.id, 'firstName': enrollment.owner.firstName, 'lastName': enrollment.owner.lastName }) }}" class="btn btn-outline-warning">Modifier la demande</a>
+				{% endif %}
 				<button type="submit" class="btn btn-success">
 					Soumettre la demande d'adhésion
 				</button>

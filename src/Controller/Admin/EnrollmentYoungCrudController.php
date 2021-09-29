@@ -3,8 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Enrollment;
-use App\Manager\EnrollmentManager;
-use App\Repository\SeasonRepository;
+use App\Entity\EnrollmentYoung;
+use App\Manager\EnrollmentYoungManager;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -25,27 +25,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterConfigDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDto;
 
-class EnrollmentCrudController extends AbstractCrudController
+class EnrollmentYoungCrudController extends AbstractCrudController
 {
-
-    protected $seasonRepository;
-
-    public function __construct(SeasonRepository $seasonRepository)
-    {
-        $this->seasonRepository = $seasonRepository;
-    }
-
     public static function getEntityFqcn(): string
     {
-        return Enrollment::class;
+        return EnrollmentYoung::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
-
         return $crud
             // the labels used to refer to this entity in titles, buttons, etc.
             ->setEntityLabelInSingular('Adhésion')
@@ -55,11 +44,10 @@ class EnrollmentCrudController extends AbstractCrudController
 
     public function configureFilters(Filters $filters): Filters
     {
-        $season = $this->seasonRepository->findOneBy(['enrollmentStatus' => 1]);
         return $filters
+            ->add(EntityFilter::new('Season', 'Saison'))
             ->add(NullFilter::new('endedAt', 'Dossier Complet')->setChoiceLabels('Non', 'Oui'))
-            ->add(ChoiceFilter::new('status')->setChoices(Enrollment::STATUS))
-            ->add(EntityFilter::new('Season', 'Saison'));
+            ->add(ChoiceFilter::new('status')->setChoices(Enrollment::STATUS));
     }
 
     public function configureActions(Actions $actions): Actions
@@ -67,6 +55,9 @@ class EnrollmentCrudController extends AbstractCrudController
         // this action executes the 'renderInvoice()' method of the current CRUD controller
         $validate = Action::new('validate', 'Valider les documents')
             ->linkToCrudAction('validate')->setCssClass('btn btn-success');
+
+        //$pending = Action::new('pending', 'Dossier Transmis FF Tri')
+        //->linkToCrudAction('pending')->setCssClass('btn btn-success');
 
         $paymentOk = Action::new('paymentOk', 'Paiement fait')
             ->linkToCrudAction('paymentOk')->setCssClass('btn btn-success');
@@ -76,6 +67,9 @@ class EnrollmentCrudController extends AbstractCrudController
             ->add(Crud::PAGE_EDIT, $validate)
             ->add(Crud::PAGE_INDEX, $validate)
             ->add(Crud::PAGE_DETAIL, $validate)
+            //->add(Crud::PAGE_EDIT, $pending)
+            //->add(Crud::PAGE_INDEX, $pending)
+            //->add(Crud::PAGE_DETAIL, $pending)
             ->add(Crud::PAGE_EDIT, $paymentOk)
             ->add(Crud::PAGE_INDEX, $paymentOk)
             ->add(Crud::PAGE_DETAIL, $paymentOk)
@@ -87,39 +81,58 @@ class EnrollmentCrudController extends AbstractCrudController
     }
 
 
-    public function validate(AdminContext $context, EnrollmentManager $manager, AdminUrlGenerator $adminUrlGenerator)
+    public function validate(AdminContext $context, EnrollmentYoungManager $manager, AdminUrlGenerator $adminUrlGenerator)
     {
-        /** @var Enrollment */
-        $enrollment = $context->getEntity()->getInstance();
-        $manager->validate($enrollment);
-        return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::INDEX)->generateUrl());
+        /** @var EnrollmentYoung */
+        $enrollmentYoung = $context->getEntity()->getInstance();
+        $manager->validate($enrollmentYoung);
+        return $this->redirect($adminUrlGenerator->setController(Self::class)->setAction(Action::INDEX)->generateUrl());
     }
 
-    public function paymentOk(AdminContext $context, EnrollmentManager $manager, AdminUrlGenerator $adminUrlGenerator)
+    public function pending(AdminContext $context, EnrollmentYoungManager $manager, AdminUrlGenerator $adminUrlGenerator)
     {
-        /** @var Enrollment */
-        $enrollment = $context->getEntity()->getInstance();
-        $manager->paymentOk($enrollment);
-        return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::INDEX)->generateUrl());
+        /** @var EnrollmentYoung */
+        $enrollmentYoung = $context->getEntity()->getInstance();
+        $manager->pending($enrollmentYoung);
+        return $this->redirect($adminUrlGenerator->setController(Self::class)->setAction(Action::INDEX)->generateUrl());
+    }
+
+    public function paymentOk(AdminContext $context, EnrollmentYoungManager $manager, AdminUrlGenerator $adminUrlGenerator)
+    {
+        /** @var EnrollmentYoung */
+        $enrollmentYoung = $context->getEntity()->getInstance();
+        $manager->paymentOk($enrollmentYoung);
+        return $this->redirect($adminUrlGenerator->setController(Self::class)->setAction(Action::INDEX)->generateUrl());
     }
 
     public function configureFields(string $pageName): iterable
     {
         return [
-            AssociationField::new('Season', 'Saison'),
-            AssociationField::new('memberId', 'Membre'),
+            AssociationField::new('season', 'Saison'),
+            AssociationField::new('owner', 'Membre'),
             ImageField::new('FFTriDocPath', 'Document FFTri')
                 ->onlyOnDetail()
                 ->setBasePath($this->getParameter('enrollment_docs')),
             ImageField::new('medicalAuthPath', 'Certificat médical')
                 ->onlyOnDetail()
                 ->setBasePath($this->getParameter('enrollment_docs')),
+            ImageField::new('antiDopingPath', 'Attestation anti dopage')
+                ->onlyOnDetail()
+                ->setBasePath($this->getParameter('enrollment_docs')),
             BooleanField::new('isDocsValid', 'Documents Ok'),
             ChoiceField::new('status', 'Statut')->setChoices(fn () => Enrollment::STATUS),
             BooleanField::new('isMember', 'Membre')->hideOnIndex(),
-            AssociationField::new('Licence')->hideOnIndex(),
+            AssociationField::new('licence')->hideOnIndex(),
             BooleanField::new('hasPoolAcces', 'Passe piscine')->hideOnIndex(),
+            BooleanField::new('hasCareAuthorization', 'Autorisation de soins')->hideOnIndex(),
             BooleanField::new('hasPhotoAuthorization', 'Autorisation de publication de photos')->hideOnIndex(),
+            BooleanField::new('hasLeaveAloneAuthorization', 'Autorisation de partir seul')->hideOnIndex(),
+            BooleanField::new('hasAllergy', 'A des allergies')->hideOnIndex(),
+            TextareaField::new('allergyDetails', 'Détail des allergies')->hideOnIndex(),
+            BooleanField::new('hasTreatment', 'Suit un traitement')->hideOnIndex(),
+            TextareaField::new('treatmentDetails', 'Détail du traitement')->hideOnIndex(),
+            TextField::new('emergencyContact', 'Contact en cas d\'urgence')->hideOnIndex(),
+            TelephoneField::new('emergencyPhone', 'Numéro d\'urgence')->hideOnIndex(),
             MoneyField::new('totalAmount', 'Montant total')->setCurrency('EUR')->hideOnIndex(),
             TextField::new('paymentMethod', 'Mode de paiement')->hideOnIndex(),
             DateField::new('paymentAt', 'Date de paiement'),
@@ -129,6 +142,9 @@ class EnrollmentCrudController extends AbstractCrudController
                 ->onlyOnForms()
                 ->setFormType(VichImageType::class),
             TextareaField::new('FFTriDocFile', 'Document FFTri')
+                ->onlyOnForms()
+                ->setFormType(VichImageType::class),
+            TextareaField::new('antiDopingFile', 'Attestation anti dopage')
                 ->onlyOnForms()
                 ->setFormType(VichImageType::class)
         ];

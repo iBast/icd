@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Licence;
-use App\Entity\Enrollment;
+use App\Entity\EnrollmentYoung;
 use Symfony\Component\Form\AbstractType;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -70,6 +70,10 @@ class EnrollmentYoungType extends AbstractType
                 'label' => 'Document transmit par la FF TRI',
                 'required' => false
             ])
+            ->add('antiDopingFile', VichFileType::class, [
+                'label' => 'Attestation anti dopage',
+                'required' => false
+            ])
             ->add('paymentMethod', ChoiceType::class, [
                 'label' => 'Mode de règlement',
                 'placeholder' => '-- Choisir le mode de règlement --',
@@ -84,7 +88,7 @@ class EnrollmentYoungType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Enrollment::class,
+            'data_class' => EnrollmentYoung::class,
         ]);
     }
 }

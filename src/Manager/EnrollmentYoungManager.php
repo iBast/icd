@@ -6,22 +6,22 @@ use App\Entity\User;
 use App\Entity\Member;
 use App\Entity\Season;
 use DateTimeImmutable;
-use App\Entity\Enrollment;
+use App\Entity\EnrollmentYoung;
 use App\Entity\EntityInterface;
 use App\Manager\AbstractManager;
 use App\Repository\SeasonRepository;
-use App\Repository\EnrollmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\EnrollmentYoungRepository;
 
-class EnrollmentManager extends AbstractManager
+class EnrollmentYoungManager extends AbstractManager
 {
-    protected $enrollmentRepository;
+    protected $enrollmentYoungRepository;
     protected $seasonRepository;
 
-    public function __construct(EnrollmentRepository $enrollmentRepository, SeasonRepository $seasonRepository, EntityManagerInterface $em)
+    public function __construct(EnrollmentYoungRepository $enrollmentYoungRepository, SeasonRepository $seasonRepository, EntityManagerInterface $em)
     {
         parent::__construct($em);
-        $this->enrollmentRepository = $enrollmentRepository;
+        $this->enrollmentYoungRepository = $enrollmentYoungRepository;
         $this->seasonRepository = $seasonRepository;
     }
 
@@ -32,7 +32,7 @@ class EnrollmentManager extends AbstractManager
 
     public function enroll(Member $member, User $user, Season $season)
     {
-        $enrollment = new Enrollment;
+        $enrollment = new EnrollmentYoung;
         $enrollment
             ->setIsMember(false)
             ->setHasPoolAcces(false)
@@ -41,14 +41,14 @@ class EnrollmentManager extends AbstractManager
             ->setHasLeaveAloneAuthorization(false)
             ->setHasTreatment(false)
             ->setHasAllergy(false)
-            ->setMemberId($member)
+            ->setOwner($member)
             ->setUser($user)
             ->setSeason($season)
             ->setStatus(null);
         $this->save($enrollment);
     }
 
-    public function draft(Enrollment $enrollment)
+    public function draft(EnrollmentYoung $enrollment)
     {
         $season = $this->seasonRepository->findOneBy(['year' => $enrollment->getSeason()->getYear()]);
 
@@ -57,26 +57,26 @@ class EnrollmentManager extends AbstractManager
             $totalAmount = $totalAmount + $season->getSwimCost();
         }
 
-        $enrollment->setStatus(Enrollment::STATUS['Dossier créé'])
+        $enrollment->setStatus(EnrollmentYoung::STATUS['Dossier créé'])
             ->setIsMember(true)
             ->setTotalAmount($totalAmount)
             ->setCreatedAt(new DateTimeImmutable());
         $this->save($enrollment);
     }
 
-    public function finalise(Enrollment $enrollment)
+    public function finalise(EnrollmentYoung $enrollment)
     {
-        $enrollment->setStatus(Enrollment::STATUS['En Attente de validation']);
+        $enrollment->setStatus(EnrollmentYoung::STATUS['En Attente de validation']);
         $this->save($enrollment);
     }
 
-    public function validate(Enrollment $enrollment)
+    public function validate(EnrollmentYoung $enrollment)
     {
         $enrollment->setIsDocsValid(true);
         $this->save($enrollment);
     }
 
-    public function paymentOk(Enrollment $enrollment)
+    public function paymentOk(EnrollmentYoung $enrollment)
     {
         $enrollment->setPaymentAt(new DateTimeImmutable());
         $this->save($enrollment);

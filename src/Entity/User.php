@@ -70,6 +70,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $enrollments;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EnrollmentYoung::class, mappedBy="user")
+     */
+    private $enrollmentYoungs;
+
     public const ROLES = [
         'Utilisateur' => 'ROLE_USER',
         'Administrateur' => 'ROLE_ADMIN',
@@ -85,6 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->members = new ArrayCollection();
         $this->enrollments = new ArrayCollection();
+        $this->enrollmentYoungs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -273,6 +279,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($enrollment->getUser() === $this) {
                 $enrollment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EnrollmentYoung[]
+     */
+    public function getEnrollmentYoungs(): Collection
+    {
+        return $this->enrollmentYoungs;
+    }
+
+    public function addEnrollmentYoung(EnrollmentYoung $enrollmentYoung): self
+    {
+        if (!$this->enrollmentYoungs->contains($enrollmentYoung)) {
+            $this->enrollmentYoungs[] = $enrollmentYoung;
+            $enrollmentYoung->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrollmentYoung(EnrollmentYoung $enrollmentYoung): self
+    {
+        if ($this->enrollmentYoungs->removeElement($enrollmentYoung)) {
+            // set the owning side to null (unless already changed)
+            if ($enrollmentYoung->getUser() === $this) {
+                $enrollmentYoung->setUser(null);
             }
         }
 

@@ -2,20 +2,17 @@
 
 namespace App\Entity;
 
-use App\Entity\Member;
-use App\Entity\Season;
-use App\Entity\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\EnrollmentRepository;
+use App\Repository\EnrollmentYoungRepository;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 
 /**
- * @ORM\Entity(repositoryClass=EnrollmentRepository::class)
- * @Vich\Uploadable
+ * @ORM\Entity(repositoryClass=EnrollmentYoungRepository::class)
+ *  @Vich\Uploadable
  */
-class Enrollment implements EntityInterface
+class EnrollmentYoung implements EntityInterface
 {
     /**
      * @ORM\Id
@@ -25,16 +22,15 @@ class Enrollment implements EntityInterface
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Season::class, inversedBy="enrollments")
-     * @ORM\JoinColumn(nullable=true, name="season_id")
-     */
-    private $Season;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Member::class, inversedBy="enrollments")
+     * @ORM\ManyToOne(targetEntity=Member::class, inversedBy="enrollmentYoungs")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $memberId;
+    private $owner;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Season::class, inversedBy="enrollmentYoungs")
+     */
+    private $season;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -84,11 +80,6 @@ class Enrollment implements EntityInterface
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasPhotoAuthorization;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
     private $hasLeaveAloneAuthorization;
 
     /**
@@ -109,7 +100,7 @@ class Enrollment implements EntityInterface
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $AllergyDetails;
+    private $allergyDetails;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -127,16 +118,34 @@ class Enrollment implements EntityInterface
     private $medicalAuthPath;
 
     /**
-     * @Vich\UploadableField(mapping="enrollment_docs", fileNameProperty="medicalAuthPath")
-     * 
-     * @var File|null
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $medicalFile;
+    private $FFTriDocPath;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $FFTriDocPath;
+    private $antiDopingPath;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Licence::class, inversedBy="enrollmentYoungs")
+     */
+    private $licence;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="enrollmentYoungs")
+     */
+    private $user;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDocsValid = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $hasPhotoAuthorization = false;
 
     /**
      * @Vich\UploadableField(mapping="enrollment_docs", fileNameProperty="FFTriDocPath")
@@ -146,19 +155,18 @@ class Enrollment implements EntityInterface
     private $FFTriDocFile;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Licence::class, inversedBy="enrollments")
+     * @Vich\UploadableField(mapping="enrollment_docs", fileNameProperty="medicalAuthPath")
+     * 
+     * @var File|null
      */
-    private $Licence;
+    private $medicalFile;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="enrollments")
+     * @Vich\UploadableField(mapping="enrollment_docs", fileNameProperty="antiDopingPath")
+     * 
+     * @var File|null
      */
-    private $User;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $isDocsValid = false;
+    private $antiDopingFile;
 
     public const STATUS = [
         'Dossier créé' => 'Dossier créé',
@@ -171,26 +179,26 @@ class Enrollment implements EntityInterface
         return $this->id;
     }
 
-    public function getSeason(): ?Season
+    public function getOwner(): ?Member
     {
-        return $this->Season;
+        return $this->owner;
     }
 
-    public function setSeason(?Season $Season): self
+    public function setOwner(?Member $owner): self
     {
-        $this->Season = $Season;
+        $this->owner = $owner;
 
         return $this;
     }
 
-    public function getMemberId(): ?Member
+    public function getSeason(): ?Season
     {
-        return $this->memberId;
+        return $this->season;
     }
 
-    public function setMemberId(?Member $memberId): self
+    public function setSeason(?Season $season): self
     {
-        $this->memberId = $memberId;
+        $this->season = $season;
 
         return $this;
     }
@@ -248,7 +256,7 @@ class Enrollment implements EntityInterface
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -303,18 +311,6 @@ class Enrollment implements EntityInterface
         return $this;
     }
 
-    public function getHasPhotoAuthorization(): ?bool
-    {
-        return $this->hasPhotoAuthorization;
-    }
-
-    public function setHasPhotoAuthorization(bool $hasPhotoAuthorization): self
-    {
-        $this->hasPhotoAuthorization = $hasPhotoAuthorization;
-
-        return $this;
-    }
-
     public function getHasLeaveAloneAuthorization(): ?bool
     {
         return $this->hasLeaveAloneAuthorization;
@@ -365,12 +361,12 @@ class Enrollment implements EntityInterface
 
     public function getAllergyDetails(): ?string
     {
-        return $this->AllergyDetails;
+        return $this->allergyDetails;
     }
 
-    public function setAllergyDetails(?string $AllergyDetails): self
+    public function setAllergyDetails(string $allergyDetails): self
     {
-        $this->AllergyDetails = $AllergyDetails;
+        $this->allergyDetails = $allergyDetails;
 
         return $this;
     }
@@ -399,57 +395,112 @@ class Enrollment implements EntityInterface
         return $this;
     }
 
-    public function getMedicalAuthPath()
+    public function getMedicalAuthPath(): ?string
     {
         return $this->medicalAuthPath;
     }
 
-    public function setMedicalAuthPath($medicalAuthPath): self
+    public function setMedicalAuthPath(?string $medicalAuthPath): self
     {
         $this->medicalAuthPath = $medicalAuthPath;
 
         return $this;
     }
 
-    public function getFFTriDocPath()
+    public function getFFTriDocPath(): ?string
     {
         return $this->FFTriDocPath;
     }
 
-    public function setFFTriDocPath($FFTriDocPath): self
+    public function setFFTriDocPath(?string $FFTriDocPath): self
     {
         $this->FFTriDocPath = $FFTriDocPath;
 
         return $this;
     }
 
-    public function __toString()
+    public function getAntiDopingPath(): ?string
     {
-        return $this->getMemberId()->getFirstName() . ' ' . $this->getMemberId()->getLastName() . ' - ' . $this->getStatus();
+        return $this->antiDopingPath;
+    }
+
+    public function setAntiDopingPath(?string $antiDopingPath): self
+    {
+        $this->antiDopingPath = $antiDopingPath;
+
+        return $this;
     }
 
     public function getLicence(): ?Licence
     {
-        return $this->Licence;
+        return $this->licence;
     }
 
-    public function setLicence(?Licence $Licence): self
+    public function setLicence(?Licence $licence): self
     {
-        $this->Licence = $Licence;
+        $this->licence = $licence;
 
         return $this;
     }
 
     public function getUser(): ?User
     {
-        return $this->User;
+        return $this->user;
     }
 
-    public function setUser(?User $User): self
+    public function setUser(?User $user): self
     {
-        $this->User = $User;
+        $this->user = $user;
 
         return $this;
+    }
+
+    public function getIsDocsValid(): ?bool
+    {
+        return $this->isDocsValid;
+    }
+
+    public function setIsDocsValid(bool $isDocsValid): self
+    {
+        $this->isDocsValid = $isDocsValid;
+
+        return $this;
+    }
+
+    public function getHasPhotoAuthorization(): ?bool
+    {
+        return $this->hasPhotoAuthorization;
+    }
+
+    public function setHasPhotoAuthorization(bool $hasPhotoAuthorization): self
+    {
+        $this->hasPhotoAuthorization = $hasPhotoAuthorization;
+
+        return $this;
+    }
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $FFTriDocFile
+     */
+    public function setFFTriDocFile(?File $FFTriDocFile = null): void
+    {
+        $this->FFTriDocFile = $FFTriDocFile;
+
+        if (null !== $FFTriDocFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->createdAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getFFTriDocFile(): ?File
+    {
+        return $this->FFTriDocFile;
     }
 
     /**
@@ -484,33 +535,21 @@ class Enrollment implements EntityInterface
      * must be able to accept an instance of 'File' as the bundle will inject one here
      * during Doctrine hydration.
      *
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $FFTriDocFile
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $antiDopingFile
      */
-    public function setFFTriDocFile(?File $FFTriDocFile = null): void
+    public function setAntiDopingFile(?File $antiDopingFile = null): void
     {
-        $this->FFTriDocFile = $FFTriDocFile;
+        $this->antiDopingFile = $antiDopingFile;
 
-        if (null !== $FFTriDocFile) {
+        if (null !== $antiDopingFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
             $this->createdAt = new \DateTimeImmutable();
         }
     }
 
-    public function getFFTriDocFile(): ?File
+    public function getAntiDopingFile(): ?File
     {
-        return $this->FFTriDocFile;
-    }
-
-    public function getIsDocsValid(): ?bool
-    {
-        return $this->isDocsValid;
-    }
-
-    public function setIsDocsValid(bool $isDocsValid): self
-    {
-        $this->isDocsValid = $isDocsValid;
-
-        return $this;
+        return $this->antiDopingFile;
     }
 }

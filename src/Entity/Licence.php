@@ -39,9 +39,15 @@ class Licence implements EntityInterface
      */
     private $enrollments;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EnrollmentYoung::class, mappedBy="licence")
+     */
+    private $enrollmentYoungs;
+
     public function __construct()
     {
         $this->enrollments = new ArrayCollection();
+        $this->enrollmentYoungs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -118,5 +124,35 @@ class Licence implements EntityInterface
     public function __toString()
     {
         return $this->name . ' (' . $this->cost / 100 . ' € )';
+    }
+
+    /**
+     * @return Collection|EnrollmentYoung[]
+     */
+    public function getEnrollmentYoungs(): Collection
+    {
+        return $this->enrollmentYoungs;
+    }
+
+    public function addEnrollmentYoung(EnrollmentYoung $enrollmentYoung): self
+    {
+        if (!$this->enrollmentYoungs->contains($enrollmentYoung)) {
+            $this->enrollmentYoungs[] = $enrollmentYoung;
+            $enrollmentYoung->setLicence($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrollmentYoung(EnrollmentYoung $enrollmentYoung): self
+    {
+        if ($this->enrollmentYoungs->removeElement($enrollmentYoung)) {
+            // set the owning side to null (unless already changed)
+            if ($enrollmentYoung->getLicence() === $this) {
+                $enrollmentYoung->setLicence(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -76,10 +76,16 @@ class Member implements EntityInterface
      */
     private $enrollments;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EnrollmentYoung::class, mappedBy="owner")
+     */
+    private $enrollmentYoungs;
+
     public function __construct()
     {
         $this->user = new ArrayCollection();
         $this->enrollments = new ArrayCollection();
+        $this->enrollmentYoungs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -252,5 +258,35 @@ class Member implements EntityInterface
     public function __toString()
     {
         return $this->firstName . ' ' . $this->lastName;
+    }
+
+    /**
+     * @return Collection|EnrollmentYoung[]
+     */
+    public function getEnrollmentYoungs(): Collection
+    {
+        return $this->enrollmentYoungs;
+    }
+
+    public function addEnrollmentYoung(EnrollmentYoung $enrollmentYoung): self
+    {
+        if (!$this->enrollmentYoungs->contains($enrollmentYoung)) {
+            $this->enrollmentYoungs[] = $enrollmentYoung;
+            $enrollmentYoung->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrollmentYoung(EnrollmentYoung $enrollmentYoung): self
+    {
+        if ($this->enrollmentYoungs->removeElement($enrollmentYoung)) {
+            // set the owning side to null (unless already changed)
+            if ($enrollmentYoung->getOwner() === $this) {
+                $enrollmentYoung->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }

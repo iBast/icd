@@ -58,21 +58,21 @@
 		</div>
 		<div class="col-md-5">
 			<h2>Adhésion</h2>
+			<p>Avant de renseigner ce formulaire, récupère le document d'inscription sur
+				<a href="https://espacetri.fftri.com">l'espace tri</a>
+			</p>
 			<h3>Tarifs pour la saison</h3>
 			<p>Tarif de l'adhésion :
-				<b>{{ season.membershipCost / 100 }}
-					€</b>
+				<b>{{ season.membershipCost | amount}}</b>
 			</p>
 			<p>Tarif de l'accès piscine :
-				<b>{{ season.swimCost / 100 }}
-					€</b>
+				<b>{{ season.swimCost | amount}}</b>
 			</p>
 			{% for licence in licences %}
 				<p>Tarif
 					{{licence.name}}
 					:
-					<b>{{ licence.cost / 100}}
-						€</b>
+					<b>{{ licence.cost | amount}}</b>
 				</p>
 			{% endfor %}
 			<h3>Formulaire</h3>
@@ -89,13 +89,9 @@
 				{{form_row(form.AllergyDetails)}}
 				{{form_row(form.emergencyContact)}}
 				{{form_row(form.emergencyPhone)}}
-
+				{{form_row(form.antiDopingFile)}}
 			{% endif %}
 			{{form_row(form.medicalFile)}}
-			<br>
-			<p>Le document suivant est à récupérer lors de l'inscription sur
-				<a href="https://espacetri.fftri.com">l'espace tri</a>
-			</p>
 			{{form_row(form.FFTriDocFile)}}
 			{{form_row(form.hasPhotoAuthorization)}}
 			{{form_row(form.paymentMethod)}}

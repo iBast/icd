@@ -52,9 +52,15 @@ class Season implements EntityInterface
      */
     private $current;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EnrollmentYoung::class, mappedBy="season")
+     */
+    private $enrollmentYoungs;
+
     public function __construct()
     {
         $this->enrollments = new ArrayCollection();
+        $this->enrollmentYoungs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -153,6 +159,36 @@ class Season implements EntityInterface
     public function setCurrent(bool $current): self
     {
         $this->current = $current;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EnrollmentYoung[]
+     */
+    public function getEnrollmentYoungs(): Collection
+    {
+        return $this->enrollmentYoungs;
+    }
+
+    public function addEnrollmentYoung(EnrollmentYoung $enrollmentYoung): self
+    {
+        if (!$this->enrollmentYoungs->contains($enrollmentYoung)) {
+            $this->enrollmentYoungs[] = $enrollmentYoung;
+            $enrollmentYoung->setSeason($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrollmentYoung(EnrollmentYoung $enrollmentYoung): self
+    {
+        if ($this->enrollmentYoungs->removeElement($enrollmentYoung)) {
+            // set the owning side to null (unless already changed)
+            if ($enrollmentYoung->getSeason() === $this) {
+                $enrollmentYoung->setSeason(null);
+            }
+        }
 
         return $this;
     }

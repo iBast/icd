@@ -42,6 +42,25 @@
 						</div>
 					{% endif %}
 				{% endfor %}
+				{% for member in youngs %}
+					{% if member.status == null %}
+						<div class="card border-primary  mb-3 m-auto" style="max-width: 25rem;">
+							<div class="card-header">{{member.owner.firstName}}
+								{{member.owner.lastName}}
+								{% if date(member.owner.birthday) > date('-18years')  %}
+									<span class="badge bg-primary">Jeune</span>
+								{% endif %}
+							</div>
+							<div class="card-body">
+								<h4 class="card-title">Pas encore inscrit</h4>
+								<br>
+								<p class="card-text text-center">
+									<a href="{{ path('enrollment_member', { 'id': season.id, 'firstName': member.owner.firstName, 'lastName': member.owner.lastName }) }}" class="btn btn-light btn-lg">S'inscrire</a>
+								</p>
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
 			</div>
 			<div class="col-xl-4 col-lg-6">
 				<h2>Inscription en cours
@@ -54,11 +73,87 @@
 							<div class="card-body">
 								<h4 class="card-title">
 									{{enrollment.status}}</h4>
-								<p class="card-text text-end">
-									<i class="fas fa-hourglass-half fa-3x"></i>
+								<p class="card-text text-center d-flex justify-content-between">
+									<span class="text-center">
+										{% if enrollment.status != "Dossier créé" %}
+											<i class="fas fa-check-circle"></i><br>
+										{% else %}
+											<i class="far fa-circle"></i><br>
+										{% endif %}
+										Demande
+									</span>
+									<span class="text-center">
+										{% if enrollment.paymentAt != null %}
+											<i class="fas fa-check-circle"></i><br>
+										{% else %}
+											<i class="far fa-circle"></i><br>
+										{% endif %}
+										Paiement
+									</span>
+									<span class="text-center">
+										{% if enrollment.isDocsValid == true %}
+											<i class="fas fa-check-circle"></i><br>
+										{% else %}
+											<i class="far fa-circle"></i><br>
+										{% endif %}
+										Documents
+									</span>
+									<span class="text-center">
+										<i class="far fa-circle"></i><br>
+										Licence
+									</span>
 								</p>
 								<p class="text-center">
-									{% if enrollment.status == 'Dossier crée' %}
+									{% if enrollment.status == 'Dossier créé' %}
+										<a href="{{ path('enrollment_finalise', {'id': enrollment.id}) }}" class="btn btn-light">Accèder à la demande</a>
+									{% endif %}
+								</p>
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+				{% for enrollment in youngs %}
+					{% if enrollment.status != null and enrollment.status != 'Dossier Validé'%}
+						<div class="card text-white bg-primary mb-3 m-auto" style="max-width: 25rem;">
+							<div class="card-header">{{enrollment.owner.firstName}}
+								{{enrollment.owner.lastName}}
+								<span class="badge bg-dark">Jeune</span>
+							</div>
+							<div class="card-body">
+								<h4 class="card-title">
+									{{enrollment.status}}</h4>
+								<p class="card-text text-center d-flex justify-content-between">
+									<span class="text-center">
+										{% if enrollment.status != "Dossier créé" %}
+											<i class="fas fa-check-circle"></i><br>
+										{% else %}
+											<i class="far fa-circle"></i><br>
+										{% endif %}
+										Demande
+									</span>
+									<span class="text-center">
+										{% if enrollment.paymentAt != null %}
+											<i class="fas fa-check-circle"></i><br>
+										{% else %}
+											<i class="far fa-circle"></i><br>
+										{% endif %}
+										Paiement
+									</span>
+									<span class="text-center">
+										{% if enrollment.isDocsValid == true %}
+											<i class="fas fa-check-circle"></i><br>
+										{% else %}
+											<i class="far fa-circle"></i><br>
+										{% endif %}
+										Documents
+									</span>
+									<span class="text-center">
+										<i class="far fa-circle"></i><br>
+										Licence
+									</span>
+								</p>
+								<p class="text-center">
+									{% if enrollment.status == 'Dossier créé' %}
 										<a href="{{ path('enrollment_finalise', {'id': enrollment.id}) }}" class="btn btn-light">Accèder à la demande</a>
 									{% endif %}
 								</p>
@@ -84,7 +179,22 @@
 							</div>
 						{% endif %}
 					{% endfor %}
+					{% for enrollment in youngs %}
+						{% if enrollment.status == 'Dossier Validé' %}
+							<div class="card text-white bg-success mb-3 m-auto" style="max-width: 25rem;">
+								<div class="card-header">{{enrollment.owner.firstName}}
+									{{enrollment.owner.lastName}}
+									<span class="badge bg-primary">Jeune</span>
+								</div>
+								<div class="card-body">
+									<h4 class="card-title">Dossier Validé</h4>
+									<p class="card-text text-end">
+										<i class="fas fa-check fa-3x"></i>
+									</p>
+								</div>
+							{% endif %}
+						{% endfor %}
+					</div>
 				</div>
-			</div>
-		{% endif %}
-	{% endblock %}
+			{% endif %}
+		{% endblock %}
