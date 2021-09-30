@@ -62,6 +62,8 @@ class EnrollmentYoungCrudController extends AbstractCrudController
         $paymentOk = Action::new('paymentOk', 'Paiement fait')
             ->linkToCrudAction('paymentOk')->setCssClass('btn btn-success');
 
+        $sendEmail = Action::new('missingEmail', 'Relance mail')->linkToCrudAction('missingEmail')->setCssClass('btn btn-warning');
+
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, $validate)
@@ -77,6 +79,7 @@ class EnrollmentYoungCrudController extends AbstractCrudController
             ->remove(Crud::PAGE_DETAIL, Action::DELETE)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
             ->add(Crud::PAGE_EDIT, Action::DELETE)
+            ->add(Crud::PAGE_DETAIL, $sendEmail)
             ->setPermissions(['pending' => 'ROLE_ADHESIONS', 'validate' => 'ROLE_ADHESIONS', 'paymentOk' => 'ROLE_TRESORIER']);
     }
 
@@ -86,14 +89,15 @@ class EnrollmentYoungCrudController extends AbstractCrudController
         /** @var EnrollmentYoung */
         $enrollmentYoung = $context->getEntity()->getInstance();
         $manager->validate($enrollmentYoung);
+        $this->addFlash('success', 'Les documents ont étés validés');
         return $this->redirect($adminUrlGenerator->setController(Self::class)->setAction(Action::INDEX)->generateUrl());
     }
 
-    public function pending(AdminContext $context, EnrollmentYoungManager $manager, AdminUrlGenerator $adminUrlGenerator)
+    public function missingEmail(AdminContext $context, EnrollmentYoungManager $manager, AdminUrlGenerator $adminUrlGenerator)
     {
-        /** @var EnrollmentYoung */
         $enrollmentYoung = $context->getEntity()->getInstance();
-        $manager->pending($enrollmentYoung);
+        $manager->sendEmailMissingDocs($enrollmentYoung);
+        $this->addFlash('success', 'L\'email a bien été envoyé');
         return $this->redirect($adminUrlGenerator->setController(Self::class)->setAction(Action::INDEX)->generateUrl());
     }
 
@@ -102,6 +106,7 @@ class EnrollmentYoungCrudController extends AbstractCrudController
         /** @var EnrollmentYoung */
         $enrollmentYoung = $context->getEntity()->getInstance();
         $manager->paymentOk($enrollmentYoung);
+        $this->addFlash('success', 'Le paiement a été validé');
         return $this->redirect($adminUrlGenerator->setController(Self::class)->setAction(Action::INDEX)->generateUrl());
     }
 

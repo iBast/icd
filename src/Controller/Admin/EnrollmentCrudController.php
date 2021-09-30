@@ -71,6 +71,8 @@ class EnrollmentCrudController extends AbstractCrudController
         $paymentOk = Action::new('paymentOk', 'Paiement fait')
             ->linkToCrudAction('paymentOk')->setCssClass('btn btn-success');
 
+        $sendEmail = Action::new('missingEmail', 'Relance mail')->linkToCrudAction('missingEmail')->setCssClass('btn btn-warning');
+
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, $validate)
@@ -83,6 +85,7 @@ class EnrollmentCrudController extends AbstractCrudController
             ->remove(Crud::PAGE_DETAIL, Action::DELETE)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
             ->add(Crud::PAGE_EDIT, Action::DELETE)
+            ->add(Crud::PAGE_DETAIL, $sendEmail)
             ->setPermissions(['pending' => 'ROLE_ADHESIONS', 'validate' => 'ROLE_ADHESIONS', 'paymentOk' => 'ROLE_TRESORIER']);
     }
 
@@ -92,6 +95,7 @@ class EnrollmentCrudController extends AbstractCrudController
         /** @var Enrollment */
         $enrollment = $context->getEntity()->getInstance();
         $manager->validate($enrollment);
+        $this->addFlash('success', 'Les documents ont étés validés');
         return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::INDEX)->generateUrl());
     }
 
@@ -100,6 +104,15 @@ class EnrollmentCrudController extends AbstractCrudController
         /** @var Enrollment */
         $enrollment = $context->getEntity()->getInstance();
         $manager->paymentOk($enrollment);
+        $this->addFlash('success', 'Le paiement a été validé');
+        return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::INDEX)->generateUrl());
+    }
+
+    public function missingEmail(AdminContext $context, EnrollmentManager $manager, AdminUrlGenerator $adminUrlGenerator)
+    {
+        $enrollment = $context->getEntity()->getInstance();
+        $manager->sendEmailMissingDocs($enrollment);
+        $this->addFlash('success', 'L\'email a bien été envoyé');
         return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::INDEX)->generateUrl());
     }
 
