@@ -6,22 +6,25 @@ use DateTime;
 use App\Entity\Enrollment;
 use App\Entity\EnrollmentYoung;
 use App\Manager\AccountManager;
+use App\Manager\InvoiceManager;
 use App\Form\EnrollmentStep1Type;
 use App\Form\EnrollmentStep2Type;
 use App\Form\EnrollmentYoungType;
 use App\Manager\EnrollmentManager;
-use App\Manager\EnrollmentYoungManager;
 use App\Repository\MemberRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\AccountRepository;
 use App\Repository\LicenceRepository;
+use App\Manager\EnrollmentYoungManager;
 use App\Repository\EnrollmentRepository;
 use App\Repository\EnrollmentYoungRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+#[IsGranted('ROLE_USER')]
 class EnrollmentController extends AbstractController
 {
     protected $manager;
@@ -122,7 +125,7 @@ class EnrollmentController extends AbstractController
     }
 
     #[Route('/adhesion/validation/adulte/{id}', name: 'enrollment_finalise')]
-    public function finalise(Enrollment $enrollment, Request $request, AccountManager $accountManager)
+    public function finalise(Enrollment $enrollment, Request $request, AccountManager $accountManager, InvoiceManager $invoiceManager)
     {
         $form = $this->createForm(EnrollmentStep2Type::class);
         $form->handleRequest($request);
@@ -134,6 +137,7 @@ class EnrollmentController extends AbstractController
                 'Adhésion saison ' . $enrollment->getSeason()->getYear() . ' - ' . $enrollment->getMemberId()->getFirstName() . ' ' . $enrollment->getMemberId()->getLastName(),
                 $enrollment->getTotalAmount()
             );
+            $invoiceManager->invoiceLineNewInvoice($enrollment->getMemberId(), 'Adhésion saison ' . $enrollment->getSeason()->getYear(), 1, $enrollment->getTotalAmount());
 
             $this->addFlash('success', 'Ton adhésion est enregistrée, elle sera validé prochainement, sous réserve de réception du paiement ainsi que des documents');
             return $this->redirectToRoute('home');

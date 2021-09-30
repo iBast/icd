@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=InvoiceLineRepository::class)
  */
-class InvoiceLine
+class InvoiceLine implements EntityInterface
 {
     /**
      * @ORM\Id

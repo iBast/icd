@@ -9,13 +9,13 @@
 		{{season.year}}</p>
 	<div class="row mx-auto mb-5">
 		<div class="col-md-5 mb-3">
-			<h2>
+			<h4>
 				Adhérent :
 				<b>
 					{{ member.firstName }}
 					{{ member.lastName }}
 				</b>
-			</h2>
+			</h4>
 			<P>
 				Date de naissance :
 				<b>
@@ -57,7 +57,7 @@
 			<a href="{{ path('member_add', {'id': member.id }) }}">Modier les informations</a>
 		</div>
 		<div class="col-md-5">
-			<h2>Adhésion</h2>
+			<h4>Adhésion</h4>
 			<p>Avant de renseigner ce formulaire, récupère le document d'inscription sur
 				<a href="https://espacetri.fftri.com">l'espace tri</a>
 			</p>

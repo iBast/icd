@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MemberRepository;
+use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 

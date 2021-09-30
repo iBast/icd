@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Invoice;
 use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,5 +23,13 @@ class InvoiceController extends AbstractController
         /* return $this->render('invoice/template.html.twig', [
             'controller_name' => 'InvoiceController',
         ]);*/
+    }
+
+    #[Route('/facture/{id}', name: 'invoice_show')]
+    public function show(Invoice $invoice)
+    {
+        return $this->render('invoice/template.html.twig', [
+            'invoice' => $invoice
+        ]);
     }
 }

@@ -20,8 +20,8 @@
 		{{season.year}}
 		<div class="row">
 			<div class="col-xl-4 col-lg-6">
-				<h2>Personnes non inscrites
-				</h2>
+				<h4>Personnes non inscrites
+				</h4>
 
 				{% for member in enrollments %}
 					{% if member.status == null %}
@@ -63,8 +63,8 @@
 				{% endfor %}
 			</div>
 			<div class="col-xl-4 col-lg-6">
-				<h2>Inscription en cours
-				</h2>
+				<h4>Inscription en cours
+				</h4>
 				{% for enrollment in enrollments %}
 					{% if enrollment.status != null and enrollment.status != 'Dossier Validé'%}
 						<div class="card text-white bg-primary mb-3 m-auto" style="max-width: 25rem;">
@@ -164,8 +164,8 @@
 
 			</div>
 			<div class="col-xl-4 col-lg-6">
-				<h2>Inscrits
-				</h2>
+				<h4>Inscrits
+				</h4>
 				{% for enrollment in enrollments %}
 					{% if enrollment.status == 'Dossier Validé' %}
 						<div class="card text-white bg-success mb-3 m-auto" style="max-width: 25rem;">

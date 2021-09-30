@@ -1,4 +1,4 @@
-{% extends "invoice/base.html.twig" %}
+{% extends "basenolayer.html.twig" %}
 
 {% block title %}
 	Facture
@@ -10,65 +10,73 @@
 	</div>
 	<div class="container">
 		<div class="mt-5 mb-5" style="margin-left: 65%;">
-			<p>Destinataire
+			<p>{{invoice.toName}}
 				<br>
-				Adresse
+				{{invoice.toAdress}}
 				<br>
-					CP VILLE</p>
-			</div>
-			<div class="mt-5 mb-5">
-				<p>
-					FACTURE n° XX du XX/XX/XXXX</p>
-			</div>
-
-			<div>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Date
-							</th>
-							<th>Designation</th>
-							<th>Prix unitaire</th>
-							<th>Quantité</th>
-							<th>Prix total</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>XX/XX/XXXX</td>
-							<td>Test</td>
-							<td>1,00 €</td>
-							<td>5</td>
-							<td>5,00 €</td>
-						</tr>
-					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan="4" class="text-end">
-								<b>TOTAL :
-								</b>
-							</td>
-							<td>
-								<b>5,00 €</b>
-							</td>
-						</tr>
-					</tfoot>
-				</table>
-			</div>
-			<div class="text-center mt-3 mb-5">
-				Association non fiscalisée
-			</div>
-
-			<div class="text-center position-absolute bottom-0 start-50 translate-middle">
-				<p>
-					<b>IRON CLUB TRIATHLON</b><br>
-					2 rue du chêne
-					<br>
-					68130 CARSPACH
-					<br>
-					SIRET : 484 896 186 00017
-
-				</p>
-			</div>
+				{{invoice.toPostCode}}
+				{{invoice.toCity}}</p>
 		</div>
-	{% endblock %}
+		<div class="mt-5 mb-5">
+			<p>
+				FACTURE n°
+				{{invoice.id}}
+				du
+				{{invoice.date | date('d/m/Y')}}</p>
+		</div>
+
+		<div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Date
+						</th>
+						<th>Designation</th>
+						<th>Prix unitaire</th>
+						<th>Quantité</th>
+						<th>Prix total</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for line in invoice.invoicelines %}
+						<tr>
+							<td>{{line.date | date('d/m/Y')}}</td>
+							<td>{{line.wording}}</td>
+							<td>{{line.unitPrice | amount}}</td>
+							<td>{{line.qty}}</td>
+							<td>{% set totalline = line.unitPrice * line.qty %}
+								{{totalline | amount}}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4" class="text-end">
+							<b>TOTAL :
+							</b>
+						</td>
+						<td>
+							<b>{{invoice.totalAmount | amount}}</b>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		<div class="text-center mt-3 mb-5">
+			Association non fiscalisée
+		</div>
+
+		<div class="text-center position-relative start-50 translate-middle mt-5">
+			<p>
+				<b>IRON CLUB TRIATHLON</b><br>
+				2 rue du chêne
+				<br>
+				68130 CARSPACH
+				<br>
+				SIRET : 484 896 186 00017
+
+			</p>
+		</div>
+	</div>
+{% endblock %}

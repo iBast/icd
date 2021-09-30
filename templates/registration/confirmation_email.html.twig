@@ -1,11 +1,37 @@
-<h1>Hi! Please confirm your email!</h1>
+{% extends "basenolayer.html.twig" %}
 
-<p>
-    Please confirm your email address by clicking the following link: <br><br>
-    <a href="{{ signedUrl }}">Confirm my Email</a>.
-    This link will expire in {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
-</p>
 
-<p>
-    Cheers!
-</p>
+{% block body %}
+	<div class="container">
+		<div class="text-center mt-2">
+			<img src="https://iron.bastienmunck.fr/images/assets/logo.webp" alt="">
+		</div>
+		<br>
+		<h3>Bienvenue sur l'application d'adhésions de l'iron!</h3>
+		<p>Merci de t'être inscrit sur le site. Voici les prochaines étapes pour effectuer une ou plusieurs adhésions
+		</p>
+		<h4>1. Confirme ton adresse email :
+		</h4>
+		<p class="text-center">
+			Pour confirmer ton inscription clique sur le lien suivant
+			<br><br>
+			<a href="{{ signedUrl }}" class="btn btn-primary">Confirmer mon email</a>.
+			<br>
+			Ce lien expirera dans :
+			{{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
+		</p>
+		<h4>2. Ajoute un ou plusieurs membres a ton compte.</h4>
+
+		<h4>3. Remplis les adhésion pour tes membres
+		</h4>
+
+		<h4>4. Attends la validation
+		</h4>
+
+		<h4>5. Télécharge ta licence sur l'espace Tri de la FFTri
+		</h4>
+		<p>
+			A bientôt
+		</p>
+	</div>
+{% endblock %}

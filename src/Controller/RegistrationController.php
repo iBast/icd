@@ -69,8 +69,12 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
-    {
+    public function verifyUserEmail(
+        Request $request,
+        UserRepository $userRepository,
+        LoginAuthenticator $authenticator,
+        UserAuthenticatorInterface $userAuthenticator
+    ): Response {
         $id = $request->get('id');
 
         if (null === $id) {
@@ -91,11 +95,11 @@ class RegistrationController extends AbstractController
 
             return $this->redirectToRoute('app_register');
         }
-
+        $userAuthenticator->authenticateUser($user, $authenticator, $request);
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'L\'adresse email a bien été vérifiée');
+        $this->addFlash('success', 'L\'adresse email a bien été vérifiée. Tu peux maintenant créer un profil de membre');
 
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('member_add');
     }
 
     #[Route('/envoi-email-verification/{id}', name: 'registration_email')]

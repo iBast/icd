@@ -79,10 +79,9 @@ class MemberType extends AbstractType
         } else {
             $builder->add('birthday', BirthdayType::class, [
                 'label' => 'Date de naissance',
-                'data' => new DateTime()
+                'data' => new DateTime('1990-06-15')
             ]);
         }
-        // ->add('user');
     }
 
     public function configureOptions(OptionsResolver $resolver)
