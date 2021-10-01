@@ -2,20 +2,22 @@
 
 namespace App\Form;
 
+use App\Entity\Licence;
 use App\Form\MemberType;
 use App\Entity\Enrollment;
-use App\Entity\Licence;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Repository\LicenceRepository;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
-use Vich\UploaderBundle\Form\Type\VichFileType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class EnrollmentStep1Type extends AbstractType
 {
@@ -23,7 +25,7 @@ class EnrollmentStep1Type extends AbstractType
     {
         $builder
             ->add('licence', EntityType::class, [
-                'label' => 'Adhésion',
+                'label' => 'Choix de la licence',
                 'placeholder' => '-- Choisir le type d\'adhésion --',
                 'class' => Licence::class,
                 'choice_label' => 'name'

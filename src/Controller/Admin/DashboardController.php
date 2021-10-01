@@ -56,8 +56,8 @@ class DashboardController extends AbstractDashboardController
             MenuItem::section('Gestion du site')->setPermission('ROLE_ADMIN'),
             MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class)->setPermission('ROLE_ADMIN'),
             MenuItem::section('Ressources'),
-            MenuItem::linkToUrl('EspaceTri', 'fas fa-swimmer', 'https://espacetri.fftri.com'),
-            MenuItem::linkToUrl('Blog', 'fas fa-biking', 'https://ironclub.blog'),
+            MenuItem::linkToUrl('EspaceTri', 'fas fa-swimmer', 'https://espacetri.fftri.com')->setLinkRel('rel="opener"'),
+            MenuItem::linkToUrl('Blog', 'fas fa-biking', 'https://ironclub.blog')->setLinkRel('opener'),
             MenuItem::linkToRoute('Retour au site', 'fas fa-home', 'home')
         ];
     }

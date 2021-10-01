@@ -45,7 +45,7 @@ class RegistrationFormType extends AbstractType
                 'help' => 'Le mot de passe doit avoir au moins 6 caractères',
                 'attr' => [
                     'autocomplete' => 'new-password',
-                    'placeholder' => 'Choisiez un mot de passe'
+                    'placeholder' => 'Choisissez un mot de passe'
                 ],
                 'constraints' => [
                     new NotBlank([

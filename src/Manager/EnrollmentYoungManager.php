@@ -57,7 +57,7 @@ class EnrollmentYoungManager extends AbstractManager
     {
         $season = $this->seasonRepository->findOneBy(['year' => $enrollment->getSeason()->getYear()]);
 
-        $totalAmount = $season->getMembershipCost() + $enrollment->getLicence()->getCost();
+        $totalAmount = $season->getYoungCost() + $enrollment->getLicence()->getCost();
         if ($enrollment->getHasPoolAcces() == true) {
             $totalAmount = $totalAmount + $season->getSwimCost();
         }

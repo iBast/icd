@@ -128,6 +128,7 @@ class EnrollmentCrudController extends AbstractCrudController
                 ->onlyOnDetail()
                 ->setBasePath($this->getParameter('enrollment_docs')),
             BooleanField::new('isDocsValid', 'Documents Ok'),
+            DateField::new('paymentAt', 'Date de paiement'),
             ChoiceField::new('status', 'Statut')->setChoices(fn () => Enrollment::STATUS),
             BooleanField::new('isMember', 'Membre')->hideOnIndex(),
             AssociationField::new('Licence')->hideOnIndex(),
@@ -135,7 +136,6 @@ class EnrollmentCrudController extends AbstractCrudController
             BooleanField::new('hasPhotoAuthorization', 'Autorisation de publication de photos')->hideOnIndex(),
             MoneyField::new('totalAmount', 'Montant total')->setCurrency('EUR')->hideOnIndex(),
             TextField::new('paymentMethod', 'Mode de paiement')->hideOnIndex(),
-            DateField::new('paymentAt', 'Date de paiement'),
             DateField::new('createdAt', 'Création de la demande')->hideOnIndex(),
             DateField::new('endedAt', 'Dossier validé le')->hideOnIndex(),
             TextareaField::new('medicalFile', 'Certificat médical')

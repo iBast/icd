@@ -57,6 +57,11 @@ class Season implements EntityInterface
      */
     private $enrollmentYoungs;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $young_cost;
+
     public function __construct()
     {
         $this->enrollments = new ArrayCollection();
@@ -189,6 +194,18 @@ class Season implements EntityInterface
                 $enrollmentYoung->setSeason(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getYoungCost(): ?int
+    {
+        return $this->young_cost;
+    }
+
+    public function setYoungCost(int $young_cost): self
+    {
+        $this->young_cost = $young_cost;
 
         return $this;
     }

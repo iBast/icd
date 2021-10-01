@@ -125,6 +125,7 @@ class EnrollmentYoungCrudController extends AbstractCrudController
                 ->onlyOnDetail()
                 ->setBasePath($this->getParameter('enrollment_docs')),
             BooleanField::new('isDocsValid', 'Documents Ok'),
+            DateField::new('paymentAt', 'Date de paiement'),
             ChoiceField::new('status', 'Statut')->setChoices(fn () => Enrollment::STATUS),
             BooleanField::new('isMember', 'Membre')->hideOnIndex(),
             AssociationField::new('licence')->hideOnIndex(),
@@ -136,11 +137,10 @@ class EnrollmentYoungCrudController extends AbstractCrudController
             TextareaField::new('allergyDetails', 'Détail des allergies')->hideOnIndex(),
             BooleanField::new('hasTreatment', 'Suit un traitement')->hideOnIndex(),
             TextareaField::new('treatmentDetails', 'Détail du traitement')->hideOnIndex(),
-            TextField::new('emergencyContact', 'Contact en cas d\'urgence')->hideOnIndex(),
-            TelephoneField::new('emergencyPhone', 'Numéro d\'urgence')->hideOnIndex(),
+            TextField::new('emergencyContact', 'Contact en cas d\'urgence'),
+            TelephoneField::new('emergencyPhone', 'Numéro d\'urgence'),
             MoneyField::new('totalAmount', 'Montant total')->setCurrency('EUR')->hideOnIndex(),
             TextField::new('paymentMethod', 'Mode de paiement')->hideOnIndex(),
-            DateField::new('paymentAt', 'Date de paiement'),
             DateField::new('createdAt', 'Création de la demande')->hideOnIndex(),
             DateField::new('endedAt', 'Dossier validé le')->hideOnIndex(),
             TextareaField::new('medicalFile', 'Certificat médical')

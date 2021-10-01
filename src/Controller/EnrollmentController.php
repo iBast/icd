@@ -149,7 +149,7 @@ class EnrollmentController extends AbstractController
     }
 
     #[Route('/adhesion/validation/jeune/{id}', name: 'enrollment_finalise_young')]
-    public function finaliseYoung(EnrollmentYoung $enrollment, Request $request, AccountManager $accountManager, EnrollmentYoungManager $manager)
+    public function finaliseYoung(EnrollmentYoung $enrollment, Request $request, AccountManager $accountManager, EnrollmentYoungManager $manager, InvoiceManager $invoiceManager)
     {
         $form = $this->createForm(EnrollmentStep2Type::class);
         $form->handleRequest($request);
@@ -161,7 +161,7 @@ class EnrollmentController extends AbstractController
                 'Adhésion saison ' . $enrollment->getSeason()->getYear() . ' - ' . $enrollment->getOwner()->getFirstName() . ' ' . $enrollment->getOwner()->getLastName(),
                 $enrollment->getTotalAmount()
             );
-
+            $invoiceManager->invoiceLineNewInvoice($enrollment->getOwner(), 'Adhésion saison ' . $enrollment->getSeason()->getYear(), 1, $enrollment->getTotalAmount());
             $this->addFlash('success', 'Ton adhésion est enregistrée, elle sera validé prochainement, sous réserve de réception du paiement ainsi que des documents');
             return $this->redirectToRoute('home');
         }

@@ -34,8 +34,8 @@ class SeasonCrudController extends AbstractCrudController
             BooleanField::new('current', 'Saison accutuelle'),
             BooleanField::new('enrollmentStatus', 'Ouverture des adhésions'),
             MoneyField::new('membershipCost', 'Coût de l\'adhésion')->setCurrency('EUR')->hideOnIndex(),
-            MoneyField::new('swimCost', 'Coût du forfait piscine')->setCurrency('EUR')->hideOnIndex(),
-            CollectionField::new('enrollments', 'Adhésions')->hideOnIndex()
+            MoneyField::new('youngCost', 'Coût de l\'adhésion jeune')->setCurrency('EUR')->hideOnIndex(),
+            MoneyField::new('swimCost', 'Coût du forfait piscine')->setCurrency('EUR')->hideOnIndex()
         ];
     }
 }

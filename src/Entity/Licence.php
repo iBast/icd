@@ -44,6 +44,11 @@ class Licence implements EntityInterface
      */
     private $enrollmentYoungs;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $forYoung;
+
     public function __construct()
     {
         $this->enrollments = new ArrayCollection();
@@ -152,6 +157,18 @@ class Licence implements EntityInterface
                 $enrollmentYoung->setLicence(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getForYoung(): ?bool
+    {
+        return $this->forYoung;
+    }
+
+    public function setForYoung(bool $forYoung): self
+    {
+        $this->forYoung = $forYoung;
 
         return $this;
     }

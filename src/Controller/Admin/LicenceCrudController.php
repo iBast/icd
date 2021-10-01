@@ -32,13 +32,14 @@ class LicenceCrudController extends AbstractCrudController
         return [
             TextField::new('name', 'Nom de la licence'),
             MoneyField::new('cost', 'Coût de la licence')->setCurrency('EUR'),
-            BooleanField::new('isActive', 'Est actif')
+            BooleanField::new('isActive', 'Est actif'),
+            BooleanField::new('forYoung', 'Licence pour jeunes')
         ];
     }
 
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            ->disable(Action::DELETE, Action::EDIT);
+            ->disable(Action::DELETE);
     }
 }

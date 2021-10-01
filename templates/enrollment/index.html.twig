@@ -104,6 +104,9 @@
 									</span>
 								</p>
 								<p class="text-center">
+									Montant de l'adhésion :
+									{{enrollment.totalAmount | amount}}
+									<br>
 									{% if enrollment.status == 'Dossier créé' %}
 										<a href="{{ path('enrollment_finalise', {'id': enrollment.id}) }}" class="btn btn-light">Accèder à la demande</a>
 									{% endif %}

@@ -62,18 +62,37 @@
 				<a href="https://espacetri.fftri.com">l'espace tri</a>
 			</p>
 			<h3>Tarifs pour la saison</h3>
-			<p>Tarif de l'adhésion :
-				<b>{{ season.membershipCost | amount}}</b>
-			</p>
+			{% if date(member.birthday) > date('-18years')  %}
+				<p>Tarif de l'adhésion jeune:
+					<b>{{ season.youngCost | amount}}</b>
+				</p>
+			{% else %}
+				<p>Tarif de l'adhésion :
+					<b>{{ season.membershipCost | amount}}</b>
+				</p>
+			{% endif %}
+
 			<p>Tarif de l'accès piscine :
 				<b>{{ season.swimCost | amount}}</b>
 			</p>
 			{% for licence in licences %}
-				<p>Tarif
-					{{licence.name}}
-					:
-					<b>{{ licence.cost | amount}}</b>
-				</p>
+				{% if date(member.birthday) > date('-18years')  %}
+					{% if licence.forYoung == true %}
+						<p>Tarif
+							{{licence.name}}
+							:
+							<b>{{ licence.cost | amount}}</b>
+						</p>
+					{% endif %}
+				{% else %}
+					{% if licence.forYoung == false %}
+						<p>Tarif
+							{{licence.name}}
+							:
+							<b>{{ licence.cost | amount}}</b>
+						</p>
+					{% endif %}
+				{% endif %}
 			{% endfor %}
 			<h3>Formulaire</h3>
 			{{form_start(form)}}
