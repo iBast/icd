@@ -53,25 +53,21 @@ class EnrollmentYoungCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         // this action executes the 'renderInvoice()' method of the current CRUD controller
-        $validate = Action::new('validate', 'Valider les documents')
-            ->linkToCrudAction('validate')->setCssClass('btn btn-success');
-
-        //$pending = Action::new('pending', 'Dossier Transmis FF Tri')
-        //->linkToCrudAction('pending')->setCssClass('btn btn-success');
-
-        $paymentOk = Action::new('paymentOk', 'Paiement fait')
-            ->linkToCrudAction('paymentOk')->setCssClass('btn btn-success');
-
-        $sendEmail = Action::new('missingEmail', 'Relance mail')->linkToCrudAction('missingEmail')->setCssClass('btn btn-warning');
+        $validate = Action::new('validate', 'Valider les documents', 'fas fa-file-contract')
+            ->linkToCrudAction('validate')->setCssClass('btn btn-success')->displayIf(fn ($entity) => $entity->checkDocuments());
+        $paymentOk = Action::new('paymentOk', 'Paiement fait', 'fas fa-euro-sign')
+            ->linkToCrudAction('paymentOk')->setCssClass('btn btn-success')->displayIf(fn ($entity) => $entity->checkPayment());
+        $sendEmail = Action::new('missingEmail', 'Relance mail', 'fas fa-envelope')->linkToCrudAction('missingEmail')->setCssClass('btn btn-warning')->displayIf(fn ($entity) => $entity->checkEmail());
+        $finalValidation = Action::new('finalValidation', 'Valider le dossier', 'fas fa-check')->linkToCrudAction('finalValidation')->setCssClass('btn btn-success')->displayIf(fn ($entity) => $entity->checkFinalValidation());
 
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_EDIT, $validate)
             ->add(Crud::PAGE_INDEX, $validate)
             ->add(Crud::PAGE_DETAIL, $validate)
-            //->add(Crud::PAGE_EDIT, $pending)
-            //->add(Crud::PAGE_INDEX, $pending)
-            //->add(Crud::PAGE_DETAIL, $pending)
+            ->add(Crud::PAGE_EDIT, $finalValidation)
+            ->add(Crud::PAGE_INDEX, $finalValidation)
+            ->add(Crud::PAGE_DETAIL, $finalValidation)
             ->add(Crud::PAGE_EDIT, $paymentOk)
             ->add(Crud::PAGE_INDEX, $paymentOk)
             ->add(Crud::PAGE_DETAIL, $paymentOk)
@@ -108,6 +104,14 @@ class EnrollmentYoungCrudController extends AbstractCrudController
         $manager->paymentOk($enrollmentYoung);
         $this->addFlash('success', 'Le paiement a été validé');
         return $this->redirect($adminUrlGenerator->setController(Self::class)->setAction(Action::INDEX)->generateUrl());
+    }
+
+    public function finalValidation(AdminContext $context, EnrollmentYoungManager $manager, AdminUrlGenerator $adminUrlGenerator)
+    {
+        $enrollment = $context->getEntity()->getInstance();
+        $manager->finalValidation($enrollment);
+        $this->addFlash('success', 'Le dossier a été validé');
+        return $this->redirect($adminUrlGenerator->setController(EnrollmentYoungCrudController::class)->setAction(Action::INDEX)->generateUrl());
     }
 
     public function configureFields(string $pageName): iterable

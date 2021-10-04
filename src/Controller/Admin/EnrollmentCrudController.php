@@ -65,13 +65,12 @@ class EnrollmentCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         // this action executes the 'renderInvoice()' method of the current CRUD controller
-        $validate = Action::new('validate', 'Valider les documents')
-            ->linkToCrudAction('validate')->setCssClass('btn btn-success');
-
-        $paymentOk = Action::new('paymentOk', 'Paiement fait')
-            ->linkToCrudAction('paymentOk')->setCssClass('btn btn-success');
-
-        $sendEmail = Action::new('missingEmail', 'Relance mail')->linkToCrudAction('missingEmail')->setCssClass('btn btn-warning');
+        $validate = Action::new('validate', 'Valider les documents', 'fas fa-file-contract')
+            ->linkToCrudAction('validate')->setCssClass('btn btn-success')->displayIf(fn ($entity) => $entity->checkDocuments());
+        $paymentOk = Action::new('paymentOk', 'Paiement fait', 'fas fa-euro-sign')
+            ->linkToCrudAction('paymentOk')->setCssClass('btn btn-success')->displayIf(fn ($entity) => $entity->checkPayment());
+        $sendEmail = Action::new('missingEmail', 'Relance mail', 'fas fa-envelope')->linkToCrudAction('missingEmail')->setCssClass('btn btn-warning')->displayIf(fn ($entity) => $entity->checkEmail());
+        $finalValidation = Action::new('finalValidation', 'Valider le dossier', 'fas fa-check')->linkToCrudAction('finalValidation')->setCssClass('btn btn-success')->displayIf(fn ($entity) => $entity->checkFinalValidation());
 
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
@@ -81,6 +80,9 @@ class EnrollmentCrudController extends AbstractCrudController
             ->add(Crud::PAGE_EDIT, $paymentOk)
             ->add(Crud::PAGE_INDEX, $paymentOk)
             ->add(Crud::PAGE_DETAIL, $paymentOk)
+            ->add(Crud::PAGE_EDIT, $finalValidation)
+            ->add(Crud::PAGE_INDEX, $finalValidation)
+            ->add(Crud::PAGE_DETAIL, $finalValidation)
             ->remove(Crud::PAGE_INDEX, Action::DELETE)
             ->remove(Crud::PAGE_DETAIL, Action::DELETE)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
@@ -113,6 +115,14 @@ class EnrollmentCrudController extends AbstractCrudController
         $enrollment = $context->getEntity()->getInstance();
         $manager->sendEmailMissingDocs($enrollment);
         $this->addFlash('success', 'L\'email a bien été envoyé');
+        return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::INDEX)->generateUrl());
+    }
+
+    public function finalValidation(AdminContext $context, EnrollmentManager $manager, AdminUrlGenerator $adminUrlGenerator)
+    {
+        $enrollment = $context->getEntity()->getInstance();
+        $manager->finalValidation($enrollment);
+        $this->addFlash('success', 'Le dossier a été validé');
         return $this->redirect($adminUrlGenerator->setController(EnrollmentCrudController::class)->setAction(Action::INDEX)->generateUrl());
     }
 

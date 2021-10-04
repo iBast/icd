@@ -562,4 +562,36 @@ class Enrollment implements EntityInterface
     {
         return $this->FFTriDoc2File;
     }
+
+    public function checkPayment()
+    {
+        if ($this->paymentAt != null) {
+            return false;
+        }
+        return true;
+    }
+
+    public function checkDocuments()
+    {
+        if ($this->isDocsValid == true) {
+            return false;
+        }
+        return true;
+    }
+
+    public function checkEmail()
+    {
+        if ($this->isDocsValid == true && $this->paymentAt != null) {
+            return false;
+        }
+        return true;
+    }
+
+    public function checkFinalValidation()
+    {
+        if ($this->isDocsValid == true && $this->paymentAt != null && $this->getStatus() != Self::STATUS['Dossier validé']) {
+            return true;
+        }
+        return false;
+    }
 }

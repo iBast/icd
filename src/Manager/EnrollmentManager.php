@@ -75,6 +75,12 @@ class EnrollmentManager extends AbstractManager
         $this->save($enrollment);
     }
 
+    public function finalValidation(Enrollment $enrollment)
+    {
+        $enrollment->setStatus(Enrollment::STATUS['Dossier validé']);
+        $this->save($enrollment);
+    }
+
     public function validate(Enrollment $enrollment)
     {
         $enrollment->setIsDocsValid(true);

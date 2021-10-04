@@ -69,6 +69,12 @@ class EnrollmentYoungManager extends AbstractManager
         $this->save($enrollment);
     }
 
+    public function finalValidation(EnrollmentYoung $enrollment)
+    {
+        $enrollment->setStatus(EnrollmentYoung::STATUS['Dossier validé']);
+        $this->save($enrollment);
+    }
+
     public function finalise(EnrollmentYoung $enrollment)
     {
         $enrollment->setStatus(EnrollmentYoung::STATUS['En Attente de validation']);
