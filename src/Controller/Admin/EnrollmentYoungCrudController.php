@@ -118,6 +118,9 @@ class EnrollmentYoungCrudController extends AbstractCrudController
             ImageField::new('FFTriDocPath', 'Document FFTri')
                 ->onlyOnDetail()
                 ->setBasePath($this->getParameter('enrollment_docs')),
+            ImageField::new('FFTriDoc2Path', 'Document FFTri (page 2)')
+                ->onlyOnDetail()
+                ->setBasePath($this->getParameter('enrollment_docs')),
             ImageField::new('medicalAuthPath', 'Certificat médical')
                 ->onlyOnDetail()
                 ->setBasePath($this->getParameter('enrollment_docs')),
@@ -147,6 +150,9 @@ class EnrollmentYoungCrudController extends AbstractCrudController
                 ->onlyOnForms()
                 ->setFormType(VichImageType::class),
             TextareaField::new('FFTriDocFile', 'Document FFTri')
+                ->onlyOnForms()
+                ->setFormType(VichImageType::class),
+            TextareaField::new('FFTriDoc2File', 'Document FFTri (page 2)')
                 ->onlyOnForms()
                 ->setFormType(VichImageType::class),
             TextareaField::new('antiDopingFile', 'Attestation anti dopage')

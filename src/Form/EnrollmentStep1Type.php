@@ -43,7 +43,11 @@ class EnrollmentStep1Type extends AbstractType
                 'required' => false
             ])
             ->add('FFTriDocFile', VichFileType::class, [
-                'label' => 'Document transmit par la FF TRI',
+                'label' => 'Document transmis par la FF TRI',
+                'required' => false
+            ])
+            ->add('FFTriDoc2File', VichFileType::class, [
+                'label' => '2ème page (si besoin)',
                 'required' => false
             ])
             ->add('paymentMethod', ChoiceType::class, [

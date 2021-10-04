@@ -70,6 +70,10 @@ class EnrollmentYoungType extends AbstractType
                 'label' => 'Document transmit par la FF TRI',
                 'required' => false
             ])
+            ->add('FFTriDoc2File', VichFileType::class, [
+                'label' => '2ème page (si besoin)',
+                'required' => false
+            ])
             ->add('antiDopingFile', VichFileType::class, [
                 'label' => 'Attestation anti dopage',
                 'required' => false

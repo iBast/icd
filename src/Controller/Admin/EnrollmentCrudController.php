@@ -124,6 +124,9 @@ class EnrollmentCrudController extends AbstractCrudController
             ImageField::new('FFTriDocPath', 'Document FFTri')
                 ->onlyOnDetail()
                 ->setBasePath($this->getParameter('enrollment_docs')),
+            ImageField::new('FFTriDoc2Path', 'Document FFTri (page 2)')
+                ->onlyOnDetail()
+                ->setBasePath($this->getParameter('enrollment_docs')),
             ImageField::new('medicalAuthPath', 'Certificat médical')
                 ->onlyOnDetail()
                 ->setBasePath($this->getParameter('enrollment_docs')),
@@ -142,6 +145,9 @@ class EnrollmentCrudController extends AbstractCrudController
                 ->onlyOnForms()
                 ->setFormType(VichImageType::class),
             TextareaField::new('FFTriDocFile', 'Document FFTri')
+                ->onlyOnForms()
+                ->setFormType(VichImageType::class),
+            TextareaField::new('FFTriDoc2File', 'Document FFTri (2eme page si besoin)')
                 ->onlyOnForms()
                 ->setFormType(VichImageType::class)
         ];
