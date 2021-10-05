@@ -33,9 +33,8 @@ class AccountManager extends AbstractManager
         }
     }
 
-    public function debit(Account $account, $wording, $amount, $date = null)
+    public function debit(Account $account, $wording, $amount, $date)
     {
-        $date = ($date == null) ? new DateTimeImmutable() : $date;
         $entry = new Accounting;
         $entry->setAccount($account)
             ->setWording($wording)
@@ -44,14 +43,23 @@ class AccountManager extends AbstractManager
         $this->save($entry);
     }
 
-    public function credit(Account $account, $wording, $amount, $date = null)
+    public function credit(Account $account, $wording, $amount, $date)
     {
-        $date = ($date == null) ? new DateTimeImmutable() : $date;
+
         $entry = new Accounting;
         $entry->setAccount($account)
             ->setWording($wording)
             ->setCredit($amount)
             ->setDate($date);
         $this->save($entry);
+    }
+
+    public function newEntry($debitAccount, $creditAccount, $wording, $amount, $date = null)
+    {
+        $debit = $this->accountRepository->findOneBy(['number' => $debitAccount]);
+        $credit = $this->accountRepository->findOneBy(['number' => $creditAccount]);
+        $date = ($date == null) ? new DateTimeImmutable() : $date;
+        $this->debit($debit, $wording, $amount, $date);
+        $this->credit($credit, $wording, $amount, $date);
     }
 }

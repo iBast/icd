@@ -32,7 +32,8 @@ class MemberType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Adresse email',
                 'attr' => [
-                    'placeholder' => 'Email du membre'
+                    'placeholder' => 'Email du membre',
+                    'type' => 'email'
                 ]
             ])
             ->add('adress', TextType::class, [
@@ -55,24 +56,32 @@ class MemberType extends AbstractType
             ])
             ->add('mobile', TextType::class, [
                 'label' => 'Téléphone portable',
+                'required' => false,
                 'attr' => [
                     'placeholder' => 'Portable du membre',
                     'type' => 'tel'
+
                 ]
             ])
             ->add('phone', TextType::class, [
                 'label' => 'Téléphone fixe',
+                'required' => false,
                 'attr' => [
                     'placeholder' => 'Fixe du membre',
                     'type' => 'tel'
                 ]
-            ])
-            ->add('birthday', BirthdayType::class, [
-                'label' => 'Date de naissance',
-                'data' => new DateTime()
-
             ]);
-        // ->add('user');
+
+        if ($options) {
+            $builder->add('birthday', BirthdayType::class, [
+                'label' => 'Date de naissance'
+            ]);
+        } else {
+            $builder->add('birthday', BirthdayType::class, [
+                'label' => 'Date de naissance',
+                'data' => new DateTime('1990-06-15')
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)

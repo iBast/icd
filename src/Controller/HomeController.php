@@ -28,6 +28,11 @@ class HomeController extends AbstractController
             );
             $this->addFlash('warning', $message);
         }
+
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $season = $seasonRepository->findOneBy(['enrollmentStatus' => 1]);
         return $this->render('home/index.html.twig', [
             'season' => $season

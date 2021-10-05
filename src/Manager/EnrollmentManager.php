@@ -12,17 +12,22 @@ use App\Manager\AbstractManager;
 use App\Repository\SeasonRepository;
 use App\Repository\EnrollmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 class EnrollmentManager extends AbstractManager
 {
     protected $enrollmentRepository;
     protected $seasonRepository;
+    protected $mailer;
 
-    public function __construct(EnrollmentRepository $enrollmentRepository, SeasonRepository $seasonRepository, EntityManagerInterface $em)
+    public function __construct(EnrollmentRepository $enrollmentRepository, SeasonRepository $seasonRepository, EntityManagerInterface $em, MailerInterface $mailer)
     {
         parent::__construct($em);
         $this->enrollmentRepository = $enrollmentRepository;
         $this->seasonRepository = $seasonRepository;
+        $this->mailer = $mailer;
     }
 
     public function initialise(EntityInterface $entity)
@@ -57,7 +62,7 @@ class EnrollmentManager extends AbstractManager
             $totalAmount = $totalAmount + $season->getSwimCost();
         }
 
-        $enrollment->setStatus(Enrollment::STATUS['Dossier crée'])
+        $enrollment->setStatus(Enrollment::STATUS['Dossier créé'])
             ->setIsMember(true)
             ->setTotalAmount($totalAmount)
             ->setCreatedAt(new DateTimeImmutable());
@@ -70,16 +75,44 @@ class EnrollmentManager extends AbstractManager
         $this->save($enrollment);
     }
 
-    public function pending(Enrollment $enrollment)
+    public function finalValidation(Enrollment $enrollment)
     {
-        $enrollment->setStatus(Enrollment::STATUS['En Attente de la FFTri']);
+        $enrollment->setStatus(Enrollment::STATUS['Dossier validé']);
         $this->save($enrollment);
     }
 
     public function validate(Enrollment $enrollment)
     {
-        $enrollment->setStatus(Enrollment::STATUS['Dossier validé'])
-            ->setEndedAt(new DateTimeImmutable());
+        $enrollment->setIsDocsValid(true);
         $this->save($enrollment);
+    }
+
+    public function paymentOk(Enrollment $enrollment)
+    {
+        $enrollment->setPaymentAt(new DateTimeImmutable());
+        $this->save($enrollment);
+    }
+
+    public function sendEmailMissingDocs(Enrollment $enrollment)
+    {
+        $items = [];
+        if ($enrollment->getIsDocsValid() == false) {
+            $items[] = 'Les documents n\'ont pas pu être validés ou sont manquants';
+        }
+        if ($enrollment->getPaymentAt() == null) {
+            $items[] = 'Le paiement n\'a pas été réceptionné';
+        }
+        $email = (new TemplatedEmail())
+            ->from(new Address('hello@bastienmunck.fr', 'Iron Club'))
+            ->to($enrollment->getUser()->getEmail())
+            ->subject('Adhésion Iron - Eléments manquants')
+            ->htmlTemplate('email/missingEnroll.html.twig')
+            ->context(['items' => $items, 'member' => $enrollment->getMemberId(), 'season' => $enrollment->getSeason()]);
+
+        if ($enrollment->getMemberId()->getEmail() != $enrollment->getUser()->getEmail()) {
+            $email->cc($enrollment->getMemberId()->getEmail());
+        }
+
+        $this->mailer->send($email);
     }
 }

@@ -7,6 +7,7 @@ use App\Form\MemberType;
 use App\Manager\AccountManager;
 use App\Manager\MemberManager;
 use App\Repository\MemberRepository;
+use App\Repository\SeasonRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,7 +41,7 @@ class MemberController extends AbstractController
     }
 
     #[Route('/membres/edit/{id?}', name: 'member_add')]
-    public function add($id, Request $request, AccountManager $accountManager): Response
+    public function add($id, Request $request, AccountManager $accountManager, SeasonRepository $seasonRepository): Response
     {
         if (!$id) {
             $member = new Member;
@@ -54,7 +55,15 @@ class MemberController extends AbstractController
             $member->addUser($this->getUser());
             $this->manager->save($member);
             $accountManager->createAccount('411' . str_pad($member->getId(), 3, '0', STR_PAD_LEFT), 'Membre ' . $member->getFirstName() . ' ' . $member->getLastName());
-            return $this->redirectToRoute('member');
+            $season = $seasonRepository->findOneBy(['enrollmentStatus' => 1]);
+            if ($season) {
+                return $this->redirectToRoute('enrollment_member', [
+                    'id' => $season->getId(),
+                    'firstName' => $member->getFirstName(),
+                    'lastName' => $member->getLastName()
+                ]);
+            }
+            return $this->redirectToRoute('enrollment');
         }
 
         return $this->render('member/add.html.twig', [

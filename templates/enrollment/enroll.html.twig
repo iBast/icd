@@ -8,14 +8,14 @@
 	<p>Saison :
 		{{season.year}}</p>
 	<div class="row mx-auto mb-5">
-		<div class="col-md-5">
-			<h2>
+		<div class="col-md-5 mb-3">
+			<h4>
 				Adhérent :
 				<b>
 					{{ member.firstName }}
 					{{ member.lastName }}
 				</b>
-			</h2>
+			</h4>
 			<P>
 				Date de naissance :
 				<b>
@@ -57,31 +57,62 @@
 			<a href="{{ path('member_add', {'id': member.id }) }}">Modier les informations</a>
 		</div>
 		<div class="col-md-5">
-			<h2>Adhésion</h2>
-			<h3>Informations sur la saison</h3>
-			<p>Tarif de l'adhésion :
-				<b>{{ season.membershipCost / 100 }}
-					€</b>
+			<h4>Adhésion</h4>
+			<p>Avant de renseigner ce formulaire, récupère le document d'inscription sur
+				<a href="https://espacetri.fftri.com">l'espace tri</a>
+			</p>
+			<h3>Tarifs pour la saison</h3>
+			{% if date(member.birthday) > date('-18years')  %}
+				<p>Tarif de l'adhésion jeune:
+					<b>{{ season.youngCost | amount}}</b>
+				</p>
+			{% else %}
+				<p>Tarif de l'adhésion :
+					<b>{{ season.membershipCost | amount}}</b>
+				</p>
+			{% endif %}
+
+			<p>Tarif de l'accès piscine :
+				<b>{{ season.swimCost | amount}}</b>
 			</p>
 			{% for licence in licences %}
-				<p>Tarif
-					{{licence.name}}
-					:
-					<b>{{ licence.cost / 100}}
-						€</b>
-				</p>
+				{% if date(member.birthday) > date('-18years')  %}
+					{% if licence.forYoung == true %}
+						<p>Tarif
+							{{licence.name}}
+							:
+							<b>{{ licence.cost | amount}}</b>
+						</p>
+					{% endif %}
+				{% else %}
+					{% if licence.forYoung == false %}
+						<p>Tarif
+							{{licence.name}}
+							:
+							<b>{{ licence.cost | amount}}</b>
+						</p>
+					{% endif %}
+				{% endif %}
 			{% endfor %}
-			<p>Tarif de l'accès piscine :
-				<b>{{ season.swimCost / 100 }}
-					€</b>
-			</p>
 			<h3>Formulaire</h3>
 			{{form_start(form)}}
 
 			{{form_row(form.licence)}}
 			{{form_row(form.hasPoolAcces)}}
+			{% if date(member.birthday) > date('-18years')  %}
+				{{form_row(form.hasCareAuthorization)}}
+				{{form_row(form.hasLeaveAloneAuthorization)}}
+				{{form_row(form.hasTreatment)}}
+				{{form_row(form.treatmentDetails)}}
+				{{form_row(form.hasAllergy)}}
+				{{form_row(form.AllergyDetails)}}
+				{{form_row(form.emergencyContact)}}
+				{{form_row(form.emergencyPhone)}}
+				{{form_row(form.antiDopingFile)}}
+			{% endif %}
 			{{form_row(form.medicalFile)}}
 			{{form_row(form.FFTriDocFile)}}
+			{{form_row(form.FFTriDoc2File)}}
 			{{form_row(form.hasPhotoAuthorization)}}
 			{{form_row(form.paymentMethod)}}
 			<div class="d-flex justify-content-end">

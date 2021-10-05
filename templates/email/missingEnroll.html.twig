@@ -1,0 +1,31 @@
+{% extends "basenolayer.html.twig" %}
+
+
+{% block body %}
+	<div class="container">
+		<p>Bonjour,
+		</p>
+		<p>Nous n'arrivons pas à valider l'inscription de
+			{{member.firstName}}
+			{{member.lastName}},
+		</p>
+		<p>Les éléments suivants sont manquants :</p>
+		{% for item in items %}
+			<li>{{item}}</li>
+		{% endfor %}
+		<br><br>
+		<p>Si des documents sont manquants, tu pourra modifier la demande
+			<a href="{{absolute_url(path('enrollment_member', {'id': season.id, 'firstName': member.firstName, 'lastName': member.lastName}))}}">en cliquant ici</a>
+		</p>
+		<p>Si le paiement est manquant :
+			<br>
+			IBAN : FR76 1027 8031 2300 0174 4824 528
+			<br>
+			BIC CMCIFR2A</p>
+		<br>
+		<br>
+		<p>
+			<i>Ce message a été envoyé automatiquement, merci de ne pas y répndre</i>
+		</p>
+	</div>
+{% endblock %}

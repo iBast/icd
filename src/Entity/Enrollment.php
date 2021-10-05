@@ -155,10 +155,26 @@ class Enrollment implements EntityInterface
      */
     private $User;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDocsValid = false;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $FFTriDoc2Path;
+
+    /**
+     * @Vich\UploadableField(mapping="enrollment_docs", fileNameProperty="FFTriDoc2Path")
+     * 
+     * @var File|null
+     */
+    private $FFTriDoc2File;
+
     public const STATUS = [
-        'Dossier crée' => 'Dossier crée',
+        'Dossier créé' => 'Dossier créé',
         'En Attente de validation' => 'En Attente de validation',
-        'En Attente de la FFTri' => 'En Attente de la FFTri',
         'Dossier validé' => 'Dossier Validé'
     ];
 
@@ -496,5 +512,86 @@ class Enrollment implements EntityInterface
     public function getFFTriDocFile(): ?File
     {
         return $this->FFTriDocFile;
+    }
+
+    public function getIsDocsValid(): ?bool
+    {
+        return $this->isDocsValid;
+    }
+
+    public function setIsDocsValid(bool $isDocsValid): self
+    {
+        $this->isDocsValid = $isDocsValid;
+
+        return $this;
+    }
+
+    public function getFFTriDoc2Path(): ?string
+    {
+        return $this->FFTriDoc2Path;
+    }
+
+    public function setFFTriDoc2Path(?string $FFTriDoc2Path): self
+    {
+        $this->FFTriDoc2Path = $FFTriDoc2Path;
+
+        return $this;
+    }
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $FFTriDoc2File
+     */
+    public function setFFTriDoc2File(?File $FFTriDoc2File = null): void
+    {
+        $this->FFTriDoc2File = $FFTriDoc2File;
+
+        if (null !== $FFTriDoc2File) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->createdAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getFFTriDoc2File(): ?File
+    {
+        return $this->FFTriDoc2File;
+    }
+
+    public function checkPayment()
+    {
+        if ($this->paymentAt != null) {
+            return false;
+        }
+        return true;
+    }
+
+    public function checkDocuments()
+    {
+        if ($this->isDocsValid == true) {
+            return false;
+        }
+        return true;
+    }
+
+    public function checkEmail()
+    {
+        if ($this->isDocsValid == true && $this->paymentAt != null) {
+            return false;
+        }
+        return true;
+    }
+
+    public function checkFinalValidation()
+    {
+        if ($this->isDocsValid == true && $this->paymentAt != null && $this->getStatus() != Self::STATUS['Dossier validé']) {
+            return true;
+        }
+        return false;
     }
 }

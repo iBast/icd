@@ -2,38 +2,52 @@
 
 namespace App\Controller;
 
-use App\Entity\Member;
+use DateTime;
 use App\Entity\Enrollment;
+use App\Entity\EnrollmentYoung;
+use App\Manager\AccountManager;
+use App\Manager\InvoiceManager;
 use App\Form\EnrollmentStep1Type;
 use App\Form\EnrollmentStep2Type;
-use App\Form\MemberType;
-use App\Manager\AccountManager;
+use App\Form\EnrollmentYoungType;
 use App\Manager\EnrollmentManager;
-use App\Repository\AccountRepository;
 use App\Repository\MemberRepository;
 use App\Repository\SeasonRepository;
-use App\Repository\EnrollmentRepository;
+use App\Repository\AccountRepository;
 use App\Repository\LicenceRepository;
-use DateTime;
-use DateTimeImmutable;
+use App\Manager\EnrollmentYoungManager;
+use App\Repository\EnrollmentRepository;
+use App\Repository\EnrollmentYoungRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 
+#[IsGranted('ROLE_USER')]
 class EnrollmentController extends AbstractController
 {
     protected $manager;
     protected $seasonRepository;
     protected $enrollmentRepository;
     protected $memberRepository;
+    protected $enrollmentYoungRepository;
+    protected $youngManager;
 
-    public function __construct(EnrollmentManager $manager, SeasonRepository $seasonRepository, EnrollmentRepository $enrollmentRepository, MemberRepository $memberRepository)
-    {
+    public function __construct(
+        EnrollmentManager $manager,
+        EnrollmentYoungManager $youngManager,
+        SeasonRepository $seasonRepository,
+        EnrollmentRepository $enrollmentRepository,
+        MemberRepository $memberRepository,
+        EnrollmentYoungRepository $enrollmentYoungRepository
+    ) {
         $this->manager = $manager;
         $this->seasonRepository = $seasonRepository;
         $this->enrollmentRepository = $enrollmentRepository;
         $this->memberRepository = $memberRepository;
+        $this->enrollmentYoungRepository = $enrollmentYoungRepository;
+        $this->youngManager = $youngManager;
     }
 
     #[Route('/adhesion', name: 'enrollment')]
@@ -42,8 +56,14 @@ class EnrollmentController extends AbstractController
         $season = $this->seasonRepository->findOneBy(['enrollmentStatus' => 1]);
 
         foreach ($this->getUser()->getMembers() as $member) {
-            if ($this->enrollmentRepository->findBy(['memberId' => $member, 'Season' => $season]) == null) {
-                $this->manager->enroll($member, $this->getUser(), $season);
+            if ($member->getBirthday() < new DateTime('-18years')) {
+                if ($this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]) == null) {
+                    $this->manager->enroll($member, $this->getUser(), $season);
+                }
+            } else {
+                if ($this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]) == null) {
+                    $this->youngManager->enroll($member, $this->getUser(), $season);
+                }
             }
         }
 
@@ -51,6 +71,7 @@ class EnrollmentController extends AbstractController
 
         return $this->render('enrollment/index.html.twig', [
             'enrollments' => $enrollments,
+            'youngs' => $this->enrollmentYoungRepository->findBySeasonAndUser($season, $this->getUser()),
             'season' => $season,
         ]);
     }
@@ -60,18 +81,39 @@ class EnrollmentController extends AbstractController
     {
         $season = $this->seasonRepository->find($id);
         $member = $this->memberRepository->findOneBy(['firstName' => $firstName, 'lastName' => $lastName]);
-        $enrollment = $this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]);
-
 
         if ($member->getBirthday() < new DateTime('-18years')) {
+            if ($this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]) == null) {
+                $this->manager->enroll($member, $this->getUser(), $season);
+            }
+            $enrollment = $this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]);
+
+            if ($enrollment->getUser() != $this->getUser()) {
+                $this->addFlash('danger', 'Vous n\'êtes pas autorisé à inscrire ce membre');
+                return $this->redirectToRoute("home");
+            }
             $form = $this->createForm(EnrollmentStep1Type::class, $enrollment);
         } else {
-            $form = $this->createForm(MemberType::class);
+            if ($this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]) == null) {
+                $this->youngManager->enroll($member, $this->getUser(), $season);
+            }
+            $enrollment = $this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]);
+
+            if ($enrollment->getUser() != $this->getUser()) {
+                $this->addFlash('danger', 'Vous n\'êtes pas autorisé à inscrire ce membre');
+                return $this->redirectToRoute("home");
+            }
+            $form = $this->createForm(EnrollmentYoungType::class, $enrollment);
         }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->manager->draft($enrollment);
-            return $this->redirectToRoute('enrollment_finalise', ['id' => $enrollment->getId()]);
+            if ($member->getBirthday() < new DateTime('-18years')) {
+                $this->manager->draft($enrollment);
+                return $this->redirectToRoute('enrollment_finalise', ['id' => $enrollment->getId()]);
+            } else {
+                $this->youngManager->draft($enrollment);
+                return $this->redirectToRoute('enrollment_finalise_young', ['id' => $enrollment->getId()]);
+            }
         }
 
         return $this->render('enrollment/enroll.html.twig', [
@@ -82,23 +124,46 @@ class EnrollmentController extends AbstractController
         ]);
     }
 
-    #[Route('/adhesion/validation/{id}', name: 'enrollment_finalise')]
-    public function finalise(Enrollment $enrollment, Request $request, AccountManager $accountManager, AccountRepository $accountRepository)
+    #[Route('/adhesion/validation/adulte/{id}', name: 'enrollment_finalise')]
+    public function finalise(Enrollment $enrollment, Request $request, AccountManager $accountManager, InvoiceManager $invoiceManager)
     {
         $form = $this->createForm(EnrollmentStep2Type::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->finalise($enrollment);
-            $accountManager->debit(
-                $accountRepository->findOneBy(['number' => '411' . str_pad($enrollment->getMemberId()->getId(), 3, '0', STR_PAD_LEFT)]),
-                'Adhésion saison ' . $enrollment->getSeason()->getYear(),
-                $enrollment->getTotalAmount()
-            );
-            $accountManager->credit(
-                $accountRepository->findOneBy(['number' => '756000']),
+            $accountManager->newEntry(
+                '411' . str_pad($enrollment->getMemberId()->getId(), 3, '0', STR_PAD_LEFT),
+                756000,
                 'Adhésion saison ' . $enrollment->getSeason()->getYear() . ' - ' . $enrollment->getMemberId()->getFirstName() . ' ' . $enrollment->getMemberId()->getLastName(),
                 $enrollment->getTotalAmount()
             );
+            $invoiceManager->invoiceLineNewInvoice($enrollment->getMemberId(), 'Adhésion saison ' . $enrollment->getSeason()->getYear(), 1, $enrollment->getTotalAmount());
+
+            $this->addFlash('success', 'Ton adhésion est enregistrée, elle sera validé prochainement, sous réserve de réception du paiement ainsi que des documents');
+            return $this->redirectToRoute('home');
+        }
+        return $this->render('enrollment/finalise.html.twig', [
+            'enrollment' => $enrollment,
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[Route('/adhesion/validation/jeune/{id}', name: 'enrollment_finalise_young')]
+    public function finaliseYoung(EnrollmentYoung $enrollment, Request $request, AccountManager $accountManager, EnrollmentYoungManager $manager, InvoiceManager $invoiceManager)
+    {
+        $form = $this->createForm(EnrollmentStep2Type::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $manager->finalise($enrollment);
+            $accountManager->newEntry(
+                '411' . str_pad($enrollment->getOwner()->getId(), 3, '0', STR_PAD_LEFT),
+                756000,
+                'Adhésion saison ' . $enrollment->getSeason()->getYear() . ' - ' . $enrollment->getOwner()->getFirstName() . ' ' . $enrollment->getOwner()->getLastName(),
+                $enrollment->getTotalAmount()
+            );
+            $invoiceManager->invoiceLineNewInvoice($enrollment->getOwner(), 'Adhésion saison ' . $enrollment->getSeason()->getYear(), 1, $enrollment->getTotalAmount());
+            $this->addFlash('success', 'Ton adhésion est enregistrée, elle sera validé prochainement, sous réserve de réception du paiement ainsi que des documents');
+            return $this->redirectToRoute('home');
         }
         return $this->render('enrollment/finalise.html.twig', [
             'enrollment' => $enrollment,
