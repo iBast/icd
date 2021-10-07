@@ -65,8 +65,15 @@
 			<div class="col-xl-4 col-lg-6">
 				<h4>Inscription en cours
 				</h4>
+				<p>Les virements sont a effectuer en utilisant le RIB suivant :
+					<br>
+					IBAN :
+					{{app_iban}}
+					<br>
+					BIC
+					{{app_bic}}</p>
 				{% for enrollment in enrollments %}
-					{% if enrollment.status != null and enrollment.status != 'Dossier Validé'%}
+					{% if enrollment.status != null and enrollment.status != app_enrollment_done %}
 						<div class="card text-white bg-primary mb-3 m-auto" style="max-width: 25rem;">
 							<div class="card-header">{{enrollment.memberId.firstName}}
 								{{enrollment.memberId.lastName}}</div>
@@ -75,7 +82,7 @@
 									{{enrollment.status}}</h4>
 								<p class="card-text text-center d-flex justify-content-between">
 									<span class="text-center">
-										{% if enrollment.status != "Dossier créé" %}
+										{% if enrollment.status != app_enrollment_done %}
 											<i class="fas fa-check-circle"></i><br>
 										{% else %}
 											<i class="far fa-circle"></i><br>
@@ -107,7 +114,7 @@
 									Montant de l'adhésion :
 									{{enrollment.totalAmount | amount}}
 									<br>
-									{% if enrollment.status == 'Dossier créé' %}
+									{% if enrollment.status == app_enrollment_done %}
 										<a href="{{ path('enrollment_finalise', {'id': enrollment.id}) }}" class="btn btn-light">Accèder à la demande</a>
 									{% endif %}
 								</p>
@@ -116,7 +123,7 @@
 					{% endif %}
 				{% endfor %}
 				{% for enrollment in youngs %}
-					{% if enrollment.status != null and enrollment.status != 'Dossier Validé'%}
+					{% if enrollment.status != null and enrollment.status != app_enrollment_done %}
 						<div class="card text-white bg-primary mb-3 m-auto" style="max-width: 25rem;">
 							<div class="card-header">{{enrollment.owner.firstName}}
 								{{enrollment.owner.lastName}}
@@ -156,8 +163,11 @@
 									</span>
 								</p>
 								<p class="text-center">
-									{% if enrollment.status == 'Dossier créé' %}
-										<a href="{{ path('enrollment_finalise', {'id': enrollment.id}) }}" class="btn btn-light">Accèder à la demande</a>
+									Montant de l'adhésion :
+									{{enrollment.totalAmount | amount}}
+									<br>
+									{% if enrollment.status == app_enrollment_new %}
+										<a href="{{ path('enrollment_finalise_young', {'id': enrollment.id}) }}" class="btn btn-light">Accèder à la demande</a>
 									{% endif %}
 								</p>
 							</div>
@@ -170,7 +180,7 @@
 				<h4>Inscrits
 				</h4>
 				{% for enrollment in enrollments %}
-					{% if enrollment.status == 'Dossier Validé' %}
+					{% if enrollment.status == app_enrollment_done %}
 						<div class="card text-white bg-success mb-3 m-auto" style="max-width: 25rem;">
 							<div class="card-header">{{enrollment.memberId.firstName}}
 								{{enrollment.memberId.lastName}}</div>
@@ -180,24 +190,26 @@
 									<i class="fas fa-check fa-3x"></i>
 								</p>
 							</div>
-						{% endif %}
-					{% endfor %}
-					{% for enrollment in youngs %}
-						{% if enrollment.status == 'Dossier Validé' %}
-							<div class="card text-white bg-success mb-3 m-auto" style="max-width: 25rem;">
-								<div class="card-header">{{enrollment.owner.firstName}}
-									{{enrollment.owner.lastName}}
-									<span class="badge bg-primary">Jeune</span>
-								</div>
-								<div class="card-body">
-									<h4 class="card-title">Dossier Validé</h4>
-									<p class="card-text text-end">
-										<i class="fas fa-check fa-3x"></i>
-									</p>
-								</div>
-							{% endif %}
-						{% endfor %}
-					</div>
-				</div>
-			{% endif %}
-		{% endblock %}
+						</div>
+					{% endif %}
+				{% endfor %}
+				{% for enrollment in youngs %}
+					{% if enrollment.status == 'Dossier Validé' %}
+						<div class="card text-white bg-success mb-3 m-auto" style="max-width: 25rem;">
+							<div class="card-header">{{enrollment.owner.firstName}}
+								{{enrollment.owner.lastName}}
+								<span class="badge bg-primary">Jeune</span>
+							</div>
+							<div class="card-body">
+								<h4 class="card-title">Dossier Validé</h4>
+								<p class="card-text text-end">
+									<i class="fas fa-check fa-3x"></i>
+								</p>
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+
+			</div>
+		{% endif %}
+	{% endblock %}

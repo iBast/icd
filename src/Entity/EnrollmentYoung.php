@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Helper\ParamsInService;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\EnrollmentYoungRepository;
 use Symfony\Component\HttpFoundation\File\File;
@@ -179,12 +180,6 @@ class EnrollmentYoung implements EntityInterface
      * @var File|null
      */
     private $FFTriDoc2File;
-
-    public const STATUS = [
-        'Dossier créé' => 'Dossier créé',
-        'En Attente de validation' => 'En Attente de validation',
-        'Dossier validé' => 'Dossier Validé'
-    ];
 
     public function getId(): ?int
     {
@@ -628,7 +623,7 @@ class EnrollmentYoung implements EntityInterface
 
     public function checkFinalValidation()
     {
-        if ($this->isDocsValid == true && $this->paymentAt != null && $this->getStatus() != Self::STATUS['Dossier validé']) {
+        if ($this->isDocsValid == true && $this->paymentAt != null && $this->endedAt == null) {
             return true;
         }
         return false;

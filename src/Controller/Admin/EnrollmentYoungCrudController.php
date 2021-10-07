@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Enrollment;
 use App\Entity\EnrollmentYoung;
+use App\Helper\ParamsInService;
 use App\Manager\EnrollmentYoungManager;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use Vich\UploaderBundle\Form\Type\VichImageType;
@@ -28,6 +29,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class EnrollmentYoungCrudController extends AbstractCrudController
 {
+    private $params;
+
+    public function __construct(ParamsInService $params)
+    {
+        $this->params = $params;
+    }
     public static function getEntityFqcn(): string
     {
         return EnrollmentYoung::class;
@@ -47,7 +54,11 @@ class EnrollmentYoungCrudController extends AbstractCrudController
         return $filters
             ->add(EntityFilter::new('Season', 'Saison'))
             ->add(NullFilter::new('endedAt', 'Dossier Complet')->setChoiceLabels('Non', 'Oui'))
-            ->add(ChoiceFilter::new('status')->setChoices(Enrollment::STATUS));
+            ->add(ChoiceFilter::new('status')->setChoices([
+                $this->params->get(ParamsInService::APP_ENROLLMENT_NEW) => $this->params->get(ParamsInService::APP_ENROLLMENT_NEW),
+                $this->params->get(ParamsInService::APP_ENROLLMENT_PENDING) => $this->params->get(ParamsInService::APP_ENROLLMENT_PENDING),
+                $this->params->get(ParamsInService::APP_ENROLLMENT_DONE) => $this->params->get(ParamsInService::APP_ENROLLMENT_DONE)
+            ]));
     }
 
     public function configureActions(Actions $actions): Actions
@@ -133,7 +144,11 @@ class EnrollmentYoungCrudController extends AbstractCrudController
                 ->setBasePath($this->getParameter('enrollment_docs')),
             BooleanField::new('isDocsValid', 'Documents Ok'),
             DateField::new('paymentAt', 'Date de paiement'),
-            ChoiceField::new('status', 'Statut')->setChoices(fn () => Enrollment::STATUS),
+            ChoiceField::new('status', 'Statut')->setChoices(fn () => [
+                $this->params->get(ParamsInService::APP_ENROLLMENT_NEW) => $this->params->get(ParamsInService::APP_ENROLLMENT_NEW),
+                $this->params->get(ParamsInService::APP_ENROLLMENT_PENDING) => $this->params->get(ParamsInService::APP_ENROLLMENT_PENDING),
+                $this->params->get(ParamsInService::APP_ENROLLMENT_DONE) => $this->params->get(ParamsInService::APP_ENROLLMENT_DONE)
+            ]),
             BooleanField::new('isMember', 'Membre')->hideOnIndex(),
             AssociationField::new('licence')->hideOnIndex(),
             BooleanField::new('hasPoolAcces', 'Passe piscine')->hideOnIndex(),

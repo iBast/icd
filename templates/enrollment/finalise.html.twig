@@ -80,9 +80,11 @@
 			{{form_row(form.info_verified)}}
 			<br>
 			{% if enrollment.paymentMethod == "Virement" %}
-				<p>IBAN : FR76 1027 8031 2300 0174 4824 528
+				<p>IBAN :
+					{{app_iban}}
 					<br>
-					BIC CMCIFR2A</p>
+					BIC
+					{{app_bic}}</p>
 			{% endif %}
 			<br>
 			<div class="d-flex justify-content-between">
