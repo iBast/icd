@@ -79,47 +79,8 @@ class Enrollment implements EntityInterface
     /**
      * @ORM\Column(type="boolean")
      */
-    private $hasCareAuthorization;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
     private $hasPhotoAuthorization;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $hasLeaveAloneAuthorization;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $hasTreatment;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $treatmentDetails;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $hasAllergy;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $AllergyDetails;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $emergencyContact;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $emergencyPhone;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -171,12 +132,6 @@ class Enrollment implements EntityInterface
      * @var File|null
      */
     private $FFTriDoc2File;
-
-    public const STATUS = [
-        'Dossier créé' => 'Dossier créé',
-        'En Attente de validation' => 'En Attente de validation',
-        'Dossier validé' => 'Dossier Validé'
-    ];
 
     public function getId(): ?int
     {
@@ -493,7 +448,7 @@ class Enrollment implements EntityInterface
 
     public function checkFinalValidation()
     {
-        if ($this->isDocsValid == true && $this->paymentAt != null && $this->endedAt != null) {
+        if ($this->isDocsValid == true && $this->paymentAt != null && $this->endedAt == null) {
             return true;
         }
         return false;

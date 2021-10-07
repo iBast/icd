@@ -623,7 +623,7 @@ class EnrollmentYoung implements EntityInterface
 
     public function checkFinalValidation()
     {
-        if ($this->isDocsValid == true && $this->paymentAt != null && $this->endedAt != null) {
+        if ($this->isDocsValid == true && $this->paymentAt != null && $this->endedAt == null) {
             return true;
         }
         return false;

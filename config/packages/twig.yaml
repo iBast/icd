@@ -5,6 +5,10 @@ twig:
     globals:
         app_iban: '%env(APP_IBAN)%'
         app_bic: '%env(APP_BIC)%'
+        app_enrollment_new: '%env(APP_ENROLLMENT_NEW)%'
+        app_enrollment_pending: '%env(APP_ENROLLMENT_PENDING)%'
+        app_enrollment_done: '%env(APP_ENROLLMENT_DONE)%'
+        
 when@test:
     twig:
         strict_variables: true

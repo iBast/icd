@@ -79,7 +79,8 @@ class EnrollmentYoungManager extends AbstractManager
 
     public function finalValidation(EnrollmentYoung $enrollment)
     {
-        $enrollment->setStatus($this->params->get(ParamsInService::APP_ENROLLMENT_DONE));
+        $enrollment->setStatus($this->params->get(ParamsInService::APP_ENROLLMENT_DONE))
+            ->setEndedAt(new DateTimeImmutable());
         $this->save($enrollment);
     }
 
