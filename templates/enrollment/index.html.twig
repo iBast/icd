@@ -65,6 +65,11 @@
 			<div class="col-xl-4 col-lg-6">
 				<h4>Inscription en cours
 				</h4>
+				<p>Les virements sont a effectuer en utilisant le RIB suivant :
+					<br>
+					IBAN : FR76 1027 8031 2300 0174 4824 528
+					<br>
+					BIC CMCIFR2A</p>
 				{% for enrollment in enrollments %}
 					{% if enrollment.status != null and enrollment.status != 'Dossier Validé'%}
 						<div class="card text-white bg-primary mb-3 m-auto" style="max-width: 25rem;">
