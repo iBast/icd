@@ -303,18 +303,6 @@ class Enrollment implements EntityInterface
         return $this;
     }
 
-    public function getHasCareAuthorization(): ?bool
-    {
-        return $this->hasCareAuthorization;
-    }
-
-    public function setHasCareAuthorization(bool $hasCareAuthorization): self
-    {
-        $this->hasCareAuthorization = $hasCareAuthorization;
-
-        return $this;
-    }
-
     public function getHasPhotoAuthorization(): ?bool
     {
         return $this->hasPhotoAuthorization;
@@ -323,90 +311,6 @@ class Enrollment implements EntityInterface
     public function setHasPhotoAuthorization(bool $hasPhotoAuthorization): self
     {
         $this->hasPhotoAuthorization = $hasPhotoAuthorization;
-
-        return $this;
-    }
-
-    public function getHasLeaveAloneAuthorization(): ?bool
-    {
-        return $this->hasLeaveAloneAuthorization;
-    }
-
-    public function setHasLeaveAloneAuthorization(bool $hasLeaveAloneAuthorization): self
-    {
-        $this->hasLeaveAloneAuthorization = $hasLeaveAloneAuthorization;
-
-        return $this;
-    }
-
-    public function getHasTreatment(): ?bool
-    {
-        return $this->hasTreatment;
-    }
-
-    public function setHasTreatment(bool $hasTreatment): self
-    {
-        $this->hasTreatment = $hasTreatment;
-
-        return $this;
-    }
-
-    public function getTreatmentDetails(): ?string
-    {
-        return $this->treatmentDetails;
-    }
-
-    public function setTreatmentDetails(?string $treatmentDetails): self
-    {
-        $this->treatmentDetails = $treatmentDetails;
-
-        return $this;
-    }
-
-    public function getHasAllergy(): ?bool
-    {
-        return $this->hasAllergy;
-    }
-
-    public function setHasAllergy(bool $hasAllergy): self
-    {
-        $this->hasAllergy = $hasAllergy;
-
-        return $this;
-    }
-
-    public function getAllergyDetails(): ?string
-    {
-        return $this->AllergyDetails;
-    }
-
-    public function setAllergyDetails(?string $AllergyDetails): self
-    {
-        $this->AllergyDetails = $AllergyDetails;
-
-        return $this;
-    }
-
-    public function getEmergencyContact(): ?string
-    {
-        return $this->emergencyContact;
-    }
-
-    public function setEmergencyContact(?string $emergencyContact): self
-    {
-        $this->emergencyContact = $emergencyContact;
-
-        return $this;
-    }
-
-    public function getEmergencyPhone(): ?string
-    {
-        return $this->emergencyPhone;
-    }
-
-    public function setEmergencyPhone(?string $emergencyPhone): self
-    {
-        $this->emergencyPhone = $emergencyPhone;
 
         return $this;
     }

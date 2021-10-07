@@ -41,11 +41,7 @@ class EnrollmentManager extends AbstractManager
         $enrollment
             ->setIsMember(false)
             ->setHasPoolAcces(false)
-            ->setHasCareAuthorization(false)
             ->setHasPhotoAuthorization(false)
-            ->setHasLeaveAloneAuthorization(false)
-            ->setHasTreatment(false)
-            ->setHasAllergy(false)
             ->setMemberId($member)
             ->setUser($user)
             ->setSeason($season)
@@ -77,7 +73,8 @@ class EnrollmentManager extends AbstractManager
 
     public function finalValidation(Enrollment $enrollment)
     {
-        $enrollment->setStatus(Enrollment::STATUS['Dossier validé']);
+        $enrollment->setStatus(Enrollment::STATUS['Dossier validé'])
+            ->setEndedAt(new DateTimeImmutable());
         $this->save($enrollment);
     }
 
