@@ -67,9 +67,11 @@
 				</h4>
 				<p>Les virements sont a effectuer en utilisant le RIB suivant :
 					<br>
-					IBAN : FR76 1027 8031 2300 0174 4824 528
+					IBAN :
+					{{app_iban}}
 					<br>
-					BIC CMCIFR2A</p>
+					BIC
+					{{app_bic}}</p>
 				{% for enrollment in enrollments %}
 					{% if enrollment.status != null and enrollment.status != 'Dossier Validé'%}
 						<div class="card text-white bg-primary mb-3 m-auto" style="max-width: 25rem;">

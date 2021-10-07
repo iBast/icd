@@ -493,7 +493,7 @@ class Enrollment implements EntityInterface
 
     public function checkFinalValidation()
     {
-        if ($this->isDocsValid == true && $this->paymentAt != null && $this->getStatus() != Self::STATUS['Dossier validé']) {
+        if ($this->isDocsValid == true && $this->paymentAt != null && $this->endedAt != null) {
             return true;
         }
         return false;

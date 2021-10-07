@@ -17,10 +17,11 @@ use function in_array;
  */
 class ParamsInService
 {
-    public const APP_ENROLLMENT_STATUS_NEW = 'app.enrollment.status.new';
-    public const APP_ENROLLMENT_STATUS_PENDING = 'app.enrollment.status.pending';
-    public const APP_ENROLLMENT_STATUS_DONE = "app.enrollment.status.done";
-    public const APP_ENROLLMENT_STATUS_ARRAY = 'app.enrollment.status.array';
+    public const APP_ENROLLMENT_NEW = 'app_enrollment_new';
+    public const APP_ENROLLMENT_PENDING = 'app_enrollment_pending';
+    public const APP_ENROLLMENT_DONE = "app_enrollment_done";
+    public const APP_EMAIL_ADRESS = "app_email_adress";
+    public const APP_EMAIL_NAME = "app_email_name";
 
 
     /** @var ParameterBagInterface */
@@ -33,10 +34,11 @@ class ParamsInService
     {
         $this->params = $params;
         $this->datas = [
-            self::APP_ENROLLMENT_STATUS_NEW,
-            self::APP_ENROLLMENT_STATUS_PENDING,
-            self::APP_ENROLLMENT_STATUS_DONE,
-            self::APP_ENROLLMENT_STATUS_ARRAY,
+            self::APP_ENROLLMENT_NEW,
+            self::APP_ENROLLMENT_PENDING,
+            self::APP_ENROLLMENT_DONE,
+            self::APP_EMAIL_ADRESS,
+            self::APP_EMAIL_NAME
         ];
     }
 
@@ -47,7 +49,7 @@ class ParamsInService
      * @param string $param_name
      * @return string
      */
-    public function get(string $param_name)
+    public function get(string $param_name): string
     {
         if (!in_array($param_name, $this->datas)) {
             throw new InvalidArgumentException('Ce paramètre est inconnu : ' . $param_name);

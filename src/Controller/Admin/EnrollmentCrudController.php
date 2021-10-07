@@ -50,7 +50,7 @@ class EnrollmentCrudController extends AbstractCrudController
             // the labels used to refer to this entity in titles, buttons, etc.
             ->setEntityLabelInSingular('Adhésion')
             ->setEntityLabelInPlural('Adhésions')
-            ->showEntityActionsInlined(true);
+            ->showEntityActionsInlined();
     }
 
     public function configureFilters(Filters $filters): Filters

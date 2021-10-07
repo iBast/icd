@@ -8,6 +8,7 @@ use App\Entity\Season;
 use DateTimeImmutable;
 use App\Entity\EnrollmentYoung;
 use App\Entity\EntityInterface;
+use App\Helper\ParamsInService;
 use App\Manager\AbstractManager;
 use Symfony\Component\Mime\Address;
 use App\Repository\SeasonRepository;
@@ -21,13 +22,20 @@ class EnrollmentYoungManager extends AbstractManager
     protected $enrollmentYoungRepository;
     protected $seasonRepository;
     protected $mailer;
+    protected $params;
 
-    public function __construct(EnrollmentYoungRepository $enrollmentYoungRepository, SeasonRepository $seasonRepository, EntityManagerInterface $em, MailerInterface $mailer)
-    {
+    public function __construct(
+        EnrollmentYoungRepository $enrollmentYoungRepository,
+        SeasonRepository $seasonRepository,
+        EntityManagerInterface $em,
+        MailerInterface $mailer,
+        ParamsInService $params
+    ) {
         parent::__construct($em);
         $this->enrollmentYoungRepository = $enrollmentYoungRepository;
         $this->seasonRepository = $seasonRepository;
         $this->mailer = $mailer;
+        $this->params = $params;
     }
 
     public function initialise(EntityInterface $entity)
@@ -62,7 +70,7 @@ class EnrollmentYoungManager extends AbstractManager
             $totalAmount = $totalAmount + $season->getSwimCost();
         }
 
-        $enrollment->setStatus(EnrollmentYoung::STATUS['Dossier créé'])
+        $enrollment->setStatus($this->params->get(ParamsInService::APP_ENROLLMENT_NEW))
             ->setIsMember(true)
             ->setTotalAmount($totalAmount)
             ->setCreatedAt(new DateTimeImmutable());
@@ -71,13 +79,13 @@ class EnrollmentYoungManager extends AbstractManager
 
     public function finalValidation(EnrollmentYoung $enrollment)
     {
-        $enrollment->setStatus(EnrollmentYoung::STATUS['Dossier validé']);
+        $enrollment->setStatus($this->params->get(ParamsInService::APP_ENROLLMENT_DONE));
         $this->save($enrollment);
     }
 
     public function finalise(EnrollmentYoung $enrollment)
     {
-        $enrollment->setStatus(EnrollmentYoung::STATUS['En Attente de validation']);
+        $enrollment->setStatus($this->params->get(ParamsInService::APP_ENROLLMENT_PENDING));
         $this->save($enrollment);
     }
 
@@ -103,7 +111,7 @@ class EnrollmentYoungManager extends AbstractManager
             $items[] = 'Le paiement n\'a pas été réceptionné';
         }
         $email = (new TemplatedEmail())
-            ->from(new Address('hello@bastienmunck.fr', 'Iron Club'))
+            ->from(new Address($this->params->get(ParamsInService::APP_EMAIL_ADRESS), $this->params->get(ParamsInService::APP_EMAIL_NAME)))
             ->to($enrollment->getUser()->getEmail())
             ->subject('Adhésion Iron - Eléments manquants')
             ->htmlTemplate('email/missingEnroll.html.twig')
