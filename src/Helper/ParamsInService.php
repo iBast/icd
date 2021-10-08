@@ -22,7 +22,7 @@ class ParamsInService
     public const APP_ENROLLMENT_DONE = "app_enrollment_done";
     public const APP_EMAIL_ADRESS = "app_email_adress";
     public const APP_EMAIL_NAME = "app_email_name";
-
+    public const APP_ACCOUNTPREFIX_MEMBER = "app_accountprefix_member";
 
     /** @var ParameterBagInterface */
     private $params;
@@ -38,7 +38,8 @@ class ParamsInService
             self::APP_ENROLLMENT_PENDING,
             self::APP_ENROLLMENT_DONE,
             self::APP_EMAIL_ADRESS,
-            self::APP_EMAIL_NAME
+            self::APP_EMAIL_NAME,
+            self::APP_ACCOUNTPREFIX_MEMBER
         ];
     }
 
