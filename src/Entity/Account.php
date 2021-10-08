@@ -126,4 +126,14 @@ class Account implements EntityInterface
 
         return $credit;
     }
+
+    public function getDebitSolde()
+    {
+        return $this->getDebit() - $this->getCredit();
+    }
+
+    public function getCreditSolde()
+    {
+        return $this->getCredit() - $this->getDebit();
+    }
 }

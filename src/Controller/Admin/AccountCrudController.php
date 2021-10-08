@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 
 class AccountCrudController extends AbstractCrudController
 {
@@ -31,7 +32,9 @@ class AccountCrudController extends AbstractCrudController
         return [
             NumberField::new('number', 'Numéro de compte'),
             TextField::new('name', 'Nom du compte'),
-            CollectionField::new('accountings', 'Détail du compte')->hideOnIndex()
+            CollectionField::new('accountings', 'Détail du compte')->hideOnIndex(),
+            MoneyField::new('debit', 'Débit')->setCurrency('EUR')->onlyOnIndex(),
+            MoneyField::new('credit', 'Crédit')->setCurrency('EUR')->onlyOnIndex()
         ];
     }
 }

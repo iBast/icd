@@ -54,6 +54,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Pièces', 'fas fa-file', AccountingDocument::class)->setPermission('ROLE_TRESORIER'),
             MenuItem::linkToCrud('Factures', 'fas fa-file-invoice', Invoice::class)->setPermission('ROLE_TRESORIER'),
             MenuItem::linkToRoute('Comptes', 'fas fa-file-invoice-dollar', 'admin_accounting_accounts')->setPermission('ROLE_TRESORIER'),
+            MenuItem::linkToRoute('Compte de résultat', 'fas fa-file-invoice-dollar', 'admin_accounting_results')->setPermission('ROLE_TRESORIER'),
             MenuItem::section('Gestion du site')->setPermission('ROLE_ADMIN'),
             MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class)->setPermission('ROLE_ADMIN'),
             MenuItem::section('Ressources'),

@@ -31,4 +31,29 @@ class AccountingController extends AbstractController
             'account' => $account
         ]);
     }
+
+    #[Route('/admin/tresorerie/reslutats', name: 'admin_accounting_results')]
+    public function results()
+    {
+        $products = $this->accountRepository->getProducts();
+        $charges = $this->accountRepository->getCharges();
+
+        $totalProduct = 0;
+        $totalCharge = 0;
+
+        foreach ($products as $product) {
+            $totalProduct += $product->getCreditSolde();
+        }
+
+        foreach ($charges as $charge) {
+            $totalCharge += $charge->getCreditSolde();
+        }
+
+        return $this->render('admin/accounting/results.html.twig', [
+            'products' => $products,
+            'charges' => $charges,
+            'totalcharge' => $totalCharge,
+            'totalproduct' => $totalProduct
+        ]);
+    }
 }
