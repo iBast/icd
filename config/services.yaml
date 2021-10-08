@@ -12,6 +12,7 @@ parameters:
     app_enrollment_done: '%env(APP_ENROLLMENT_DONE)%'
     app_email_adress: '%env(APP_EMAIL_ADRESS)%'
     app_email_name: '%env(APP_EMAIL_NAME)%'
+    app_accountprefix_member: '%env(APP_ACCOUNTPREFIX_MEMBER)%'
 
 services:
     # default configuration for services in *this* file

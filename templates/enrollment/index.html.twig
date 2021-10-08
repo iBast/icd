@@ -114,7 +114,7 @@
 									Montant de l'adhésion :
 									{{enrollment.totalAmount | amount}}
 									<br>
-									{% if enrollment.status == app_enrollment_done %}
+									{% if enrollment.status == app_enrollment_new %}
 										<a href="{{ path('enrollment_finalise', {'id': enrollment.id}) }}" class="btn btn-light">Accèder à la demande</a>
 									{% endif %}
 								</p>
