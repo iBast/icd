@@ -56,4 +56,23 @@ class AccountingController extends AbstractController
             'totalproduct' => $totalProduct
         ]);
     }
+
+    #[Route('/admin/tresorerie/balance', name: 'admin_accounting_balance')]
+    public function balance()
+    {
+        $accounts = $this->accountRepository->findBy([], ['number' => 'asc']);
+        $debit = 0;
+        $credit = 0;
+
+        foreach ($accounts as $account) {
+            $debit += $account->getDebit();
+            $credit += $account->getCredit();
+        }
+
+        return $this->render('admin/accounting/balance.html.twig', [
+            'accounts' => $accounts,
+            'debit' => $debit,
+            'credit' => $credit
+        ]);
+    }
 }

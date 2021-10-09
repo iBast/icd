@@ -1,0 +1,64 @@
+{% extends "@EasyAdmin/layout.html.twig" %}
+
+{% block page_title %}
+	Comptes
+{% endblock %}
+
+{% block content %}
+	<article class="content">
+		<section class="content-header">
+			<div class="content-header-title">
+				<h1>Balance</h1>
+			</div>
+		</section>
+		<section class="content-body">
+			<div class="jumbotron">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Compte</th>
+							<th>Libélé</th>
+							<th>Débit</th>
+							<th>Crédit</th>
+							<th>Solde débiteur</th>
+							<th>Solde créditeur</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% set totaldebit = 0 %}
+						{% set totalcredit = 0 %}
+						{% for account in accounts %}
+							{% if account.debit > account.credit %}
+								{% set soldedebit = account.debit - account.credit %}
+								{% set totaldebit = totaldebit + soldedebit  %}
+								{% set soldecredit = 0 %}
+							{% else %}
+								{% set  soldecredit = account.credit - account.debit %}
+								{% set totalcredit = totalcredit + soldecredit  %}
+								{% set soldedebit = 0 %}
+							{% endif %}
+							<tr>
+								<td>{{account.number}}</td>
+								<td>{{account.name}}</td>
+								<td>{{account.debit | amount}}</td>
+								<td>
+									{{account.credit | amount}}</td>
+								<td>{{soldedebit | amount}}</td>
+								<td>{{soldecredit | amount}}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="2" class="text-right">TOTAUX</td>
+					<td>{{ debit | amount}}</td>
+					<td>{{ credit | amount}}</td>
+					<td>{{ totaldebit | amount}}</td>
+					<td>{{ totalcredit | amount}}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</section></article>{% endblock %}
