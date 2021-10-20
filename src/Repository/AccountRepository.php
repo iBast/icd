@@ -39,6 +39,21 @@ class AccountRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getAccounts(array $numbers)
+    {
+        $querry = $this->createQueryBuilder('a');
+
+        foreach ($numbers as $number) {
+            $querry
+                ->andWhere('a.number LIKE :val')
+                ->setParameter('val', $number);
+        }
+
+        return $querry->orderBy('a.number', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Account[] Returns an array of Account objects
     //  */

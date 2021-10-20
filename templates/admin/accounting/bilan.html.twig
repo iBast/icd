@@ -1,0 +1,91 @@
+{% extends "@EasyAdmin/layout.html.twig" %}
+
+{% block page_title %}
+	Comptes
+{% endblock %}
+
+{% block content %}
+	<article class="content">
+		<section class="content-header">
+			<div class="content-header-title">
+				<h1>Bilan</h1>
+
+				<h2>Actif</h2>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Actif</th>
+							<th>Brut</th>
+							<th>Amort. et<br>provisions</th>
+							<th>Net</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td colspan="4">Actif circulant</td>
+						</tr>
+						<tr>
+							<td>Adhérents</td>
+							<td>{{ adherents | amount }}</td>
+							<td></td>
+							<td>{{ adherents | amount }}</td>
+						</tr>
+						<tr>
+							<td>Banque</td>
+							<td>{{ banque | amount }}</td>
+							<td></td>
+							<td>{{ banque | amount }}</td>
+						</tr>
+						{% set actifs = adherents + banque %}
+						<tr class="bg-primary text-light">
+							<td>Total Actif</td>
+							<td>{{ actifs | amount }}</td>
+							<td></td>
+							<td>{{ actifs | amount }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<h2>Passif</h2>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Passif</th>
+							<th>Net</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Résultat de l'exercice</td>
+							<td>{{resultat | amount}}</td>
+						</tr>
+						<tr>
+							<td colspan="4">Fonds associatifs - autres fonds associatifs</td>
+						</tr>
+						<tr>
+							<td colspan="4" class="bg-primary text-light">Fonds associatifs total
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="4">Dettes</td>
+						</tr>
+						<tr>
+							<td>Dettes fournisseurs</td>
+							<td>{{ fournisseurs | amount }}</td>
+						</tr>
+
+						<tr>
+							<td colspan="4" class="bg-primary text-light">Dettes total</td>
+						</tr>
+						<tr>
+							<td colspan="4" class="bg-primary text-light">Total Passif</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+		<section class="content-body">
+			<div class="jumbotron"></div>
+		</section>
+	</article>
+{% endblock %}

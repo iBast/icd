@@ -23,19 +23,22 @@ class EnrollmentYoungManager extends AbstractManager
     protected $seasonRepository;
     protected $mailer;
     protected $params;
+    protected $accountManager;
 
     public function __construct(
         EnrollmentYoungRepository $enrollmentYoungRepository,
         SeasonRepository $seasonRepository,
         EntityManagerInterface $em,
         MailerInterface $mailer,
-        ParamsInService $params
+        ParamsInService $params,
+        AccountManager $accountManager
     ) {
         parent::__construct($em);
         $this->enrollmentYoungRepository = $enrollmentYoungRepository;
         $this->seasonRepository = $seasonRepository;
         $this->mailer = $mailer;
         $this->params = $params;
+        $this->accountManager = $accountManager;
     }
 
     public function initialise(EntityInterface $entity)
@@ -100,6 +103,7 @@ class EnrollmentYoungManager extends AbstractManager
     {
         $enrollment->setPaymentAt(new DateTimeImmutable());
         $this->save($enrollment);
+        $this->accountManager->newEntry('512000', $this->params->get(ParamsInService::APP_ACCOUNTPREFIX_MEMBER) . str_pad($enrollment->getOwner()->getId(), 3, '0', STR_PAD_LEFT), 'Règlement adhésion ' . $enrollment->getOwner()->getFirstName(), $enrollment->getTotalAmount());
     }
 
     public function sendEmailMissingDocs(EnrollmentYoung $enrollment)

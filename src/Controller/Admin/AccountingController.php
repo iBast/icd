@@ -46,7 +46,7 @@ class AccountingController extends AbstractController
         }
 
         foreach ($charges as $charge) {
-            $totalCharge += $charge->getCreditSolde();
+            $totalCharge += $charge->getDebitSolde();
         }
 
         return $this->render('admin/accounting/results.html.twig', [
@@ -73,6 +73,48 @@ class AccountingController extends AbstractController
             'accounts' => $accounts,
             'debit' => $debit,
             'credit' => $credit
+        ]);
+    }
+
+    #[Route('admin/tresorerie/bilan', name: 'admin_accounting_bilan')]
+    public function bilan()
+    {
+        $adherents = $this->accountRepository->getAccounts(['41%']);
+        $soldeadherents = 0;
+        foreach ($adherents as $adherent) {
+            $soldeadherents += $adherent->getDebit() - $adherent->getCredit();
+        }
+        $banques = $this->accountRepository->getAccounts(['51%']);
+        $soldebanque = 0;
+        foreach ($banques as $banque) {
+            $soldebanque = $banque->getDebit() - $banque->getCredit();
+        }
+
+        $fournisseurs = $this->accountRepository->getAccounts(['401%']);
+        $soldefournisseurs = 0;
+        foreach ($fournisseurs as $fournisseur) {
+            $soldefournisseurs = $fournisseur->getDebit() - $fournisseur->getCredit();
+        }
+
+        $produits = $this->accountRepository->getAccounts(['7%']);
+        $soldeproduits = 0;
+        foreach ($produits as $produit) {
+            $soldeproduits = $produit->getCreditSolde();
+        }
+
+        $charges = $this->accountRepository->getAccounts(['6%']);
+        $soldecharges = 0;
+        foreach ($charges as $charges) {
+            $soldecharges = $charges->getDebit() - $charges->getCredit();
+        }
+
+
+
+        return $this->render('admin/accounting/bilan.html.twig', [
+            'adherents' => $soldeadherents,
+            'banque' => $soldebanque,
+            'fournisseurs' => $soldefournisseurs,
+            'resultat' => $soldeproduits - $soldecharges
         ]);
     }
 }
