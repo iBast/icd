@@ -32,7 +32,6 @@ class AccountCrudController extends AbstractCrudController
         return [
             NumberField::new('number', 'Numéro de compte'),
             TextField::new('name', 'Nom du compte'),
-            CollectionField::new('accountings', 'Détail du compte')->hideOnIndex(),
             MoneyField::new('debit', 'Débit')->setCurrency('EUR')->onlyOnIndex(),
             MoneyField::new('credit', 'Crédit')->setCurrency('EUR')->onlyOnIndex()
         ];

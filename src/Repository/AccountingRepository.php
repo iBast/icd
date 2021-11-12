@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\Accounting;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Accounting|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,9 +15,23 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AccountingRepository extends ServiceEntityRepository
 {
+    public const ALIAS = 'a';
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Accounting::class);
+    }
+
+    public function findByDates($begining, $end)
+    {
+        $qb = $this->createQueryBuilder(self::ALIAS)
+            ->where(self::ALIAS . '.date >= :begining')
+            ->andWhere(self::ALIAS . '.date <= :end')
+            ->setParameter('begining', $begining)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->execute();
+        return $qb;
     }
 
     // /**

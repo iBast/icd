@@ -1,0 +1,33 @@
+{% extends "@EasyAdmin/layout.html.twig" %}
+
+{% block page_title %}
+	Opérations
+{% endblock %}
+
+{% block content %}
+	<article class="content">
+		<section class="content-header">
+			<div class="content-header-title">
+				<h1>Opérations comptables</h1>
+			</div>
+		</section>
+		<section class="content-body">
+			<div class="jumbotron">
+				<div class="d-grid gap-2">
+					<button class="btn btn-lg btn-primary" type="button">Enregistrer une opération</button>
+					<button class="btn btn-lg btn-warning" type="button">Fin d'exercice</button>
+					<p>Fin d'exercie :
+						<ul>
+							<li>Calculer le solde des comptes 4 & 5. SI solde débiteur alors nouvel enregistrement
+							</li>
+							<li>Enregistrer le solde créditeur des comptes 7 dans leur débit enregistrer ces montants au crédit du report</li>
+							<li>Enregistrer le solde débiteur des comptes 6 dans leur crédit enregistrer ces montants au débit du report</li>
+						</ul>
+					</p>
+				</div>
+			</div>
+		</section>
+	</article>
+
+
+{% endblock %}
