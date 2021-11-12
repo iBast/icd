@@ -4,10 +4,10 @@ deployment:
     - export DEPLOYPATH=/home/lkvp8070/iron.lkvp8070.odns.fr/
     - /bin/cp -R bin $DEPLOYPATH
     - /bin/cp -R config $DEPLOYPATH
+    - /bin/cp -R migrations $DEPLOYPATH
     - /bin/cp -R public $DEPLOYPATH
     - /bin/cp -R src $DEPLOYPATH
     - /bin/cp -R templates $DEPLOYPATH
-    - /bin/cp -R vendor $DEPLOYPATH
-    - /bin/cp -R bin $DEPLOYPATH
-    - /bin/cp -R bin $DEPLOYPATH
-    - /bin/cp .htaccess $DEPLOYPATH
+    - /bin/cp composer.json $DEPLOYPATH
+    - /bin/cp composer.lock $DEPLOYPATH
+    - /bin/cp symfony.json $DEPLOYPATH
