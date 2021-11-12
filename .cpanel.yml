@@ -1,7 +1,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/lkvp8070/iron.bastienmunck.fr/
+    - export DEPLOYPATH=/home/lkvp8070/iron.bastienmunck.fr
     - /bin/cp -R bin $DEPLOYPATH
     - /bin/cp -R config $DEPLOYPATH
     - /bin/cp -R migrations $DEPLOYPATH
