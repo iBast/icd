@@ -1,0 +1,96 @@
+{% extends "@EasyAdmin/layout.html.twig" %}
+
+{% block page_title %}
+	Comptes
+{% endblock %}
+
+{% block content %}
+	<article class="content">
+		<section class="content-header">
+			<div class="content-header-title">
+				<h1>Bilan</h1>
+				{{form_start(form)}}
+				<div class="row">
+					<div class="col-6">
+						{{form_row(form.begining)}}
+					</div>
+					<div class="col-6">
+						{{form_row(form.end)}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col text-right">
+						<button type="submit" class="btn btn-primary text-right">Voir</button>
+					</div>
+				</div>
+				{{form_end(form)}}
+				<h2>Actif</h2>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Actif</th>
+							<th>Net</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td colspan="4">Actif circulant</td>
+						</tr>
+						<tr>
+							<td>Adhérents</td>
+							<td>{{ adherents | amount }}</td>
+						</tr>
+						<tr>
+							<td>Banque</td>
+							<td>{{ banque | amount }}</td>
+						</tr>
+						<tr>
+							<td>Charges constatées d'avance</td>
+							<td>{{ CCA | amount }}</td>
+						</tr>
+						{% set actifs = adherents + banque + CCA %}
+						<tr class="bg-primary text-light">
+							<td>Total Actif</td>
+							<td>{{ actifs | amount }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<h2>Passif</h2>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Passif</th>
+							<th>Net</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Report à nouveau</td>
+							<td>{{reports | amount}}</td>
+						</tr>
+						<tr>
+							<td>Résultat de l'exercice</td>
+							<td>{{resultat | amount}}</td>
+						</tr>
+						<tr>
+							<td>Dettes fournisseurs</td>
+							<td>{{ fournisseurs | amount }}</td>
+						</tr>
+						<tr>
+							<td>Produits constatées d'avance</td>
+							<td>{{ PCA | amount }}</td>
+						</tr>
+						{% set passif = reports + resultat + fournisseurs + PCA %}
+						<tr class="bg-primary text-light">
+							<td>Total Passif</td>
+							<td>{{ passif | amount }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+		<section class="content-body">
+			<div class="jumbotron"></div>
+		</section>
+	</article>
+{% endblock %}

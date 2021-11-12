@@ -19,6 +19,41 @@ class AccountRepository extends ServiceEntityRepository
         parent::__construct($registry, Account::class);
     }
 
+    public function getProducts()
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.number LIKE :val')
+            ->setParameter('val', '7%')
+            ->orderBy('a.number', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getCharges()
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.number LIKE :val')
+            ->setParameter('val', '6%')
+            ->orderBy('a.number', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAccounts(array $numbers)
+    {
+        $querry = $this->createQueryBuilder('a');
+
+        foreach ($numbers as $number) {
+            $querry
+                ->andWhere('a.number LIKE :val')
+                ->setParameter('val', $number);
+        }
+
+        return $querry->orderBy('a.number', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Account[] Returns an array of Account objects
     //  */

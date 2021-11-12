@@ -58,7 +58,6 @@ class EnrollmentCrudController extends AbstractCrudController
 
     public function configureFilters(Filters $filters): Filters
     {
-        $season = $this->seasonRepository->findOneBy(['enrollmentStatus' => 1]);
         return $filters
             ->add(NullFilter::new('endedAt', 'Dossier Complet')->setChoiceLabels('Non', 'Oui'))
             ->add(ChoiceFilter::new('status')->setChoices([

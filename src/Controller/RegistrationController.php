@@ -47,19 +47,20 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             )
-                ->setCreatedAt(new DateTimeImmutable());
+                ->setCreatedAt(new DateTimeImmutable())
+                ->setIsVerified(true);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
             // generate a signed url and email it to the user
-            $this->sendVerifEmail($user);
+            //$this->sendVerifEmail($user);
             // do anything else you need here, like send an email
 
             $userAuthenticator->authenticateUser($user, $authenticator, $request);
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('member_add');
         }
 
         return $this->render('registration/register.html.twig', [

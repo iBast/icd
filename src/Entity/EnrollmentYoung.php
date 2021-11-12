@@ -170,7 +170,7 @@ class EnrollmentYoung implements EntityInterface
     private $antiDopingFile;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $FFTriDoc2Path;
 
@@ -565,7 +565,7 @@ class EnrollmentYoung implements EntityInterface
         return $this->FFTriDoc2Path;
     }
 
-    public function setFFTriDoc2Path(string $FFTriDoc2Path): self
+    public function setFFTriDoc2Path(?string $FFTriDoc2Path): self
     {
         $this->FFTriDoc2Path = $FFTriDoc2Path;
 

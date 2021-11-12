@@ -35,6 +35,7 @@ class Account implements EntityInterface
      */
     private $accountings;
 
+
     public function __construct()
     {
         $this->accountings = new ArrayCollection();
@@ -102,5 +103,37 @@ class Account implements EntityInterface
     public function __toString()
     {
         return $this->getNumber() . ' ' . $this->getName();
+    }
+
+    public function getDebit()
+    {
+        $debit = 0;
+
+        foreach ($this->getAccountings() as $line) {
+            $debit += $line->getDebit();
+        }
+
+        return $debit;
+    }
+
+    public function getCredit()
+    {
+        $credit = 0;
+
+        foreach ($this->getAccountings() as $line) {
+            $credit += $line->getCredit();
+        }
+
+        return $credit;
+    }
+
+    public function getDebitSolde()
+    {
+        return $this->getDebit() - $this->getCredit();
+    }
+
+    public function getCreditSolde()
+    {
+        return $this->getCredit() - $this->getDebit();
     }
 }
