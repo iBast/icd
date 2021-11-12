@@ -1,13 +1,14 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/lkvp8070/iron.bastienmunck.fr
+    - export DEPLOYPATH=/home/lkvp8070/iron.bastienmunck.fr/
+    - /bin/cp composer.json $DEPLOYPATH
+    - /bin/cp composer.lock $DEPLOYPATH
+    - /bin/cp symfony.json $DEPLOYPATH
     - /bin/cp -R bin $DEPLOYPATH
     - /bin/cp -R config $DEPLOYPATH
     - /bin/cp -R migrations $DEPLOYPATH
     - /bin/cp -R public $DEPLOYPATH
     - /bin/cp -R src $DEPLOYPATH
     - /bin/cp -R templates $DEPLOYPATH
-    - /bin/cp composer.json $DEPLOYPATH
-    - /bin/cp composer.lock $DEPLOYPATH
-    - /bin/cp symfony.json $DEPLOYPATH
+    
