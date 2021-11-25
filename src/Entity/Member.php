@@ -82,11 +82,17 @@ class Member implements EntityInterface
      */
     private $enrollmentYoungs;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Race::class, mappedBy="registratedMember")
+     */
+    private $races;
+
     public function __construct()
     {
         $this->user = new ArrayCollection();
         $this->enrollments = new ArrayCollection();
         $this->enrollmentYoungs = new ArrayCollection();
+        $this->races = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -286,6 +292,33 @@ class Member implements EntityInterface
             if ($enrollmentYoung->getOwner() === $this) {
                 $enrollmentYoung->setOwner(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Race[]
+     */
+    public function getRaces(): Collection
+    {
+        return $this->races;
+    }
+
+    public function addRace(Race $race): self
+    {
+        if (!$this->races->contains($race)) {
+            $this->races[] = $race;
+            $race->addRegistratedMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRace(Race $race): self
+    {
+        if ($this->races->removeElement($race)) {
+            $race->removeRegistratedMember($this);
         }
 
         return $this;
