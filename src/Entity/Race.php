@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=RaceRepository::class)
  */
-class Race
+class Race implements EntityInterface
 {
     /**
      * @ORM\Id

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=EventCommentRepository::class)
  */
-class EventComment
+class EventComment implements EntityInterface
 {
     /**
      * @ORM\Id
@@ -38,6 +38,11 @@ class EventComment
      * @ORM\Column(type="text")
      */
     private $content;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isPinned;
 
     public function getId(): ?int
     {
@@ -88,6 +93,18 @@ class EventComment
     public function setContent(string $content): self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getIsPinned(): ?bool
+    {
+        return $this->isPinned;
+    }
+
+    public function setIsPinned(bool $isPinned): self
+    {
+        $this->isPinned = $isPinned;
 
         return $this;
     }

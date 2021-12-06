@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Race;
 use App\Entity\EventComment;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method EventComment|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +18,28 @@ class EventCommentRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, EventComment::class);
+    }
+
+    public function findComments(Race $race)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.event = :race')
+            ->setParameter('race', $race)
+            ->andWhere('c.isPinned = FALSE')
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findPinnedComments(Race $race)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.event = :race')
+            ->setParameter('race', $race)
+            ->andWhere('c.isPinned = TRUE')
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     // /**

@@ -5,33 +5,42 @@
 
 {% block body %}
 	<h1>Courses</h1>
-	<a href="#" class="btn btn-info">
+	<br>
+	<a href="{{path('races_new')}}" class="btn btn-success">
 		<i class="fas fa-plus"></i>
 		Ajouter une course</a>
+	<br>
 	<div class="row">
 		<div class="col-9">
 			<h2>Les courses à venir :
 			</h2>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>Date</th>
-						<th>Evènement</th>
-						<th>Lieu</th>
-						<th>Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>16/11/2021</td>
-						<td>Anniversaire de Bastien</td>
-						<td>Altkirch</td>
-						<td>
-							<a href="#" class="btn btn-primary">Voir</a>
-						</td>
-					</tr>
-				</tbody>
-			</th>
-		</thead>
-	</th>
-</thead></table></div><div class="col-3">Autre chose</div></div></div>{% endblock %}
+			{% if races != null %}
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Evènement</th>
+							<th>Lieu</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for race in races %}
+							<tr>
+								<td>{{race.date | date('d/m/Y')}}</td>
+								<td>{{race.name}}</td>
+								<td>{{race.location}}</td>
+								<td>
+									<a href="{{path('races_show', {'id':race.id})}}" class="btn btn-primary">Voir</a>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			{% else %}
+				<p>Il n'y a pas de course a venir. C'est le moment de se trouver un objectif !</p>
+			{% endif %}
+		</div>
+		<div class="col-3">Autre chose</div>
+	</div>
+{% endblock %}

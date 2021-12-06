@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	Nouvelle course
+{% endblock %}
+
+{% block body %}
+	<h1>Nouvelle course</h1>
+	<div class="container">
+		{{form_start(form)}}
+		<div class="row">
+			<div class="col-md-8">
+				{{form_row(form.name)}}
+				{{form_row(form.description)}}
+			</div>
+			<div class="col-md-4">
+				{{form_row(form.date)}}
+				{{form_row(form.location)}}
+				{{form_row(form.link)}}
+				{{form_row(form.signInLink)}}
+			</div>
+		</div>
+		<div class="d-flex justify-content-end">
+			<button type="submit" class="btn btn-success">Ajouter la course</button>
+		</div>
+		{{form_end(form)}}
+	</div>
+{% endblock %}
