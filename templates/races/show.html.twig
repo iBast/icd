@@ -105,12 +105,14 @@
 													<i class="fas fa-thumbtack"></i>
 												</button>
 											</form>
-											<form action="#" method="post">
-												<input type="hidden" name="pinComment" value="{{comment.id}}">
-												<button type="submit" class="btn btn-light btn-sm">
-													<i class="fas fa-trash"></i>
-												</button>
-											</form>
+											{% if comment | commentCanDelete %}
+												<form action="#" method="post">
+													<input type="hidden" name="pinComment" value="{{comment.id}}">
+													<button type="submit" class="btn btn-light btn-sm">
+														<i class="fas fa-trash"></i>
+													</button>
+												</form>
+											{% endif %}
 										</div>
 									</i>
 								</div>
@@ -143,12 +145,14 @@
 												<i class="fas fa-thumbtack"></i>
 											</button>
 										</form>
-										<form action="#" method="post">
-											<input type="hidden" name="pinComment" value="{{comment.id}}">
-											<button type="submit" class="btn btn-light btn-sm">
-												<i class="fas fa-trash"></i>
-											</button>
-										</form>
+										{% if comment | commentCanDelete %}
+											<form action="#" method="post">
+												<input type="hidden" name="pinComment" value="{{comment.id}}">
+												<button type="submit" class="btn btn-light btn-sm">
+													<i class="fas fa-trash"></i>
+												</button>
+											</form>
+										{% endif %}
 									</div>
 								</i>
 							</div>
