@@ -42,10 +42,10 @@
 
 							</span>
 							<span class="badge bg-danger rounded-pill">
-								<form action="#" method="post">
-									<input type="hidden" name="memberId" value="{{member.id}}">
-									<input type="submit" class="btn btn-danger" value="Ne Participe pas">
-								</form>
+
+								<span class="badge bg-danger rounded-pill">
+									<a href="{{path('races_add_member', {'id': member.id, 'slug': race.slug})}}" class="btn btn-danger">Retirer la participation</a>
+								</span>
 							</span>
 						</li>
 					{% else %}
@@ -55,10 +55,7 @@
 
 							</span>
 							<span class="badge bg-primary rounded-pill">
-								<form action="#" method="post">
-									<input type="hidden" name="memberId" value="{{member.id}}">
-									<input type="submit" class="btn btn-primary" value="Participe">
-								</form>
+								<a href="{{path('races_add_member', {'id': member.id, 'slug': race.slug})}}" class="btn btn-primary">Indiquer la participation</a>
 							</span>
 						</li>
 					{% endif %}
@@ -91,30 +88,25 @@
 									{{comment.user.firstName}}
 									{{comment.user.lastName}}
 									a écrit
-									<i class="float-end">
-										<div class="d-flex">
-											<p>
-												le
-												{{comment.createdAt | date('d/m/y')}}
-												à
-												{{comment.createdAt | date('H:i')}}
-											</p>
-											<form action="#" method="post" class="ms-2 me-2">
-												<input type="hidden" name="pinComment" value="{{comment.id}}">
-												<button type="submit" class="btn btn-light btn-sm">
-													<i class="fas fa-thumbtack"></i>
-												</button>
-											</form>
-											{% if comment | commentCanDelete %}
-												<form action="#" method="post">
-													<input type="hidden" name="pinComment" value="{{comment.id}}">
-													<button type="submit" class="btn btn-light btn-sm">
-														<i class="fas fa-trash"></i>
-													</button>
-												</form>
-											{% endif %}
-										</div>
-									</i>
+									<span class="float-end">
+
+
+										le
+										{{comment.createdAt | date('d/m/y')}}
+										à
+										{{comment.createdAt | date('H:i')}}
+
+										<a href="{{ path('races_pin_comment', {'id': comment.id})}}" class="btn btn-light btn-sm">
+											<i class="fas fa-thumbtack"></i>
+										</a>
+
+										{% if comment | commentCanDelete %}
+											<a href="{{ path('races_delete_comment', {'id': comment.id})}}" class="btn btn-light btn-sm">
+												<i class="fas fa-trash"></i>
+											</a>
+										{% endif %}
+
+									</span>
 								</div>
 								<div class="card-body">
 									<p class="card-text">{{comment.content}}</p>
@@ -131,30 +123,25 @@
 								{{comment.user.firstName}}
 								{{comment.user.lastName}}
 								a écrit
-								<i class="float-end">
-									<div class="d-flex">
-										<p>
-											le
-											{{comment.createdAt | date('d/m/y')}}
-											à
-											{{comment.createdAt | date('H:i')}}
-										</p>
-										<form action="#" method="post" class="ms-2 me-2">
-											<input type="hidden" name="pinComment" value="{{comment.id}}">
-											<button type="submit" class="btn btn-light btn-sm">
-												<i class="fas fa-thumbtack"></i>
-											</button>
-										</form>
-										{% if comment | commentCanDelete %}
-											<form action="#" method="post">
-												<input type="hidden" name="pinComment" value="{{comment.id}}">
-												<button type="submit" class="btn btn-light btn-sm">
-													<i class="fas fa-trash"></i>
-												</button>
-											</form>
-										{% endif %}
-									</div>
-								</i>
+								<span class="float-end">
+
+
+									le
+									{{comment.createdAt | date('d/m/y')}}
+									à
+									{{comment.createdAt | date('H:i')}}
+
+									<a href="{{ path('races_pin_comment', {'id': comment.id})}}" class="btn btn-light btn-sm">
+										<i class="fas fa-thumbtack"></i>
+									</a>
+
+									{% if comment | commentCanDelete %}
+										<a href="{{ path('races_delete_comment', {'id': comment.id})}}" class="btn btn-light btn-sm">
+											<i class="fas fa-trash"></i>
+										</a>
+									{% endif %}
+
+								</span>
 							</div>
 							<div class="card-body">
 								<p class="card-text">{{comment.content}}</p>

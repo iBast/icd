@@ -8,25 +8,22 @@ use App\Entity\EventComment;
 use App\Security\EventCommentVoter;
 use Twig\Extension\AbstractExtension;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class EventCommentVoterExtension extends AbstractExtension
 {
     /**
      * @var EventCommentVoter
      */
-    private $voter;
-
-    private $security;
-
+    private $eventCommentVoter;
+    protected $security;
 
     public function __construct(
         Security $security,
-        EventCommentVoter $voter
+        EventCommentVoter $eventCommentVoter
 
     ) {
         $this->security = $security;
-        $this->voter = $voter;
+        $this->eventCommentVoter = $eventCommentVoter;
     }
 
     public function getFilters()
@@ -42,16 +39,16 @@ class EventCommentVoterExtension extends AbstractExtension
 
     public function commentCanRead(EventComment $item)
     {
-        return $this->voter->canRead($item, $this->user);
+        return $this->eventCommentVoter->canRead($item, $this->security->getUser());
     }
 
     public function commentCanUpdate(EventComment $item)
     {
-        return $this->voter->canUpdate($item, $this->user);
+        return $this->eventCommentVoter->canUpdate($item, $this->security->getUser());
     }
 
     public function commentCanDelete(EventComment $item)
     {
-        return $this->voter->canDelete($item, $this->security->getUser());
+        return $this->eventCommentVoter->canDelete($item, $this->security->getUser());
     }
 }

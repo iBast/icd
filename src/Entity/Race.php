@@ -59,6 +59,11 @@ class Race implements EntityInterface
      */
     private $eventComments;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $slug;
+
     public function __construct()
     {
         $this->registratedMember = new ArrayCollection();
@@ -192,6 +197,18 @@ class Race implements EntityInterface
                 $eventComment->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

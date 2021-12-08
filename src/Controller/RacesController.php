@@ -2,14 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\EventComment;
 use App\Entity\Race;
-use App\Form\RaceCommentType;
+use App\Entity\User;
+use App\Entity\Member;
 use App\Form\RaceType;
+use App\Entity\EventComment;
 use App\Manager\RaceManager;
-use App\Repository\EventCommentRepository;
-use App\Repository\MemberRepository;
+use App\Form\RaceCommentType;
 use App\Repository\RaceRepository;
+use App\Security\EventCommentVoter;
+use App\Repository\MemberRepository;
+use App\Repository\EventCommentRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,9 +28,9 @@ class RacesController extends AbstractController
     }
 
     #[Route('/courses', name: 'races_home')]
-    public function index(RaceRepository $raceRepository): Response
+    public function index(): Response
     {
-        $races = $raceRepository->findUpComingRaces();
+        $races = $this->manager->getRaceRepository()->findUpComingRaces();
         return $this->render('races/index.html.twig', [
             'races' => $races,
         ]);
@@ -41,7 +44,7 @@ class RacesController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->manager->save($race);
+            $this->manager->add($race);
             $this->addFlash('success', 'La course a bien été ajoutée.');
             return $this->redirectToRoute('races_home');
         }
@@ -51,18 +54,12 @@ class RacesController extends AbstractController
         ]);
     }
 
-    #[Route('/courses/{id}', name: 'races_show')]
-    public function show(Race $race, Request $request, MemberRepository $memberRepository, EventCommentRepository $eventCommentRepository): Response
+    #[Route('/courses/{slug}', name: 'races_show')]
+    public function show(Race $race, Request $request, EventCommentRepository $eventCommentRepository): Response
     {
         if ($request->get('memberId')) {
-            $member = $memberRepository->findOneBy(['id' => $request->get('memberId')]);
+            $member = $this->manager->getMemberRepository()->findOneBy(['id' => $request->get('memberId')]);
             $this->manager->participate($member, $race);
-            $this->addFlash('success', 'Action prise en compte');
-        }
-
-        if ($request->get('pinComment')) {
-            $comment = $eventCommentRepository->find($request->get('pinComment'));
-            $this->manager->changeState($comment);
             $this->addFlash('success', 'Action prise en compte');
         }
 
@@ -82,5 +79,33 @@ class RacesController extends AbstractController
             'comments' => $eventCommentRepository->findComments($race),
             'pinnedComments' => $eventCommentRepository->findPinnedComments($race)
         ]);
+    }
+
+    #[Route('/courses/supprimer-commentaire/{id}', name: 'races_delete_comment')]
+    public function delete(EventComment $comment)
+    {
+        $this->denyAccessUnlessGranted(EventCommentVoter::DELETE, $comment, 'Vous n\'avez pas les droit suffisant pour effectuer cette action.');
+        $eventId = $comment->getEvent()->getId();
+        $this->manager->deleteComment($comment);
+        $this->addFlash('success', 'Le commentaire a été supprimé');
+        return $this->redirectToRoute('races_show', ['id' => $eventId]);
+    }
+
+    #[Route('/courses/epingler-commentaire/{id}', name: 'races_pin_comment')]
+    public function pin(EventComment $comment)
+    {
+        $this->manager->changeState($comment);
+        $this->addFlash('success', 'Action prise en compte');
+        return $this->redirectToRoute('races_show', ['id' => $comment->getEvent()->getId()]);
+    }
+
+    #[Route('/courses/{slug}/ajouter-participant/{id}', name: 'races_add_member')]
+    public function add($id, $slug)
+    {
+        $member = $this->manager->getMemberRepository()->find($id);
+        $race = $this->manager->getRaceRepository()->findOneBy(['slug' => $slug]);
+        $this->manager->participate($member, $race);
+        $this->addFlash('success', 'Action prise en compte');
+        return $this->redirectToRoute('races_show', ['slug' => $race->getSlug()]);
     }
 }

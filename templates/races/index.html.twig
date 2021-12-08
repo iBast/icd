@@ -31,7 +31,7 @@
 								<td>{{race.name}}</td>
 								<td>{{race.location}}</td>
 								<td>
-									<a href="{{path('races_show', {'id':race.id})}}" class="btn btn-primary">Voir</a>
+									<a href="{{path('races_show', {'slug':race.slug})}}" class="btn btn-primary">Voir</a>
 								</td>
 							</tr>
 						{% endfor %}

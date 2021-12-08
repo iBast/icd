@@ -6,7 +6,6 @@ use App\Entity\EventComment;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
 
 class EventCommentVoter extends Voter
 {
@@ -14,13 +13,6 @@ class EventCommentVoter extends Voter
     const UPDATE = 'update';
     const DELETE = 'delete';
     const CREATE = 'create';
-
-    private $user;
-
-    public function __construct(Security $security)
-    {
-        $this->user = $security->getUser();
-    }
 
     protected function supports($attribute, $subject)
     {
@@ -30,10 +22,8 @@ class EventCommentVoter extends Voter
         }
 
         // only vote on Post objects inside this voter
-        if ($attribute != self::CREATE) {
-            if (null !== $subject and !$subject instanceof EventComment) {
-                return false;
-            }
+        if (!$subject instanceof EventComment) {
+            return false;
         }
 
         return true;
@@ -41,8 +31,9 @@ class EventCommentVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
+        $user = $token->getUser();
 
-        if (!$this->user instanceof User) {
+        if (!$user instanceof User) {
             return false;
         }
 
@@ -50,13 +41,13 @@ class EventCommentVoter extends Voter
         $comment = $subject;
         switch ($attribute) {
             case self::READ:
-                return $this->canRead($comment, $this->user);
+                return $this->canRead($comment, $user);
             case self::UPDATE:
-                return $this->canUpdate($comment, $this->user);
+                return $this->canUpdate($comment, $user);
             case self::DELETE:
-                return $this->canDelete($comment, $this->user);
+                return $this->canDelete($comment, $user);
             case self::CREATE:
-                return $this->canCreate($this->user);
+                return $this->canCreate($user);
         }
 
         throw new \LogicException('This code should not be reached!');
