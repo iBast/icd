@@ -70,7 +70,7 @@ class RacesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->comment($comment, $race, $this->getUser());
             $this->addFlash('success', 'Le commentaire a bien été ajouté.');
-            return $this->redirectToRoute('races_show', ['id' => $race->getId()]);
+            return $this->redirectToRoute('races_show', ['slug' => $race->getSlug()]);
         }
 
         return $this->render('races/show.html.twig', [
@@ -96,7 +96,7 @@ class RacesController extends AbstractController
     {
         $this->manager->changeState($comment);
         $this->addFlash('success', 'Action prise en compte');
-        return $this->redirectToRoute('races_show', ['id' => $comment->getEvent()->getId()]);
+        return $this->redirectToRoute('races_show', ['slug' => $comment->getEvent()->getSlug()]);
     }
 
     #[Route('/courses/{slug}/ajouter-participant/{id}', name: 'races_add_member')]
