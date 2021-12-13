@@ -1,11 +1,19 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
-	Nouvelle course
+	{% if race.id is null %}
+		Nouvelle course
+	{% else %}
+		Edition
+	{% endif %}
 {% endblock %}
 
 {% block body %}
-	<h1>Nouvelle course</h1>
+	{% if race.id is null %}
+		<h1>Nouvelle course</h1>
+	{% else %}
+		<h1>Edition</h1>
+	{% endif %}
 	<div class="container">
 		{{form_start(form)}}
 		<div class="row">
@@ -21,7 +29,11 @@
 			</div>
 		</div>
 		<div class="d-flex justify-content-end">
-			<button type="submit" class="btn btn-success">Ajouter la course</button>
+			{% if race.id  is null %}
+				<button type="submit" class="btn btn-success">Ajouter la course</button>
+			{% else %}
+				<button type="submit" class="btn btn-success">Modifier la course</button>
+			{% endif %}
 		</div>
 		{{form_end(form)}}
 	</div>

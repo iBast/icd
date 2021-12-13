@@ -7,6 +7,8 @@ use App\Entity\User;
 use App\Entity\Member;
 use App\Form\RaceType;
 use App\Entity\EventComment;
+use App\Entity\RaceReport;
+use App\Form\RaceReportType;
 use App\Manager\RaceManager;
 use App\Form\RaceCommentType;
 use App\Repository\RaceRepository;
@@ -31,8 +33,10 @@ class RacesController extends AbstractController
     public function index(): Response
     {
         $races = $this->manager->getRaceRepository()->findUpComingRaces();
+        $pastRaces = $this->manager->getRaceRepository()->findLastRaces();
         return $this->render('races/index.html.twig', [
             'races' => $races,
+            'pastRaces' => $pastRaces
         ]);
     }
 
@@ -51,6 +55,7 @@ class RacesController extends AbstractController
 
         return $this->render('races/new.html.twig', [
             'form' => $form->createView(),
+            'race' => $race
         ]);
     }
 
@@ -107,5 +112,57 @@ class RacesController extends AbstractController
         $this->manager->participate($member, $race);
         $this->addFlash('success', 'Action prise en compte');
         return $this->redirectToRoute('races_show', ['slug' => $race->getSlug()]);
+    }
+
+    #[Route('/courses/edition/{slug}', name: 'races_edit')]
+    public function edit(Race $race, Request $request)
+    {
+        $form = $this->createForm(RaceType::class, $race);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->add($race);
+            $this->addFlash('success', 'La course a bien été ajoutée.');
+            return $this->redirectToRoute('races_home');
+        }
+
+        return $this->render('races/new.html.twig', [
+            'form' => $form->createView(),
+            'race' => $race
+        ]);
+    }
+
+    #[Route('/courses/{slug}/ajout-resume/{id}', name: 'races_addReport')]
+    public function addReport($slug, $id, Request $request)
+    {
+        $member = $this->manager->getMemberRepository()->find($id);
+        $race = $this->manager->getRaceRepository()->findOneBy(['slug' => $slug]);
+
+        $raceReport = new RaceReport;
+        $raceReport->setParticipant($member)->setRace($race);
+        $form = $this->createForm(RaceReportType::class, $raceReport);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->save($raceReport);
+            $this->addFlash('success', 'Le résumé a été enregistré. Merci de ta contribution.');
+            return $this->redirectToRoute('races_show', ['slug' => $race->getSlug()]);
+        }
+
+        return $this->render('races/addReport.html.twig', [
+            'form' => $form->createView(),
+            'race' => $race,
+            'member' => $member
+        ]);
+    }
+
+    #[Route('/courses/{slug}/resumes', name: 'races_reports')]
+    public function reports(Race $race)
+    {
+        $this->denyAccessUnlessGranted('ROLE_COMMUNITY');
+        return $this->render('races/reports.html.twig', [
+            'reports' => $race->getRaceReports(),
+            'race' => $race
+        ]);
     }
 }

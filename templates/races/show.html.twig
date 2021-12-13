@@ -7,83 +7,159 @@
 {% block body %}
 
 	<div class="row mb-3">
-		<div class="col-md-8">
-			<h1>{{race.name}}</h1>
-			<h2>
-				<small class="text-muted">
-					{{race.date | date('d/m/Y')}}
-					-
-					{{race.location}}</small>
-			</h2>
-			<h3>Informations :</h3>
-			<p>{{race.description | raw}}</p>
 
-			<p>Informations :
-				<a href="{{race.link}}">{{race.link}}</a>
-			</p>
-			<p>Inscriptions :
-				<a href="{{race.signInLink}}">{{race.signInLink}}</a>
-			</p>
-
-		</div>
-		<div class="col-md-4">
-			<div class="mb-5 d-flex justify-content-end">
-				<a href="{{path('races_home')}}" class="btn btn-primary">Retour aux courses</a>
-			</div>
-			<h3>Participation</h3>
-			<ul class="list-group">
-
-
-				{% for member in app.user.members %}
-					{% if member in  race.registratedMember %}
-						<li class="list-group-item d-flex justify-content-between align-items-center">
-							<span>{{member.firstName}}
-								{{member.lastName}}
-
-							</span>
-							<span class="badge bg-danger rounded-pill">
-
-								<span class="badge bg-danger rounded-pill">
-									<a href="{{path('races_add_member', {'id': member.id, 'slug': race.slug})}}" class="btn btn-danger">Retirer la participation</a>
-								</span>
-							</span>
-						</li>
-					{% else %}
-						<li class="list-group-item d-flex justify-content-between align-items-center">
-							<span>{{member.firstName}}
-								{{member.lastName}}
-
-							</span>
-							<span class="badge bg-primary rounded-pill">
-								<a href="{{path('races_add_member', {'id': member.id, 'slug': race.slug})}}" class="btn btn-primary">Indiquer la participation</a>
-							</span>
-						</li>
-					{% endif %}
-
-
-				{% endfor %}
-			</ul>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-8">
-			<h3>Discussion</h3>
-			<div class="mb-5">
-				{{form_start(form)}}
-				{{form_row(form.content)}}
-				<div class="d-flex justify-content-end">
-					<button class="btn btn-success">Ajouter mon commentaire</button>
+		<div class="col-lg-4 order-lg-2">
+			<div class="mb-5 d-flex justify-content-between">
+				<div class="d-lg-none">
+					<h1>{{ race.name }}</h1>
+					<h2>
+						<small class="text-muted">
+							{{race.date | date('d/m/Y')}}
+							-
+							{{race.location}}</small>
+					</h2>
 				</div>
-				{{form_end(form)}}
+				<div>
+					{% if is_granted('ROLE_COMMUNITY') %}
+						<a href="{{path('races_reports', {'slug': race.slug})}}" class="btn btn-primary me-2">Résumés</a>
+					{% endif %}
+					<a href="{{ path('races_edit', {'slug': race.slug}) }}" class="btn btn-primary me-2">
+						<i class="fas fa-pen"></i>
+						Editer
+					</a>
+					<a href="{{path('races_home')}}" class="btn btn-primary">Retour aux courses</a>
+				</div>
 			</div>
-			{% if race.eventComments is empty %}
-				<p>Il n'y a pas encore de commentaire n'hésite pas a en ajouter.</p>
-			{% else %}
-				<div class="mt-5">
-					{% if pinnedComments %}
-						<h4>Commentaires épinglés :</h4>
-						{% for comment in pinnedComments %}
-							<div class="card border-danger mb-3">
+			<div class="mb-5">
+				<h3>Participation</h3>
+				<ul class="list-group">
+
+
+					{% for member in app.user.members %}
+						{% if member in  race.registratedMember %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<span>{{member.firstName}}
+									{{member.lastName}}
+
+								</span>
+								<span class="badge bg-danger rounded-pill">
+
+									<span class="badge bg-danger rounded-pill">
+										<a href="{{path('races_add_member', {'id': member.id, 'slug': race.slug})}}" class="btn btn-danger">Retirer la participation</a>
+									</span>
+								</span>
+							</li>
+						{% else %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<span>{{member.firstName}}
+									{{member.lastName}}
+
+								</span>
+								<span class="badge bg-primary rounded-pill">
+									<a href="{{path('races_add_member', {'id': member.id, 'slug': race.slug})}}" class="btn btn-primary">Indiquer la participation</a>
+								</span>
+							</li>
+						{% endif %}
+
+
+					{% endfor %}
+				</ul>
+			</div>
+			<div>
+				<h3>Participants</h3>
+				{% if race.registratedMember is empty %}
+					<p>Il n'y a pas encore de membre du club inscrit a cette course</p>
+				{% else %}
+					<ul class="list-group">
+						{% for member in race.registratedMember  %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">{{member.firstName}}
+								{{member.lastName}}
+								{% if member in app.user.members %}
+									<span class="badge bg-primary rounded-pill">
+										<a href="{{path('races_addReport', {'id': member.id, 'slug': race.slug})}}" class="btn btn-primary btn-sm">Envoyer mon résumé</a>
+									</span>
+								{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="col-lg-8 order-lg-1">
+			<div>
+				<div class="d-none d-lg-block">
+					<h1>{{race.name}}</h1>
+					<h2>
+						<small class="text-muted">
+							{{race.date | date('d/m/Y')}}
+							-
+							{{race.location}}</small>
+					</h2>
+				</div>
+				<h3>Informations :</h3>
+				<p>{{race.description | raw}}</p>
+
+				<p>Informations :
+					<a href="{{race.link}}">{{race.link}}</a>
+				</p>
+				<p>Inscriptions :
+					<a href="{{race.signInLink}}">{{race.signInLink}}</a>
+				</p>
+			</div>
+			<div class="mt-5">
+				<h3>Discussion</h3>
+				<div class="mb-5">
+					{{form_start(form)}}
+					{{form_row(form.content)}}
+					<div class="d-flex justify-content-end">
+						<button class="btn btn-success">Ajouter mon commentaire</button>
+					</div>
+					{{form_end(form)}}
+				</div>
+				{% if race.eventComments is empty %}
+					<p>Il n'y a pas encore de commentaire n'hésite pas a en ajouter.</p>
+				{% else %}
+					<div class="mt-5">
+						{% if pinnedComments %}
+							<h4>Commentaires épinglés :</h4>
+							{% for comment in pinnedComments %}
+								<div class="card border-danger mb-3">
+									<div class="card-header">
+										{{comment.user.firstName}}
+										{{comment.user.lastName}}
+										a écrit
+										<span class="float-end">
+
+
+											le
+											{{comment.createdAt | date('d/m/y')}}
+											à
+											{{comment.createdAt | date('H:i')}}
+
+											<a href="{{ path('races_pin_comment', {'id': comment.id})}}" class="btn btn-light btn-sm">
+												<i class="fas fa-thumbtack"></i>
+											</a>
+
+											{% if comment | commentCanDelete %}
+												<a href="{{ path('races_delete_comment', {'id': comment.id})}}" class="btn btn-light btn-sm">
+													<i class="fas fa-trash"></i>
+												</a>
+											{% endif %}
+
+										</span>
+									</div>
+									<div class="card-body">
+										<p class="card-text">{{comment.content}}</p>
+									</div>
+								</div>
+							{% endfor %}
+							<br>
+						{% endif %}
+						<h4>Commentaires :</h4>
+						{% for comment in comments %}
+							<div class="card border-primary mb-3">
+
 								<div class="card-header">
 									{{comment.user.firstName}}
 									{{comment.user.lastName}}
@@ -113,57 +189,11 @@
 								</div>
 							</div>
 						{% endfor %}
-						<br>
-					{% endif %}
-					<h4>Commentaires :</h4>
-					{% for comment in comments %}
-						<div class="card border-primary mb-3">
+					</div>
+				{% endif %}
 
-							<div class="card-header">
-								{{comment.user.firstName}}
-								{{comment.user.lastName}}
-								a écrit
-								<span class="float-end">
-
-
-									le
-									{{comment.createdAt | date('d/m/y')}}
-									à
-									{{comment.createdAt | date('H:i')}}
-
-									<a href="{{ path('races_pin_comment', {'id': comment.id})}}" class="btn btn-light btn-sm">
-										<i class="fas fa-thumbtack"></i>
-									</a>
-
-									{% if comment | commentCanDelete %}
-										<a href="{{ path('races_delete_comment', {'id': comment.id})}}" class="btn btn-light btn-sm">
-											<i class="fas fa-trash"></i>
-										</a>
-									{% endif %}
-
-								</span>
-							</div>
-							<div class="card-body">
-								<p class="card-text">{{comment.content}}</p>
-							</div>
-						</div>
-					{% endfor %}
-				</div>
-			{% endif %}
-
+			</div>
 		</div>
-		<div class="col-md-4">
-			<h3>Participants</h3>
-			{% if race.registratedMember is empty %}
-				<p>Il n'y a pas encore de membre du club inscrit a cette course</p>
-			{% else %}
-				<ul>
-					{% for member in race.registratedMember  %}
-						<li>{{member.firstName}}
-							{{member.lastName}}</li>
-					{% endfor %}
-				</ul>
-			{% endif %}
-		</div>
+
 	</div>
 {% endblock %}

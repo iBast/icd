@@ -25,6 +25,17 @@ class RaceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('r')
             ->where('r.date > :today')
             ->setParameter('today', new DateTime())
+            ->orderBy('r.date')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findLastRaces()
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.date < :today')
+            ->setParameter('today', new DateTime())
+            ->orderBy('r.date')
             ->getQuery()
             ->getResult();
     }

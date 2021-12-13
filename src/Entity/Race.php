@@ -64,10 +64,16 @@ class Race implements EntityInterface
      */
     private $slug;
 
+    /**
+     * @ORM\OneToMany(targetEntity=RaceReport::class, mappedBy="race", orphanRemoval=true)
+     */
+    private $raceReports;
+
     public function __construct()
     {
         $this->registratedMember = new ArrayCollection();
         $this->eventComments = new ArrayCollection();
+        $this->raceReports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -209,6 +215,36 @@ class Race implements EntityInterface
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|RaceReport[]
+     */
+    public function getRaceReports(): Collection
+    {
+        return $this->raceReports;
+    }
+
+    public function addRaceReport(RaceReport $raceReport): self
+    {
+        if (!$this->raceReports->contains($raceReport)) {
+            $this->raceReports[] = $raceReport;
+            $raceReport->setRace($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRaceReport(RaceReport $raceReport): self
+    {
+        if ($this->raceReports->removeElement($raceReport)) {
+            // set the owning side to null (unless already changed)
+            if ($raceReport->getRace() === $this) {
+                $raceReport->setRace(null);
+            }
+        }
 
         return $this;
     }
