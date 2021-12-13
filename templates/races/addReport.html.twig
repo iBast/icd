@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout d'un résumé
+{% endblock %}
+
+{% block body %}
+	<h1>Ajouté un résumé de course</h1>
+	<h2>{{ race.name }}
+		-
+		{{ member.firstName }}</h2>
+
+	{{form_start(form)}}
+	{{form_row(form.content)}}
+	<div class="d-flex justify-content-end">
+		<button type="submit" class="btn btn-success">Envoyer mon résumé</button>
+	</div>
+	{{form_end(form)}}
+{% endblock %}

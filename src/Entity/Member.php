@@ -82,11 +82,23 @@ class Member implements EntityInterface
      */
     private $enrollmentYoungs;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Race::class, mappedBy="registratedMember")
+     */
+    private $races;
+
+    /**
+     * @ORM\OneToMany(targetEntity=RaceReport::class, mappedBy="participant")
+     */
+    private $raceReports;
+
     public function __construct()
     {
         $this->user = new ArrayCollection();
         $this->enrollments = new ArrayCollection();
         $this->enrollmentYoungs = new ArrayCollection();
+        $this->races = new ArrayCollection();
+        $this->raceReports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -285,6 +297,63 @@ class Member implements EntityInterface
             // set the owning side to null (unless already changed)
             if ($enrollmentYoung->getOwner() === $this) {
                 $enrollmentYoung->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Race[]
+     */
+    public function getRaces(): Collection
+    {
+        return $this->races;
+    }
+
+    public function addRace(Race $race): self
+    {
+        if (!$this->races->contains($race)) {
+            $this->races[] = $race;
+            $race->addRegistratedMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRace(Race $race): self
+    {
+        if ($this->races->removeElement($race)) {
+            $race->removeRegistratedMember($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|RaceReport[]
+     */
+    public function getRaceReports(): Collection
+    {
+        return $this->raceReports;
+    }
+
+    public function addRaceReport(RaceReport $raceReport): self
+    {
+        if (!$this->raceReports->contains($raceReport)) {
+            $this->raceReports[] = $raceReport;
+            $raceReport->setParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRaceReport(RaceReport $raceReport): self
+    {
+        if ($this->raceReports->removeElement($raceReport)) {
+            // set the owning side to null (unless already changed)
+            if ($raceReport->getParticipant() === $this) {
+                $raceReport->setParticipant(null);
             }
         }
 

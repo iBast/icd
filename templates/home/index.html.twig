@@ -8,6 +8,8 @@
 		<h1>Bonjour
 			{{ app.user.firstName }}</h1>
 		<div class="row">
+			{% include "cards/_races.html.twig" %}
+			{# include "cards/_shop.html.twig" #}
 			{% if season %}
 				{% include "cards/_enrollment.html.twig" %}
 			{% endif %}

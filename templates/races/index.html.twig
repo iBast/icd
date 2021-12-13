@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Courses
+{% endblock %}
+
+{% block body %}
+	<h1>Courses</h1>
+	<br>
+	<a href="{{path('races_new')}}" class="btn btn-success">
+		<i class="fas fa-plus"></i>
+		Ajouter une course</a>
+	<br>
+	<div class="row">
+		<div class="col-lg-9">
+			<h2>Les courses à venir :
+			</h2>
+			{% if races != null %}
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Evènement</th>
+							<th>Lieu</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for race in races %}
+							<tr>
+								<td>{{race.date | date('d/m/Y')}}</td>
+								<td>{{race.name}}</td>
+								<td>{{race.location}}</td>
+								<td>
+									<a href="{{path('races_show', {'slug':race.slug})}}" class="btn btn-primary">Voir</a>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			{% else %}
+				<p>Il n'y a pas de course a venir. C'est le moment de se trouver un objectif !</p>
+			{% endif %}
+		</div>
+		<div class="col-lg-3">
+			<h3>Dernières courses :</h3>
+			{% if pastRaces != null %}
+				<ul class="list-group">
+					{% for race in pastRaces %}
+						<li class="list-group-item d-flex justify-content-between align-items-center">
+							{{race.name}}
+							<a href="{{ path('races_show', {'slug': race.slug}) }}" class="badge bg-primary rounded-pill btn btn-primary">voir</a>
+						</li>
+					{% endfor %}
+				</ul>
+			{% else %}
+				<p>Il n'y a pas encore de course passée.
+				</p>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}
