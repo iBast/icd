@@ -75,6 +75,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $enrollmentYoungs;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EventComment::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $eventComments;
+
     public const ROLES = [
         'Utilisateur' => 'ROLE_USER',
         'Administrateur' => 'ROLE_ADMIN',
@@ -91,6 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->members = new ArrayCollection();
         $this->enrollments = new ArrayCollection();
         $this->enrollmentYoungs = new ArrayCollection();
+        $this->eventComments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -312,6 +318,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($enrollmentYoung->getUser() === $this) {
                 $enrollmentYoung->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EventComment[]
+     */
+    public function getEventComments(): Collection
+    {
+        return $this->eventComments;
+    }
+
+    public function addEventComments(EventComment $eventComments): self
+    {
+        if (!$this->coneventCommentstent->contains($eventComments)) {
+            $this->eventComments[] = $eventComments;
+            $eventComments->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventComments(EventComment $eventComments): self
+    {
+        if ($this->eventComments->removeElement($eventComments)) {
+            // set the owning side to null (unless already changed)
+            if ($eventComments->getUser() === $this) {
+                $eventComments->setUser(null);
             }
         }
 
