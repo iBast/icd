@@ -21,6 +21,36 @@
 				</div>
 				<div>
 					{% if is_granted('ROLE_COMMUNITY') %}
+						<!-- Button trigger modal -->
+						<button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#deleteModal-race">
+							<i class="fas fa-trash"></i>
+						</button>
+
+						<!-- Modal -->
+						<div class="modal fade" id="deleteModal-race" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="deleteModal">Confirmation de suppression</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										Tu es sur le point de supprimer la course
+										{{race.name}}.
+										<br>
+										Cet action est définitive.
+										<br>
+										Es-tu sûr ?
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+										<a href="{{path('races_delete', {'slug':race.slug})}}" class="btn btn-danger">Supprimer définitivement</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+					{% if is_granted('ROLE_COMMUNITY') %}
 						<a href="{{path('races_reports', {'slug': race.slug})}}" class="btn btn-primary me-2">Résumés</a>
 					{% endif %}
 					<a href="{{ path('races_edit', {'slug': race.slug}) }}" class="btn btn-primary me-2">
@@ -45,7 +75,7 @@
 								<span class="badge bg-danger rounded-pill">
 
 									<span class="badge bg-danger rounded-pill">
-										<a href="{{path('races_add_member', {'id': member.id, 'slug': race.slug})}}" class="btn btn-danger">Retirer la participation</a>
+										<a href="{{path('races_add_member', {'id': member.id, 'slug': race.slug})}}" class="btn btn-danger btn-sm">Retirer la participation</a>
 									</span>
 								</span>
 							</li>
@@ -56,7 +86,7 @@
 
 								</span>
 								<span class="badge bg-primary rounded-pill">
-									<a href="{{path('races_add_member', {'id': member.id, 'slug': race.slug})}}" class="btn btn-primary">Indiquer la participation</a>
+									<a href="{{path('races_add_member', {'id': member.id, 'slug': race.slug})}}" class="btn btn-primary btn-sm">Indiquer la participation</a>
 								</span>
 							</li>
 						{% endif %}

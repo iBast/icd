@@ -165,4 +165,13 @@ class RacesController extends AbstractController
             'race' => $race
         ]);
     }
+
+    #[Route('/courses/{slug}/delete', name: 'races_delete')]
+    public function deleteRace(Race $race)
+    {
+        $this->denyAccessUnlessGranted('ROLE_COMITE');
+        $this->manager->remove($race);
+        $this->addFlash('success', 'La course a bien été supprimée.');
+        return $this->redirectToRoute('races_home');
+    }
 }
