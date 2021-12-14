@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Boutique
+{% endblock %}
+
+{% block body %}
+	<div class="d-flex justify-content-between">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{ path('home') }}">Accueil</a>
+			</li>
+			<li class="breadcrumb-item active">Boutique</li>
+		</ol>
+		<div>
+			<ul class="nav nav-pills">
+				<li class="nav-item">
+					<a class="nav-link" href="#">
+						<i class="fas fa-box-open"></i>
+						Mes commandes</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">
+						<i class="fas fa-shopping-cart"></i>
+						Panier</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<h1>Boutique de l'Iron Club</h1>
+{% endblock %}

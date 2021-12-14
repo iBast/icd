@@ -15,28 +15,53 @@
 			<h2>Les courses à venir :
 			</h2>
 			{% if races != null %}
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Date</th>
-							<th>Evènement</th>
-							<th>Lieu</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for race in races %}
+				<div class="d-none d-md-block">
+					<table class="table">
+						<thead>
 							<tr>
-								<td>{{race.date | date('d/m/Y')}}</td>
-								<td>{{race.name}}</td>
-								<td>{{race.location}}</td>
-								<td>
-									<a href="{{path('races_show', {'slug':race.slug})}}" class="btn btn-primary">Voir</a>
-								</td>
+								<th>Date</th>
+								<th>Evènement</th>
+								<th>Lieu</th>
+								<th>Participants</th>
+								<th>Action</th>
 							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+							{% for race in races %}
+								<tr>
+									<td>{{race.date | date('d/m/Y')}}</td>
+									<td>{{race.name}}</td>
+									<td>{{race.location}}</td>
+									<td>
+										{{race.registratedMember | length}}</td>
+									<td>
+										<a href="{{path('races_show', {'slug':race.slug})}}" class="btn btn-primary">Voir</a>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<div class="d-md-none">
+					{% for race in races %}
+						<div class="card mb-3">
+							<h3 class="card-header">{{race.name}}</h3>
+							<div class="card-body d-flex justify-content-between">
+								<div>
+									<h5 class="card-title">{{race.date | date('d/m/Y')}}</h5>
+									<h6 class="card-subtitle text-muted">{{race.location}}</h6>
+								</div>
+								<div>
+									<a href="{{path('races_show', {'slug':race.slug})}}" class="btn btn-primary">Voir</a>
+								</div>
+							</div>
+							<div class="card-footer text-muted">
+								{{race.registratedMember | length}}
+								participant(s)
+							</div>
+						</div>
+					{% endfor %}
+				</div>
 			{% else %}
 				<p>Il n'y a pas de course a venir. C'est le moment de se trouver un objectif !</p>
 			{% endif %}

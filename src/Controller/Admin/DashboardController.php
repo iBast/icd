@@ -12,6 +12,9 @@ use App\Entity\Accounting;
 use App\Entity\Enrollment;
 use App\Entity\EnrollmentYoung;
 use App\Entity\AccountingDocument;
+use App\Entity\ShopCategory;
+use App\Entity\ShopProduct;
+use App\Entity\ShopProductVariant;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -48,6 +51,10 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Membres', 'fas fa-users', Member::class),
             MenuItem::linkToCrud('Adhésions', 'fas fa-folder-open', Enrollment::class),
             MenuItem::linkToCrud('Adhésions Jeunes', 'fas fa-folder-open', EnrollmentYoung::class),
+            MenuItem::section('Boutique')->setPermission('ROLE_TENUES'),
+            MenuItem::linkToCrud('Catégories', 'fas fa-list', ShopCategory::class)->setPermission('ROLE_TENUES'),
+            MenuItem::linkToCrud('Produits', 'fas fa-tshirt', ShopProduct::class)->setPermission('ROLE_TENUES'),
+            MenuItem::linkToCrud('Variation produits', 'fas fa-box-open', ShopProductVariant::class)->setPermission('ROLE_TENUES'),
             MenuItem::section('Trésorerie')->setPermission('ROLE_TRESORIER'),
             MenuItem::linkToCrud('Comptes', 'fas fa-list', Account::class)->setPermission('ROLE_TRESORIER'),
             MenuItem::linkToCrud('Journal', 'fas fa-newspaper', Accounting::class)->setPermission('ROLE_TRESORIER'),

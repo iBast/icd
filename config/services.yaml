@@ -6,6 +6,7 @@
 parameters:
     enrollment_docs: /uploads/members
     accounting_docs: /uploads/accounting
+    product_docs: /uploads/shop
 
     app_enrollment_new: '%env(APP_ENROLLMENT_NEW)%'
     app_enrollment_pending: '%env(APP_ENROLLMENT_PENDING)%'
