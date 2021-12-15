@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block body %}
-	<div class="d-flex justify-content-between">
+	<div class="d-flex justify-content-between flex-wrap">
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item">
 				<a href="{{ path('home') }}">Accueil</a>
@@ -31,5 +31,67 @@
 	</div>
 	<h1>Mon panier</h1>
 
+	{% if items | length > 0 %}
 
+		<table class="table">
+
+			<thead>
+				<tr>
+					<th>Produit</th>
+					<th>Modèle</th>
+					<th>Prix</th>
+					<th>Quantité</th>
+					<th>Total</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in items %}
+					<tr>
+						<td>{{ item.product.product.name }}</td>
+						<td>{{ item.product.name }}</td>
+						<td>{{ item.product.product.price | amount}}</td>
+						<td>
+							<a href="{{ path('shop_cart_decrement', {'id': item.product.id}) }}" class="btn btn-sm btn-primary">
+								<i class="fas fa-minus"></i>
+							</a>
+							{{ item.qty }}
+							<a href="{{ path('shop_cart_add', {'id': item.product.id}) }}?returnToCart=true" class="btn btn-sm btn-primary">
+								<i class="fas fa-plus"></i>
+							</a>
+						</td>
+						<td>{{ item.total | amount }}</td>
+						<td>
+							<a href="{{ path("shop_cart_delete", {'id': item.product.id}) }}" class="btn btn-danger btn-sm">
+								<i class="fas fa-trash"></i>
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="4">Total :</td>
+					<td colspan="2">{{ total | amount }}</td>
+				</tr>
+			</tfoot>
+		</table>
+		<hr>
+		{#
+														{% if app.user %}
+															<h2>Confirmez votre commande en remplissant ce formulaire</h2>
+															{{ form_start(confirmationForm, {'action': path('purchase_confirm')})}}
+															{{ form_widget(confirmationForm)}}
+															<button type="submit" class="btn btn-success">Je confirme !</button>
+															{{ form_end(confirmationForm)}}
+														{% else %}
+															<h2>Vous devez être connecté pour confirmer cette commande</h2>
+															<a href="{{ path('security_login') }}" class="btn btn-success">Connexion</a>
+															ou
+															<a href="#">Créer un compte</a>
+														{% endif %}
+													{% else %}
+														<h2>Le panier est vide</h2>
+												#}
+	{% endif %}
 {% endblock %}

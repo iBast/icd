@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ShopCategory;
 use App\Entity\ShopProduct;
+use App\Form\ProductType;
 use App\Manager\ShopManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,15 +36,6 @@ class ShopController extends AbstractController
         ]);
     }
 
-    #[Route('/boutique/panier', name: 'shop_cart')]
-    public function cart(): Response
-    {
-
-        return $this->render('shop/cart.html.twig', [
-            'products' => $this->manager->getProductRepository()->findAll()
-        ]);
-    }
-
     #[Route('/boutique/{slug}', name: 'shop_category')]
     public function category(ShopCategory $category): Response
     {
@@ -57,8 +49,10 @@ class ShopController extends AbstractController
     #[Route('/boutique/{category_slug}/{slug}', name: 'shop_show')]
     public function show(ShopProduct $product): Response
     {
+        $form = $this->createForm(ProductType::class, null, ['product' => $product]);
         return $this->render('shop/show.html.twig', [
             'product' => $product,
+            'form' => $form->createView()
         ]);
     }
 }

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-	<div class="d-flex justify-content-between">
+	<div class="d-flex justify-content-between flex-wrap">
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item">
 				<a href="{{ path('home') }}">Accueil</a>
@@ -31,8 +31,9 @@
 		</div>
 	</div>
 	<h1>{{category.name}}</h1>
-
-	{% for product in products %}
-		{% include "shared/_shop_product_card.html.twig" %}
-	{% endfor %}
+	<div class="row">
+		{% for product in products %}
+			{% include "shared/_shop_product_card.html.twig" %}
+		{% endfor %}
+	</div>
 {% endblock %}

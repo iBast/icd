@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-	<div class="d-flex justify-content-between">
+	<div class="d-flex justify-content-between flex-wrap mb-3">
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item">
 				<a href="{{ path('home') }}">Accueil</a>
@@ -18,8 +18,8 @@
 			</li>
 			<li class="breadcrumb-item active">{{product.name}}</li>
 		</ol>
-		<div>
-			<ul class="nav nav-pills">
+		<div class="ms-auto">
+			<ul class="nav">
 				<li class="nav-item">
 					<a class="nav-link" href="{{ path('shop_orders') }}">
 						<i class="fas fa-box-open"></i>
@@ -47,8 +47,13 @@
 			</p>
 			<hr>
 			<h2>Choisis ton modèle</h2>
-			form
+			{{form_start(form)}}
+			<div class="row">
+				<div class="col-4">{{ form_row(form.quantity) }}</div>
+				<div class="col-8">{{ form_row(form.variant) }}</div>
+			</div>
 			<button type="submit" class="btn btn-success">Ajouter au panier</button>
+			{{form_end(form)}}
 		</div>
 	</div>
 {% endblock %}
