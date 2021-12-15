@@ -1,0 +1,21 @@
+<div class="col-6 col-md-4 col-lg-3">
+	<div class="card mt-3 bg-light">
+		<a href="{{path('shop_show', {'category_slug': product.category.slug, 'slug': product.slug})}} ">
+			<img src="/uploads/shop/{{product.picturePath}}" alt="image du produit" class="img-fluid">
+		</a>
+		<div class="card-body">
+			<p class="d-flex justify-content-between">
+				<span>
+					<a href="{{path('shop_show', {'category_slug': product.category.slug, 'slug': product.slug}) }}" class="card-link">{{product.name}}</a>
+					<br>
+					<a href="{{ path('shop_category', {'slug': product.category.slug}) }}" class="badge bg-dark btn">{{product.category.name}}</a>
+				</span>
+				<span class="">{{product.price | amount}}</span>
+			</p>
+			<p class="text-end">
+				<a href="{{ path('shop_show', {'category_slug': product.category.slug, 'slug': product.slug}) }}" class="btn btn-primary">Voir</a>
+			</p>
+
+		</div>
+	</div>
+</div>

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Boutique
+{% block title %}Mes commandes
 {% endblock %}
 
 {% block body %}
@@ -9,7 +9,10 @@
 			<li class="breadcrumb-item">
 				<a href="{{ path('home') }}">Accueil</a>
 			</li>
-			<li class="breadcrumb-item active">Boutique</li>
+			<li class="breadcrumb-item">
+				<a href="{{ path('shop') }}">Boutique</a>
+			</li>
+			<li class="breadcrumb-item active">Mes commandes</li>
 		</ol>
 		<div>
 			<ul class="nav nav-pills">
@@ -26,9 +29,7 @@
 			</ul>
 		</div>
 	</div>
-	<h1>Boutique de l'Iron Club</h1>
+	<h1>Mes commandes</h1>
 
-	{% for product in products %}
-		{% include "shared/_shop_product_card.html.twig" %}
-	{% endfor %}
+
 {% endblock %}

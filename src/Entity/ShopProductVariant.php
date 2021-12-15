@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=ShopProductVariantRepository::class)
  */
-class ShopProductVariant
+class ShopProductVariant implements EntityInterface
 {
     /**
      * @ORM\Id

@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @ORM\Entity(repositoryClass=ShopProductRepository::class)
  *  @Vich\Uploadable
  */
-class ShopProduct
+class ShopProduct implements EntityInterface
 {
     /**
      * @ORM\Id
