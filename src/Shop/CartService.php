@@ -4,37 +4,38 @@ namespace App\Shop;
 
 use App\Shop\CartItem;
 use App\Repository\ShopProductVariantRepository;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class CartService
 {
-    protected $session;
+    protected $requestStack;
     protected $productRepository;
 
-    public function __construct(SessionInterface $session, ShopProductVariantRepository $productRepository)
+    public function __construct(RequestStack $requestStack, ShopProductVariantRepository $productRepository)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->productRepository = $productRepository;
     }
 
     protected function getCart(): array
     {
-        return $this->session->get('cart', []);
+        return $this->requestStack->getSession()->get('cart', []);
     }
 
     protected function saveCart(array $cart)
     {
-        return $this->session->set('cart', $cart);
+        return $this->requestStack->getSession()->set('cart', $cart);
     }
 
-    public function add(int $id)
+    public function add(int $id, $qty = 1)
     {
         $cart = $this->getCart();
 
         if (!array_key_exists($id, $cart)) {
             $cart[$id] = 0;
         }
-        $cart[$id]++;
+        $cart[$id] = $cart[$id] + $qty;
 
         $this->saveCart($cart);
     }
@@ -42,12 +43,12 @@ class CartService
     public function getTotal(): int
     {
         $total = 0;
-        foreach ($this->session->get('cart', []) as $id => $qty) {
-            $product = $this->productRepository->find($id);
-            if (!$product) {
+        foreach ($this->requestStack->getSession()->get('cart', []) as $id => $qty) {
+            $variant = $this->productRepository->find($id);
+            if (!$variant) {
                 continue;
             }
-            $total += $product->getProduct()->getPrice() * $qty;
+            $total += $variant->getProduct()->getPrice() * $qty;
         }
         return $total;
     }

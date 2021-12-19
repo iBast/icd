@@ -21,15 +21,19 @@
 				<li class="nav-item">
 					<a class="nav-link" href="{{ path('shop_cart') }}">
 						<i class="fas fa-shopping-cart"></i>
-						Panier</a>
+						Panier ({{ cartService.total | amount }})</a>
 				</li>
 			</ul>
 		</div>
 	</div>
 	<h1>Boutique de l'Iron Club</h1>
 	<div class="row">
-		{% for product in products %}
-			{% include "shared/_shop_product_card.html.twig" %}
-		{% endfor %}
+		{% if products %}
+			{% for product in products %}
+				{% include "shared/_shop_product_card.html.twig" %}
+			{% endfor %}
+		{% else %}
+			<p>Il n'y a pas encore de produits dans la boutique.</p>
+		{% endif %}
 	</div>
 {% endblock %}

@@ -6,17 +6,17 @@ use App\Entity\ShopProductVariant;
 
 class CartItem
 {
-    public $product;
+    public $variant;
     public $qty;
 
-    public function __construct(ShopProductVariant $product, int $qty)
+    public function __construct(ShopProductVariant $variant, int $qty)
     {
-        $this->product = $product;
+        $this->variant = $variant;
         $this->qty = $qty;
     }
 
     public function getTotal(): int
     {
-        return $this->product->getProduct()->getPrice() * $this->qty;
+        return $this->variant->getProduct()->getPrice() * $this->qty;
     }
 }

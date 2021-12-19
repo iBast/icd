@@ -21,16 +21,23 @@ class CartController extends AbstractController
     }
 
 
-    #[Route('/boutique/panier/ajout/{id}', name: 'shop_cart_add', requirements: ['id' => '\d+'])]
-    public function add($id, Request $request)
+    #[Route('/boutique/panier/ajout', name: 'shop_cart_add')]
+    public function add(Request $request)
     {
-        $product = $this->productRepository->find($id);
-
-        if (!$product) {
-            throw $this->createNotFoundException("Le produit $id n'a pas été trouvé");
+        if ($request->request->get('product')) {
+            $form = $request->request->get('product');
+            $product = $this->productRepository->find($form['variant']);
+            $qty = $form['quantity'];
+        } else {
+            $product = $this->productRepository->find($request->query->get('id'));
+            $qty = 1;
         }
 
-        $this->cartService->add($id);
+        if (!$product) {
+            throw $this->createNotFoundException("Le produit n'a pas été trouvé");
+        }
+
+        $this->cartService->add($product->getId(), $qty);
 
         $this->addFlash('success', "Le produit a bien été ajouté au panier");
 
@@ -51,7 +58,6 @@ class CartController extends AbstractController
 
         $detailedCart = $this->cartService->getDetailedCartItems();
         $total = $this->cartService->getTotal();
-
 
         return $this->render('shop/cart.html.twig', [
             'items' => $detailedCart,

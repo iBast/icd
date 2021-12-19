@@ -4,15 +4,17 @@ namespace App\Controller\Admin;
 
 use App\Entity\ShopProduct;
 use App\Entity\ShopProductVariant;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
-use Vich\UploaderBundle\Form\Type\VichImageType;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class ShopProductCrudController extends AbstractCrudController
 {
@@ -26,12 +28,14 @@ class ShopProductCrudController extends AbstractCrudController
         return $crud
             // the labels used to refer to this entity in titles, buttons, etc.
             ->setEntityLabelInSingular('Produit')
-            ->setEntityLabelInPlural('Produits');
+            ->setEntityLabelInPlural('Produits')
+            ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig');
     }
 
     public function configureFields(string $pageName): iterable
     {
         return [
+            BooleanField::new('isVisible', 'En ligne'),
             ImageField::new('picturePath', 'Image')
                 ->hideOnForm()
                 ->setBasePath($this->getParameter('product_docs')),
@@ -40,7 +44,8 @@ class ShopProductCrudController extends AbstractCrudController
             MoneyField::new('price', 'Prix')->setCurrency('EUR'),
             AssociationField::new('category', 'Catégorie'),
             TextField::new('slug', 'Slug')->hideOnForm(),
-            TextField::new('reference', 'ref')
+            TextField::new('reference', 'ref'),
+            TextareaField::new('description', 'Description')->onlyOnForms()->setFormType(CKEditorType::class)
         ];
     }
 }

@@ -19,6 +19,14 @@ class ShopProductVariantRepository extends ServiceEntityRepository
         parent::__construct($registry, ShopProductVariant::class);
     }
 
+    public function findAllWithStock()
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.stock > 0')
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return ShopProductVariant[] Returns an array of ShopProductVariant objects
     //  */

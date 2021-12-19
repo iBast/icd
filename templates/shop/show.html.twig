@@ -28,7 +28,7 @@
 				<li class="nav-item">
 					<a class="nav-link" href="{{ path('shop_cart') }}">
 						<i class="fas fa-shopping-cart"></i>
-						Panier</a>
+						Panier ({{ cartService.total | amount }})</a>
 				</li>
 			</ul>
 		</div>
@@ -47,13 +47,19 @@
 			</p>
 			<hr>
 			<h2>Choisis ton modèle</h2>
-			{{form_start(form)}}
+			{{ form_start(form, {'action': path('shop_cart_add')}) }}
 			<div class="row">
 				<div class="col-4">{{ form_row(form.quantity) }}</div>
 				<div class="col-8">{{ form_row(form.variant) }}</div>
 			</div>
 			<button type="submit" class="btn btn-success">Ajouter au panier</button>
 			{{form_end(form)}}
+		</div>
+	</div>
+	<div class="row mt-4">
+		<div class="col-12">
+			{{product.description | raw}}
+
 		</div>
 	</div>
 {% endblock %}

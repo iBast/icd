@@ -1,4 +1,8 @@
 easy_admin:
+    design:
+        form_theme:
+            - "@EasyAdmin/form/bootstrap_5.html.twig"
+            - "@FOSCKEditor/Form/ckeditor_widget.html.twig"
     entities:
         Enrollment:
             class: App\Entity\Enrollment
@@ -16,5 +20,11 @@ easy_admin:
             class: App\Entity\Member
         AccountingDocumnent:
             class: App\Entity\AccountingDocumnent
+        ShopProduct:
+            class: App\Entity\ShopProduct
+            form:
+                fields:
+                    - { property: 'description', type: 'text_editor' }
     list:
         actions: ['show', 'export']
+    

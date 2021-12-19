@@ -67,6 +67,16 @@ class ShopProduct implements EntityInterface
      */
     private $shopProductVariants;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isVisible;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $Description;
+
     public function __construct()
     {
         $this->shopProductVariants = new ArrayCollection();
@@ -207,5 +217,29 @@ class ShopProduct implements EntityInterface
     public function __toString()
     {
         return $this->name;
+    }
+
+    public function getIsVisible(): ?bool
+    {
+        return $this->isVisible;
+    }
+
+    public function setIsVisible(bool $isVisible): self
+    {
+        $this->isVisible = $isVisible;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->Description;
+    }
+
+    public function setDescription(?string $Description): self
+    {
+        $this->Description = $Description;
+
+        return $this;
     }
 }

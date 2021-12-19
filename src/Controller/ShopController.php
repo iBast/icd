@@ -9,6 +9,7 @@ use App\Manager\ShopManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class ShopController extends AbstractController
 {
@@ -23,16 +24,7 @@ class ShopController extends AbstractController
     public function index(): Response
     {
         return $this->render('shop/index.html.twig', [
-            'products' => $this->manager->getProductRepository()->findAll(),
-        ]);
-    }
-
-    #[Route('/boutique/mes-commandes', name: 'shop_orders')]
-    public function orders(): Response
-    {
-
-        return $this->render('shop/orders.html.twig', [
-            'products' => $this->manager->getProductRepository()->findAll()
+            'products' => $this->manager->getProductRepository()->findVisible()
         ]);
     }
 
@@ -47,7 +39,7 @@ class ShopController extends AbstractController
     }
 
     #[Route('/boutique/{category_slug}/{slug}', name: 'shop_show')]
-    public function show(ShopProduct $product): Response
+    public function show(ShopProduct $product, Request $request): Response
     {
         $form = $this->createForm(ProductType::class, null, ['product' => $product]);
         return $this->render('shop/show.html.twig', [

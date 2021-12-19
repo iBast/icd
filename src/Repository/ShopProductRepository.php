@@ -19,6 +19,14 @@ class ShopProductRepository extends ServiceEntityRepository
         parent::__construct($registry, ShopProduct::class);
     }
 
+    public function findVisible()
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.isVisible = true')
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return ShopProduct[] Returns an array of ShopProduct objects
     //  */
