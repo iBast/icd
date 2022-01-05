@@ -142,4 +142,9 @@ class PurchaseItem implements EntityInterface
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->quantity . ' x ' . $this->ProductName . ' - ' . $this->productVariant->getName();
+    }
 }

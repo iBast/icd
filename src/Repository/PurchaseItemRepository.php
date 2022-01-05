@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Purchase;
 use App\Entity\PurchaseItem;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Repository\PurchaseRepository;
 
 /**
  * @method PurchaseItem|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,9 +16,26 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PurchaseItemRepository extends ServiceEntityRepository
 {
+    const ALIAS = "pi";
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PurchaseItem::class);
+    }
+
+    public function findPurchasedItemOrdered()
+    {
+        return $this->createQueryBuilder(self::ALIAS)
+            ->select(self::ALIAS . '.ProductName')
+            ->addSelect(self::ALIAS . '.variantName')
+            ->addSelect('SUM(' . self::ALIAS . '.quantity) as count')
+            ->Join(self::ALIAS . '.purchase', PurchaseRepository::ALIAS)
+            ->where(PurchaseRepository::ALIAS . '.status = :status')
+            ->setParameter('status', Purchase::STATUS_ACCEPTED)
+            ->groupBy(self::ALIAS . '.ProductName, ' . self::ALIAS . '.variantName')
+            ->orderBy(self::ALIAS . '.ProductName')
+            ->getQuery()
+            ->getScalarResult();
     }
 
     // /**

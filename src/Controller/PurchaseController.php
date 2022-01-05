@@ -47,13 +47,11 @@ class PurchaseController extends AbstractController
 
         /** @var Purchase */
         $purchase = $form->getData();
-
         $this->manager->storePurchase($purchase);
+        $this->addFlash('success', 'La commande a été crée.');
 
 
-        return $this->redirectToRoute('shop', [
-            'id' => $purchase->getId()
-        ]);
+        return $this->redirectToRoute('shop_orders');
     }
 
     #[Route('/boutique/commandes', name: 'shop_orders')]

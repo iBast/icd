@@ -82,6 +82,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Purchase::class, mappedBy="user")
+     * @ORM\OrderBy({"purchasedAt" = "DESC"})
      */
     private $purchases;
 

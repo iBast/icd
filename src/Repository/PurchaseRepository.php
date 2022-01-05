@@ -14,10 +14,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PurchaseRepository extends ServiceEntityRepository
 {
+    const ALIAS = "p";
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Purchase::class);
     }
+
 
     // /**
     //  * @return Purchase[] Returns an array of Purchase objects

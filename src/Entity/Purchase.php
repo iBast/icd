@@ -17,8 +17,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Purchase implements EntityInterface
 {
 
-    public const STATUS_PENDING = 'PENDING';
-    public const STATUS_PAID = 'PAID';
+    public const STATUS_CREATED = 'Commande crée';
+    public const STATUS_ACCEPTED = 'Commande prise en compte';
+    public const STATUS_PAID = 'Commande payée';
+    public const STATUS_DELIVERED = 'Commande livrée';
 
     /**
      * @ORM\Id
@@ -41,7 +43,7 @@ class Purchase implements EntityInterface
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $status;
+    private $status = self::STATUS_CREATED;
 
     /**
      * @ORM\Column(type="datetime")
@@ -167,5 +169,12 @@ class Purchase implements EntityInterface
         $this->PaymentMethod = $PaymentMethod;
 
         return $this;
+    }
+
+    public function checkStatus($status)
+    {
+        if ($this->status == $status) {
+            return true;
+        }
     }
 }
