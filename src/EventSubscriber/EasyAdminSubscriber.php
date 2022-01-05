@@ -20,8 +20,8 @@ class EasyAdminSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            BeforeEntityPersistedEvent::class => ['setShopCategorySlug'],
-            BeforeEntityPersistedEvent::class => ['setShopProductSlug'],
+            BeforeEntityPersistedEvent::class => [['setShopProductSlug'], ['setShopCategorySlug']],
+
         ];
     }
 

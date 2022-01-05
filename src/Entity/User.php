@@ -94,7 +94,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'Trésorier' => 'ROLE_TRESORIER',
         'Secrétaire' => 'ROLE_SECRETAIRE',
         'Communication' => 'ROLE_COMMUNICATION',
-        'Membre du comité' => 'ROLE_COMITE'
+        'Membre du comité' => 'ROLE_COMITE',
+        'Responsable tenues' => 'ROLE_TENUES'
     ];
 
     public function __construct()
