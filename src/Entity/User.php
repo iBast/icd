@@ -80,6 +80,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $eventComments;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Purchase::class, mappedBy="user")
+     * @ORM\OrderBy({"purchasedAt" = "DESC"})
+     */
+    private $purchases;
+
     public const ROLES = [
         'Utilisateur' => 'ROLE_USER',
         'Administrateur' => 'ROLE_ADMIN',
@@ -97,6 +103,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->enrollments = new ArrayCollection();
         $this->enrollmentYoungs = new ArrayCollection();
         $this->eventComments = new ArrayCollection();
+        $this->purchases = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -348,6 +355,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($eventComments->getUser() === $this) {
                 $eventComments->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Purchase[]
+     */
+    public function getPurchases(): Collection
+    {
+        return $this->purchases;
+    }
+
+    public function addPurchase(Purchase $purchase): self
+    {
+        if (!$this->purchases->contains($purchase)) {
+            $this->purchases[] = $purchase;
+            $purchase->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePurchase(Purchase $purchase): self
+    {
+        if ($this->purchases->removeElement($purchase)) {
+            // set the owning side to null (unless already changed)
+            if ($purchase->getUser() === $this) {
+                $purchase->setUser(null);
             }
         }
 

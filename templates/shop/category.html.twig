@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{category.name}}
+{% endblock %}
+
+{% block body %}
+	<div class="d-flex justify-content-between flex-wrap">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{ path('home') }}">Accueil</a>
+			</li>
+			<li class="breadcrumb-item">
+				<a href="{{ path('shop') }}">Boutique</a>
+			</li>
+			<li class="breadcrumb-item active">{{category.name}}</li>
+		</ol>
+		<div>
+			<ul class="nav nav-pills">
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('shop_orders') }}">
+						<i class="fas fa-box-open"></i>
+						Mes commandes</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('shop_cart') }}">
+						<i class="fas fa-shopping-cart"></i>
+						Panier ({{ cartService.total | amount }})</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<h1>{{category.name}}</h1>
+	<div class="row">
+		{% for product in products %}
+			{% include "shared/_shop_product_card.html.twig" %}
+		{% endfor %}
+	</div>
+{% endblock %}

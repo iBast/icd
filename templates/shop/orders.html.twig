@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commandes
+{% endblock %}
+
+{% block body %}
+	<div class="d-flex justify-content-between flex-wrap">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{ path('home') }}">Accueil</a>
+			</li>
+			<li class="breadcrumb-item">
+				<a href="{{ path('shop') }}">Boutique</a>
+			</li>
+			<li class="breadcrumb-item active">Mes commandes</li>
+		</ol>
+		<div>
+			<ul class="nav nav-pills">
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('shop_orders') }}">
+						<i class="fas fa-box-open"></i>
+						Mes commandes</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('shop_cart') }}">
+						<i class="fas fa-shopping-cart"></i>
+						Panier ({{ cartService.total | amount }})</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<h1>Mes commandes</h1>
+	{% if purchases != null %}
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Numéro</th>
+					<th>Date de commande</th>
+					<th>Status</th>
+					<th>Produits</th>
+					<th>Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for p in purchases %}
+					<tr>
+						<td>{{ p.id }}</td>
+						<td>{{ p.purchasedAt |  date('d/m/Y H:i')}}</td>
+						<td>{{ p.status }}</td>
+						<td>
+							<ul>
+								{% for item in p.purchaseItems %}
+									<li>{{ item.quantity }}x
+										{{item.productName}}
+										-
+										{{item.productVariant.name}}
+										({{ item.total | amount}})</li>
+								{% endfor %}
+							</ul>
+						</td>
+						<td>{{ p.total | amount }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<p>Il n'y a pas encore de commande de passée.</p>
+
+	{% endif %}
+{% endblock %}

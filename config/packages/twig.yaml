@@ -8,6 +8,7 @@ twig:
         app_enrollment_new: '%env(APP_ENROLLMENT_NEW)%'
         app_enrollment_pending: '%env(APP_ENROLLMENT_PENDING)%'
         app_enrollment_done: '%env(APP_ENROLLMENT_DONE)%'
+        cartService: "@App\\Shop\\CartService"
         
 when@test:
     twig:
