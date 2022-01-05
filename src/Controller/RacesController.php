@@ -90,10 +90,10 @@ class RacesController extends AbstractController
     public function delete(EventComment $comment)
     {
         $this->denyAccessUnlessGranted(EventCommentVoter::DELETE, $comment, 'Vous n\'avez pas les droit suffisant pour effectuer cette action.');
-        $eventId = $comment->getEvent()->getId();
+        $event = $comment->getEvent();
         $this->manager->deleteComment($comment);
         $this->addFlash('success', 'Le commentaire a été supprimé');
-        return $this->redirectToRoute('races_show', ['id' => $eventId]);
+        return $this->redirectToRoute('races_show', ['slug' => $event->getSlug()]);
     }
 
     #[Route('/courses/epingler-commentaire/{id}', name: 'races_pin_comment')]

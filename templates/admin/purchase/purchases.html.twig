@@ -1,0 +1,49 @@
+{% extends "@EasyAdmin/layout.html.twig" %}
+
+{% block page_title %}
+	Compte
+{% endblock %}
+
+{% block content %}
+	<article class="content">
+		<section class="content-header">
+			<div class="content-header-title">
+				<h1>Produit commandés</h1>
+			</div>
+			<div class="page-actions">
+				<div class="global-actions">
+					<a href="{{ path('admin_purchase_ordered_products_export') }}" class="action-new btn btn-success">
+						<i class="fas fa-file-download"></i>
+						Export</a>
+					<a href="{{ ea_url().setRoute('admin_accounting_accounts') }}" class="action-new btn btn-primary">Retour</a>
+				</div>
+			</div>
+
+		</section>
+		<section class="content-body">
+			<div class="jumbotron">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Produit</th>
+							<th>Modèle</th>
+							<th>Quantité</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for item in items %}
+							<tr>
+								<td>{{item.ProductName}}</td>
+								<td>{{item.variantName}}</td>
+								<td>
+									{{item.count}}</td>
+							</tr>
+
+						{% endfor %}
+					</tbody>
+				</table>
+
+			</div>
+		</section>
+	</article>
+{% endblock %}

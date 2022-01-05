@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon panier
+{% endblock %}
+
+{% block body %}
+	<div class="d-flex justify-content-between flex-wrap">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{ path('home') }}">Accueil</a>
+			</li>
+			<li class="breadcrumb-item">
+				<a href="{{ path('shop') }}">Boutique</a>
+			</li>
+			<li class="breadcrumb-item active">Mon panier</li>
+		</ol>
+		<div>
+			<ul class="nav nav-pills">
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('shop_orders') }}">
+						<i class="fas fa-box-open"></i>
+						Mes commandes</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('shop_cart') }}">
+						<i class="fas fa-shopping-cart"></i>
+						Panier ({{ cartService.total | amount }})</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<h1>Mon panier</h1>
+
+	{% if items | length > 0 %}
+
+		<table class="table">
+
+			<thead>
+				<tr>
+					<th>Produit</th>
+					<th>Modèle</th>
+					<th>Prix</th>
+					<th>Quantité</th>
+					<th>Total</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in items %}
+					<tr>
+						<td>{{ item.variant.product.name }}</td>
+						<td>{{ item.variant.name }}</td>
+						<td>{{ item.variant.product.price | amount}}</td>
+						<td>
+							<a href="{{ path('shop_cart_decrement', {'id': item.variant.id}) }}" class="btn btn-sm btn-primary">
+								<i class="fas fa-minus"></i>
+							</a>
+							{{ item.qty }}
+							<a href="{{ path('shop_cart_add') }}?id={{item.variant.id}}&returnToCart=true" class="btn btn-sm btn-primary">
+								<i class="fas fa-plus"></i>
+							</a>
+						</td>
+						<td>{{ item.total | amount }}</td>
+						<td>
+							<a href="{{ path("shop_cart_delete", {'id': item.variant.id}) }}" class="btn btn-danger btn-sm">
+								<i class="fas fa-trash"></i>
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="4">Total :</td>
+					<td colspan="2">{{ total | amount }}</td>
+				</tr>
+			</tfoot>
+		</table>
+
+		{% if app.user %}
+			<h2>Confirmez votre commande :</h2>
+			{{ form_start(confirmationForm, {'action': path('shop_purchase_confirm')})}}
+			<div class="row align-items-center mb-5">
+				<div class="col-6">{{ form_row(confirmationForm.paymentMethod) }}</div>
+				<div class="col-6 mt-3">
+					<button type="submit" class="btn btn-success">Je confirme !</button>
+				</div>
+			</div>
+
+			<div class="row">
+				{% include "shared/_payment_method_card.html.twig" %}
+
+
+			</div>
+			{{ form_end(confirmationForm)}}
+		{% else %}
+			<h2>Vous devez être connecté pour confirmer cette commande</h2>
+			<a href="{{ path('security_login') }}" class="btn btn-success">Connexion</a>
+			ou
+			<a href="#">Créer un compte</a>
+		{% endif %}
+	{% else %}
+		<h2>Le panier est vide</h2>
+	{% endif %}
+{% endblock %}

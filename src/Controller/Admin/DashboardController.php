@@ -10,14 +10,18 @@ use App\Entity\Invoice;
 use App\Entity\Licence;
 use App\Entity\Accounting;
 use App\Entity\Enrollment;
+use App\Entity\Purchase;
+use App\Entity\PurchaseItem;
+use App\Entity\ShopProduct;
+use App\Entity\ShopCategory;
 use App\Entity\EnrollmentYoung;
 use App\Entity\AccountingDocument;
+use App\Entity\ShopProductVariant;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-use App\Repository\SeasonRepository;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -48,16 +52,22 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Membres', 'fas fa-users', Member::class),
             MenuItem::linkToCrud('Adhésions', 'fas fa-folder-open', Enrollment::class),
             MenuItem::linkToCrud('Adhésions Jeunes', 'fas fa-folder-open', EnrollmentYoung::class),
-            MenuItem::section('Trésorerie')->setPermission('ROLE_TRESORIER'),
-            MenuItem::linkToCrud('Comptes', 'fas fa-list', Account::class)->setPermission('ROLE_TRESORIER'),
-            MenuItem::linkToCrud('Journal', 'fas fa-newspaper', Accounting::class)->setPermission('ROLE_TRESORIER'),
-            MenuItem::linkToCrud('Pièces', 'fas fa-file', AccountingDocument::class)->setPermission('ROLE_TRESORIER'),
-            MenuItem::linkToCrud('Factures', 'fas fa-file-invoice', Invoice::class)->setPermission('ROLE_TRESORIER'),
-            MenuItem::linkToRoute('Comptes', 'fas fa-file-invoice-dollar', 'admin_accounting_accounts')->setPermission('ROLE_TRESORIER'),
-            MenuItem::linkToRoute('Compte de résultat', 'fas fa-file-invoice-dollar', 'admin_accounting_results')->setPermission('ROLE_TRESORIER'),
-            MenuItem::linkToRoute('Balance', 'fas fa-file-invoice-dollar', 'admin_accounting_balance')->setPermission('ROLE_TRESORIER'),
-            MenuItem::linkToRoute('Bilan', 'fas fa-file-invoice-dollar', 'admin_accounting_bilan')->setPermission('ROLE_TRESORIER'),
-            MenuItem::linkToRoute('Opérations', 'fas fa-cogs', 'admin_accounting_operations')->setPermission('ROLE_TRESORIER'),
+            MenuItem::section('Boutique')->setPermission('ROLE_TENUES'),
+            MenuItem::linkToCrud('Catégories', 'fas fa-list', ShopCategory::class)->setPermission('ROLE_TENUES'),
+            MenuItem::linkToCrud('Produits', 'fas fa-tshirt', ShopProduct::class)->setPermission('ROLE_TENUES'),
+            MenuItem::linkToCrud('Variation produits', 'fas fa-box-open', ShopProductVariant::class)->setPermission('ROLE_TENUES'),
+            MenuItem::linkToCrud('Commandes', 'fas fa-box-open', Purchase::class)->setPermission('ROLE_TENUES'),
+            MenuItem::linkToRoute('Liste des produits commandés', 'fas fa-list', 'admin_purchase_ordered_products')->setPermission('ROLE_TENUES'),
+            //MenuItem::section('Trésorerie')->setPermission('ROLE_TRESORIER'),
+            //MenuItem::linkToCrud('Comptes', 'fas fa-list', Account::class)->setPermission('ROLE_TRESORIER'),
+            //MenuItem::linkToCrud('Journal', 'fas fa-newspaper', Accounting::class)->setPermission('ROLE_TRESORIER'),
+            //MenuItem::linkToCrud('Pièces', 'fas fa-file', AccountingDocument::class)->setPermission('ROLE_TRESORIER'),
+            //MenuItem::linkToCrud('Factures', 'fas fa-file-invoice', Invoice::class)->setPermission('ROLE_TRESORIER'),
+            //MenuItem::linkToRoute('Comptes', 'fas fa-file-invoice-dollar', 'admin_accounting_accounts')->setPermission('ROLE_TRESORIER'),
+            //MenuItem::linkToRoute('Compte de résultat', 'fas fa-file-invoice-dollar', 'admin_accounting_results')->setPermission('ROLE_TRESORIER'),
+            //MenuItem::linkToRoute('Balance', 'fas fa-file-invoice-dollar', 'admin_accounting_balance')->setPermission('ROLE_TRESORIER'),
+            //MenuItem::linkToRoute('Bilan', 'fas fa-file-invoice-dollar', 'admin_accounting_bilan')->setPermission('ROLE_TRESORIER'),
+            //MenuItem::linkToRoute('Opérations', 'fas fa-cogs', 'admin_accounting_operations')->setPermission('ROLE_TRESORIER'),
             MenuItem::section('Gestion du site')->setPermission('ROLE_ADMIN'),
             MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class)->setPermission('ROLE_ADMIN'),
             MenuItem::section('Ressources'),

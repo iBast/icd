@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Boutique
+{% endblock %}
+
+{% block body %}
+	<div class="d-flex justify-content-between flex-wrap">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{ path('home') }}">Accueil</a>
+			</li>
+			<li class="breadcrumb-item active">Boutique</li>
+		</ol>
+		<div>
+			<ul class="nav nav-pills">
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('shop_orders') }}">
+						<i class="fas fa-box-open"></i>
+						Mes commandes</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('shop_cart') }}">
+						<i class="fas fa-shopping-cart"></i>
+						Panier ({{ cartService.total | amount }})</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<h1>Boutique de l'Iron Club</h1>
+	<div class="row">
+		{% if products %}
+			{% for product in products %}
+				{% include "shared/_shop_product_card.html.twig" %}
+			{% endfor %}
+		{% else %}
+			<p>Il n'y a pas encore de produits dans la boutique.</p>
+		{% endif %}
+	</div>
+{% endblock %}

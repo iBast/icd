@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{product.name}}
+{% endblock %}
+
+{% block body %}
+	<div class="d-flex justify-content-between flex-wrap mb-3">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{{ path('home') }}">Accueil</a>
+			</li>
+			<li class="breadcrumb-item">
+				<a href="{{ path('shop') }}">Boutique</a>
+			</li>
+			<li class="breadcrumb-item">
+				<a href="{{ path('shop_category', {'slug': product.category.slug}) }}">{{product.category.name}}</a>
+			</li>
+			<li class="breadcrumb-item active">{{product.name}}</li>
+		</ol>
+		<div class="ms-auto">
+			<ul class="nav">
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('shop_orders') }}">
+						<i class="fas fa-box-open"></i>
+						Mes commandes</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('shop_cart') }}">
+						<i class="fas fa-shopping-cart"></i>
+						Panier ({{ cartService.total | amount }})</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-4 d-flex justify-content-around">
+			<img src="/uploads/shop/{{product.picturePath}}" alt="Product image" class="img-fluid">
+
+		</div>
+		<div class="col-md-8">
+			<h1>{{product.name}}</h1>
+
+			<p class="text-primary lead mt-5">
+				{{product.price | amount}}
+			</p>
+			<hr>
+			<h2>Choisis ton modèle</h2>
+			{{ form_start(form, {'action': path('shop_cart_add')}) }}
+			<div class="row">
+				<div class="col-4">{{ form_row(form.quantity) }}</div>
+				<div class="col-8">{{ form_row(form.variant) }}</div>
+			</div>
+			<button type="submit" class="btn btn-success">Ajouter au panier</button>
+			{{form_end(form)}}
+		</div>
+	</div>
+	<div class="row mt-4">
+		<div class="col-12">
+			{{product.description | raw}}
+
+		</div>
+	</div>
+{% endblock %}
