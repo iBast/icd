@@ -21,3 +21,5 @@
 
 cpanel.yml
 /public/uploads
+
+/tests/coverage

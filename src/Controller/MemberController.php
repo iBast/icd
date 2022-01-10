@@ -64,6 +64,7 @@ class MemberController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $member->addUser($this->getUser());
             $this->manager->save($member);
+            $this->addFlash('success', 'Le compte membre de' . $member->getFirstName() . 'a été crée');
             $accountManager->createAccount('411' . str_pad($member->getId(), 3, '0', STR_PAD_LEFT), 'Membre ' . $member->getFirstName() . ' ' . $member->getLastName());
             $season = $seasonRepository->findOneBy(['enrollmentStatus' => 1]);
             if ($season) {
@@ -73,7 +74,7 @@ class MemberController extends AbstractController
                     'lastName' => $member->getLastName()
                 ]);
             }
-            return $this->redirectToRoute('enrollment');
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('member/add.html.twig', [
@@ -82,6 +83,7 @@ class MemberController extends AbstractController
         ]);
     }
 
+    /** 
     #[Route('/membre/compte/{id}', name: 'member_account')]
     public function accountHistory(Member $member, AccountRepository $accountRepository)
     {
@@ -91,9 +93,9 @@ class MemberController extends AbstractController
         }
 
         $accountNB = $this->params->get(ParamsInService::APP_ACCOUNTPREFIX_MEMBER) . str_pad($member->getId(), 3, '0', STR_PAD_LEFT);
-        /** @var Account */
+        /** @var Account 
         $account = $accountRepository->findOneBy(['number' => $accountNB]);
-        /** @var Accounting */
+        /** @var Accounting 
         $lines = $account->getAccountings();
 
 
@@ -111,5 +113,6 @@ class MemberController extends AbstractController
             'debit' => $debit,
             'credit' => $credit
         ]);
-    }
+    } 
+     */
 }

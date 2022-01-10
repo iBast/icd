@@ -35,14 +35,14 @@ class PurchaseController extends AbstractController
 
         if (!$form->isSubmitted()) {
             $this->addFlash('warning', "Vous devez remplir le formulaire de confirmation");
-            return $this->redirectToRoute('shop_cart_show');
+            return $this->redirectToRoute('shop_cart');
         }
 
         $cartItems = $this->cartService->getDetailedCartItems();
 
         if (count($cartItems) === 0) {
             $this->addFlash('warning', "Vous ne pouvez pas confirmer une commande avec un panier vide");
-            return $this->redirectToRoute('shop_cart_show');
+            return $this->redirectToRoute('shop_cart');
         }
 
         /** @var Purchase */
