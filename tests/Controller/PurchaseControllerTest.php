@@ -3,9 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
-use App\Form\ProductType;
 use App\Tests\Toolbox\NeedLogin;
-use Symfony\Component\DomCrawler\Link;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

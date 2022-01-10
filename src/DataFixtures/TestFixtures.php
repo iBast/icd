@@ -9,6 +9,7 @@ use App\Entity\Member;
 use DateTimeImmutable;
 use App\Entity\ShopProduct;
 use App\Entity\EventComment;
+use App\Entity\Licence;
 use App\Entity\Season;
 use App\Entity\ShopCategory;
 use App\Entity\ShopProductVariant;
@@ -52,14 +53,26 @@ class TestFixtures extends Fixture
         $manager->persist($member);
 
         $member = new Member();
-        $member->setFirstName('First')
-            ->setLastName('Last ')
+        $member->setFirstName('John')
+            ->setLastName('Doe')
             ->setEmail('email@dmain.fr')
             ->setAdress('4, Privet Drive')
             ->setPostCode('68130')
             ->setCity('Altkirch')
             ->setBirthday(new DateTime('1990-11-16'));
         $manager->persist($member);
+
+        $young = new Member();
+
+        $young->setFirstName('young')
+            ->setLastName('member')
+            ->setEmail('young@dmain.fr')
+            ->setAdress('4, Privet Drive')
+            ->setPostCode('68130')
+            ->setCity('Altkirch')
+            ->setBirthday(new DateTime('15 years ago'));
+        $young->addUser($user);
+        $manager->persist($young);
 
         $race = new Race();
         $race->setName('Race Name')
@@ -107,6 +120,20 @@ class TestFixtures extends Fixture
             ->setSwimCost(6000)
             ->setYoungCost(2000);
         $manager->persist($season);
+
+        $licence = new Licence();
+        $licence->setCost(1000)
+            ->setIsActive(true)
+            ->setName('Adult Licence')
+            ->setForYoung(false);
+        $manager->persist($licence);
+
+        $licence = new Licence();
+        $licence->setCost(1000)
+            ->setIsActive(true)
+            ->setName('Young Licence')
+            ->setForYoung(true);
+        $manager->persist($licence);
 
         $manager->flush();
     }

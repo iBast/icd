@@ -55,7 +55,7 @@ class MemberControllerTest extends WebTestCase
         $client = static::createClient();
         $doctrine = $client->getContainer()->get('doctrine');
         $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
-        $member = $doctrine->getRepository(Member::class)->findOneBy(['firstName' => 'First']);
+        $member = $doctrine->getRepository(Member::class)->findOneBy(['firstName' => 'John']);
         $client->request('GET', '/membre/edit/' . $member->getId());
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
         $client->followRedirect();
