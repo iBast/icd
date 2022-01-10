@@ -62,12 +62,6 @@ class RacesController extends AbstractController
     #[Route('/courses/{slug}', name: 'races_show')]
     public function show(Race $race, Request $request, EventCommentRepository $eventCommentRepository): Response
     {
-        if ($request->get('memberId')) {
-            $member = $this->manager->getMemberRepository()->findOneBy(['id' => $request->get('memberId')]);
-            $this->manager->participate($member, $race);
-            $this->addFlash('success', 'Action prise en compte');
-        }
-
         $comment = new EventComment;
         $form = $this->createForm(RaceCommentType::class, $comment);
 

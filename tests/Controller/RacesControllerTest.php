@@ -51,8 +51,17 @@ class RacesControllerTest extends WebTestCase
         $client = static::createClient();
         $doctrine = $client->getContainer()->get('doctrine');
         $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
-        $client->request('GET', '/courses/ajouter');
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $crawler = $client->request('GET', '/courses/ajouter');
+        $buttonCrawlerNode = $crawler->selectButton('Ajouter la course');
+        $form = $buttonCrawlerNode->form();
+        $client->submit($form, [
+            'race[name]' => 'New race',
+            'race[date][day]' => '10',
+            'race[date][month]' => '10',
+            'race[date][year]' => '2022'
+        ]);
+        $client->followRedirect();
+        $this->assertSelectorExists('.alert.alert-success');
     }
 
     public function testRace()
@@ -69,8 +78,17 @@ class RacesControllerTest extends WebTestCase
         $client = static::createClient();
         $doctrine = $client->getContainer()->get('doctrine');
         $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
-        $client->request('GET', '/courses/edition/Race-Name');
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $crawler = $client->request('GET', '/courses/edition/New-race');
+        $buttonCrawlerNode = $crawler->selectButton('Modifier la course');
+        $form = $buttonCrawlerNode->form();
+        $client->submit($form, [
+            'race[name]' => 'New race update',
+            'race[date][day]' => '10',
+            'race[date][month]' => '10',
+            'race[date][year]' => '2022'
+        ]);
+        $client->followRedirect();
+        $this->assertSelectorExists('.alert.alert-success');
     }
 
     public function testPinComment()
@@ -109,8 +127,14 @@ class RacesControllerTest extends WebTestCase
         $doctrine = $client->getContainer()->get('doctrine');
         $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
         $member = $doctrine->getRepository(Member::class)->findOneBy(['lastName' => 'Last Name']);
-        $client->request('GET', '/courses/Race-Name/ajout-resume/' . $member->getId());
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $crawler = $client->request('GET', '/courses/Race-Name/ajout-resume/' . $member->getId());
+        $buttonCrawlerNode = $crawler->selectButton('Envoyer mon résumé');
+        $form = $buttonCrawlerNode->form();
+        $client->submit($form, [
+            'race_report[content]' => 'Raport'
+        ]);
+        $client->followRedirect();
+        $this->assertSelectorExists('.alert.alert-success');
     }
 
     public function testReviews()
@@ -125,11 +149,26 @@ class RacesControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
+    public function testAddComment()
+    {
+        $client = static::createClient();
+        $doctrine = $client->getContainer()->get('doctrine');
+        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $crawler = $client->request('GET', '/courses/Race-Name');
+        $buttonCrawlerNode = $crawler->selectButton('Ajouter mon commentaire');
+        $form = $buttonCrawlerNode->form();
+        $client->submit($form, [
+            'race_comment[content]' => 'Commentaire'
+        ]);
+        $client->followRedirect();
+        $this->assertSelectorExists('.alert.alert-success');
+    }
+
     public function testDelete()
     {
         $client = static::createClient();
         $doctrine = $client->getContainer()->get('doctrine');
-        /**@var User */
+        /** @var User */
         $user = $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']);
         $user->setRoles(['ROLE_COMITE']);
         $this->login($client, $user);
