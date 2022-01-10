@@ -9,6 +9,7 @@ use App\Entity\Member;
 use DateTimeImmutable;
 use App\Entity\ShopProduct;
 use App\Entity\EventComment;
+use App\Entity\Season;
 use App\Entity\ShopCategory;
 use App\Entity\ShopProductVariant;
 use Doctrine\Persistence\ObjectManager;
@@ -43,6 +44,17 @@ class TestFixtures extends Fixture
         $member->setFirstName('First Name')
             ->setLastName('Last Name')
             ->setEmail('email@dmain.com')
+            ->setAdress('4, Privet Drive')
+            ->setPostCode('68130')
+            ->setCity('Altkirch')
+            ->setBirthday(new DateTime('1990-11-16'));
+        $member->addUser($user);
+        $manager->persist($member);
+
+        $member = new Member();
+        $member->setFirstName('First')
+            ->setLastName('Last ')
+            ->setEmail('email@dmain.fr')
             ->setAdress('4, Privet Drive')
             ->setPostCode('68130')
             ->setCity('Altkirch')
@@ -86,6 +98,15 @@ class TestFixtures extends Fixture
             ->setStock(1000)
             ->setName('Varianrt Name');
         $manager->persist($variant);
+
+        $season = new Season();
+        $season->setYear('Current Season')
+            ->setEnrollmentStatus(true)
+            ->setCurrent(true)
+            ->setMembershipCost(5000)
+            ->setSwimCost(6000)
+            ->setYoungCost(2000);
+        $manager->persist($season);
 
         $manager->flush();
     }
