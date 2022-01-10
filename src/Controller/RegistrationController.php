@@ -53,12 +53,13 @@ class RegistrationController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
-
+            $this->addFlash('success', 'Le compte utilisateur est crée. Bienvenue !');
             // generate a signed url and email it to the user
             //$this->sendVerifEmail($user);
             // do anything else you need here, like send an email
 
             $userAuthenticator->authenticateUser($user, $authenticator, $request);
+
 
             return $this->redirectToRoute('member_add');
         }
@@ -69,6 +70,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
+    /** 
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(
         Request $request,
@@ -117,5 +119,5 @@ class RegistrationController extends AbstractController
                 ->htmlTemplate('registration/confirmation_email.html.twig')
         );
         return $this->redirectToRoute('home');
-    }
+    } */
 }

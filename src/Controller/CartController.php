@@ -24,8 +24,8 @@ class CartController extends AbstractController
     #[Route('/boutique/panier/ajout', name: 'shop_cart_add')]
     public function add(Request $request)
     {
-        if ($request->request->get('product')) {
-            $form = $request->request->get('product');
+        if ($request->request->all('product')) {
+            $form = $request->request->all('product');
             $product = $this->productRepository->find($form['variant']);
             $qty = $form['quantity'];
         } else {

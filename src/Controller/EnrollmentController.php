@@ -24,7 +24,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[IsGranted('ROLE_USER')]
 class EnrollmentController extends AbstractController
 {
     protected $manager;
@@ -82,16 +81,16 @@ class EnrollmentController extends AbstractController
         $season = $this->seasonRepository->find($id);
         $member = $this->memberRepository->findOneBy(['firstName' => $firstName, 'lastName' => $lastName]);
 
+        if (!$this->getUser()->getMembers()->contains($member)) {
+            $this->addFlash('danger', 'Tu n\'es pas autorisé à modifier ce membre !');
+            return $this->redirectToRoute('home');
+        }
+
         if ($member->getBirthday() < new DateTime('-18years')) {
             if ($this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]) == null) {
                 $this->manager->enroll($member, $this->getUser(), $season);
             }
             $enrollment = $this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]);
-
-            if ($enrollment->getUser() != $this->getUser()) {
-                $this->addFlash('danger', 'Vous n\'êtes pas autorisé à inscrire ce membre');
-                return $this->redirectToRoute("home");
-            }
             $form = $this->createForm(EnrollmentStep1Type::class, $enrollment);
         } else {
             if ($this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]) == null) {
@@ -99,10 +98,6 @@ class EnrollmentController extends AbstractController
             }
             $enrollment = $this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]);
 
-            if ($enrollment->getUser() != $this->getUser()) {
-                $this->addFlash('danger', 'Vous n\'êtes pas autorisé à inscrire ce membre');
-                return $this->redirectToRoute("home");
-            }
             $form = $this->createForm(EnrollmentYoungType::class, $enrollment);
         }
         $form->handleRequest($request);
@@ -131,14 +126,6 @@ class EnrollmentController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->finalise($enrollment);
-            $accountManager->newEntry(
-                '411' . str_pad($enrollment->getMemberId()->getId(), 3, '0', STR_PAD_LEFT),
-                756000,
-                'Adhésion saison ' . $enrollment->getSeason()->getYear() . ' - ' . $enrollment->getMemberId()->getFirstName() . ' ' . $enrollment->getMemberId()->getLastName(),
-                $enrollment->getTotalAmount()
-            );
-            $invoiceManager->invoiceLineNewInvoice($enrollment->getMemberId(), 'Adhésion saison ' . $enrollment->getSeason()->getYear(), 1, $enrollment->getTotalAmount());
-
             $this->addFlash('success', 'Ton adhésion est enregistrée, elle sera validé prochainement, sous réserve de réception du paiement ainsi que des documents');
             return $this->redirectToRoute('home');
         }
@@ -155,13 +142,6 @@ class EnrollmentController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $manager->finalise($enrollment);
-            $accountManager->newEntry(
-                '411' . str_pad($enrollment->getOwner()->getId(), 3, '0', STR_PAD_LEFT),
-                756000,
-                'Adhésion saison ' . $enrollment->getSeason()->getYear() . ' - ' . $enrollment->getOwner()->getFirstName() . ' ' . $enrollment->getOwner()->getLastName(),
-                $enrollment->getTotalAmount()
-            );
-            $invoiceManager->invoiceLineNewInvoice($enrollment->getOwner(), 'Adhésion saison ' . $enrollment->getSeason()->getYear(), 1, $enrollment->getTotalAmount());
             $this->addFlash('success', 'Ton adhésion est enregistrée, elle sera validé prochainement, sous réserve de réception du paiement ainsi que des documents');
             return $this->redirectToRoute('home');
         }
