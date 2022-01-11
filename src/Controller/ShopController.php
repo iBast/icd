@@ -31,7 +31,7 @@ class ShopController extends AbstractController
     #[Route('/boutique/{slug}', name: 'shop_category')]
     public function category(ShopCategory $category): Response
     {
-        $products = $this->manager->getProductRepository()->findBy(['category' => $category]);
+        $products = $this->manager->getProductRepository()->findBy(['category' => $category, 'isVisible' => true]);
         return $this->render('shop/category.html.twig', [
             'category' => $category,
             'products' => $products
