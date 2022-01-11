@@ -75,7 +75,7 @@ class EnrollmentController extends AbstractController
         ]);
     }
 
-    #[Route('/adhesion/saison-{id}-{firstName}-{lastName}', name: 'enrollment_member')]
+    #[Route('/adhesion/saison-{id}/{firstName}.{lastName}', name: 'enrollment_member')]
     public function enrollment($id, $firstName, $lastName, LicenceRepository $licenceRepository, Request $request): Response
     {
         $season = $this->seasonRepository->find($id);
