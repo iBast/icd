@@ -37,7 +37,7 @@ class EnrollmentControllerTest extends WebTestCase
         $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
         $season = $doctrine->getRepository(Season::class)->findOneBy(['year' => 'Current Season']);
         $member = $doctrine->getRepository(Member::class)->findOneBy(['email' => 'email@dmain.com']);
-        $crawler = $client->request('GET', '/adhesion/saison-' . $season->getId() . '-' . $member->getFirstName() . '-' . $member->getLastName());
+        $crawler = $client->request('GET', '/adhesion/saison-' . $season->getId() . '/' . $member->getFirstName() . '.' . $member->getLastName());
         $buttonCrawlerNode = $crawler->selectButton('Passer à l\'étape suivante');
         $form = $buttonCrawlerNode->form();
         $client->submit($form, [
@@ -68,7 +68,7 @@ class EnrollmentControllerTest extends WebTestCase
             'member[birthday][year]' => '2020'
         ]);
         $crawler = $client->followRedirect();
-        $this->assertSame($crawler->getUri(), 'http://localhost/adhesion/saison-1-new-young');
+        $this->assertSame($crawler->getUri(), 'http://localhost/adhesion/saison-1/new.young');
         $buttonCrawlerNode = $crawler->selectButton('Passer à l\'étape suivante');
         $form = $buttonCrawlerNode->form();
         $client->submit($form, [
@@ -86,7 +86,7 @@ class EnrollmentControllerTest extends WebTestCase
         $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
         $season = $doctrine->getRepository(Season::class)->findOneBy(['year' => 'Current Season']);
         $member = $doctrine->getRepository(Member::class)->findOneBy(['email' => 'email@dmain.fr']);
-        $client->request('GET', '/adhesion/saison-' . $season->getId() . '-' . $member->getFirstName() . '-' . $member->getLastName());
+        $client->request('GET', '/adhesion/saison-' . $season->getId() . '/' . $member->getFirstName() . '.' . $member->getLastName());
         $crawler = $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-danger');
         $this->assertSame($crawler->getUri(), 'http://localhost/');
@@ -99,7 +99,7 @@ class EnrollmentControllerTest extends WebTestCase
         $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
         $season = $doctrine->getRepository(Season::class)->findOneBy(['year' => 'Current Season']);
         $member = $doctrine->getRepository(Member::class)->findOneBy(['email' => 'email@dmain.com']);
-        $crawler = $client->request('GET', '/adhesion/saison-' . $season->getId() . '-' . $member->getFirstName() . '-' . $member->getLastName());
+        $crawler = $client->request('GET', '/adhesion/saison-' . $season->getId() . '/' . $member->getFirstName() . '.' . $member->getLastName());
         $buttonCrawlerNode = $crawler->selectButton('Passer à l\'étape suivante');
         $form = $buttonCrawlerNode->form();
         $client->submit($form, [
@@ -122,7 +122,7 @@ class EnrollmentControllerTest extends WebTestCase
         $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
         $season = $doctrine->getRepository(Season::class)->findOneBy(['year' => 'Current Season']);
         $member = $doctrine->getRepository(Member::class)->findOneBy(['email' => 'young@dmain.fr']);
-        $crawler = $client->request('GET', '/adhesion/saison-' . $season->getId() . '-' . $member->getFirstName() . '-' . $member->getLastName());
+        $crawler = $client->request('GET', '/adhesion/saison-' . $season->getId() . '/' . $member->getFirstName() . '.' . $member->getLastName());
         $buttonCrawlerNode = $crawler->selectButton('Passer à l\'étape suivante');
         $form = $buttonCrawlerNode->form();
         $client->submit($form, [
