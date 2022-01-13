@@ -14,7 +14,7 @@ class EventCommentVoter extends Voter
     const DELETE = 'delete';
     const CREATE = 'create';
 
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         // if the attribute isn't one we support, return false
         if (!in_array($attribute, [self::READ, self::UPDATE, self::DELETE, self::CREATE])) {
@@ -29,7 +29,7 @@ class EventCommentVoter extends Voter
         return true;
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 
@@ -53,12 +53,12 @@ class EventCommentVoter extends Voter
         throw new \LogicException('This code should not be reached!');
     }
 
-    public function canRead(EventComment $comment, User $user)
+    public function canRead(EventComment $comment, User $user): bool
     {
         return true;
     }
 
-    public function canUpdate(EventComment $comment, User $user)
+    public function canUpdate(EventComment $comment, User $user): bool
     {
         if (in_array('ROLE_ADMIN', $user->getRoles())) {
             return true;
@@ -71,12 +71,12 @@ class EventCommentVoter extends Voter
         return false;
     }
 
-    public function canDelete(EventComment $comment, User $user)
+    public function canDelete(EventComment $comment, User $user): bool
     {
         return $this->canUpdate($comment, $user);
     }
 
-    public function canCreate(User $user)
+    public function canCreate(User $user): bool
     {
         if (in_array('ROLE_USER', $user->getRoles())) {
             return true;

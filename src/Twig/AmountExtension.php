@@ -7,7 +7,7 @@ use Twig\TwigFilter;
 
 class AmountExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('amount', [$this, 'amount'])

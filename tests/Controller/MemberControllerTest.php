@@ -2,18 +2,15 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\User;
-use App\Entity\Member;
 use App\Entity\Season;
-use App\Tests\Toolbox\NeedLogin;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use App\Repository\UserRepository;
+use App\Repository\MemberRepository;
+use App\Repository\SeasonRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class MemberControllerTest extends WebTestCase
 {
-    use NeedLogin;
-
     public function testIndexNotConnected()
     {
         $client = static::createClient();
@@ -25,8 +22,9 @@ class MemberControllerTest extends WebTestCase
     public function testIndexConnected()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
         $client->request('GET', '/membres');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
@@ -34,8 +32,9 @@ class MemberControllerTest extends WebTestCase
     public function testAdd()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
         $client->request('GET', '/membre/edit');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
@@ -43,9 +42,10 @@ class MemberControllerTest extends WebTestCase
     public function testEdit()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
-        $member = $doctrine->getRepository(Member::class)->findOneBy(['firstName' => 'First Name']);
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
+        $member = static::getContainer()->get(MemberRepository::class)->findOneBy(['firstName' => 'First Name']);
         $client->request('GET', '/membre/edit/' . $member->getId());
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
@@ -53,9 +53,10 @@ class MemberControllerTest extends WebTestCase
     public function testEditUncontrolledMember()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
-        $member = $doctrine->getRepository(Member::class)->findOneBy(['firstName' => 'John']);
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
+        $member = static::getContainer()->get(MemberRepository::class)->findOneBy(['firstName' => 'John']);
         $client->request('GET', '/membre/edit/' . $member->getId());
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
         $client->followRedirect();
@@ -65,8 +66,9 @@ class MemberControllerTest extends WebTestCase
     public function testCreateMember()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
         $crawler = $client->request('GET', '/membre/edit');
         $buttonCrawlerNode = $crawler->selectButton('Ajouter le membre');
         $form = $buttonCrawlerNode->form();
@@ -88,12 +90,13 @@ class MemberControllerTest extends WebTestCase
     public function testCreateMemberNoSeason()
     {
         $client = static::createClient();
-        /** @var  Registry */
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
         /** @var Season */
-        $season = $doctrine->getRepository(Season::class)->findOneBy(['year' => 'Current Season']);
+        $season = static::getContainer()->get(SeasonRepository::class)->findOneBy(['year' => 'Current Season']);
         $season->setEnrollmentStatus(false);
+        $doctrine = $client->getContainer()->get('doctrine');
         $doctrine->getManager()->persist($season);
         $doctrine->getManager()->flush();
         $crawler = $client->request('GET', '/membre/edit');

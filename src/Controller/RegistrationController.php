@@ -9,6 +9,7 @@ use App\Security\EmailVerifier;
 use App\Security\LoginAuthenticator;
 use DateTime;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +34,8 @@ class RegistrationController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $passwordEncoder,
         LoginAuthenticator $authenticator,
-        UserAuthenticatorInterface $userAuthenticator
+        UserAuthenticatorInterface $userAuthenticator,
+        EntityManagerInterface $entityManager
     ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -50,7 +52,6 @@ class RegistrationController extends AbstractController
                 ->setCreatedAt(new DateTimeImmutable())
                 ->setIsVerified(true);
 
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'Le compte utilisateur est crée. Bienvenue !');
