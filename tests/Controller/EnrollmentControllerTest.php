@@ -2,17 +2,14 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\Member;
-use App\Entity\Season;
-use App\Entity\User;
-use App\Tests\Toolbox\NeedLogin;
+use App\Repository\UserRepository;
+use App\Repository\MemberRepository;
+use App\Repository\SeasonRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class EnrollmentControllerTest extends WebTestCase
 {
-    use NeedLogin;
-
     public function testIndexNotConnected()
     {
         $client = static::createClient();
@@ -24,8 +21,9 @@ class EnrollmentControllerTest extends WebTestCase
     public function testIndexConnected()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
         $client->request('GET', '/adhesion');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
@@ -33,10 +31,11 @@ class EnrollmentControllerTest extends WebTestCase
     public function testEnrollAdult()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
-        $season = $doctrine->getRepository(Season::class)->findOneBy(['year' => 'Current Season']);
-        $member = $doctrine->getRepository(Member::class)->findOneBy(['email' => 'email@dmain.com']);
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
+        $season = static::getContainer()->get(SeasonRepository::class)->findOneBy(['year' => 'Current Season']);
+        $member = static::getContainer()->get(MemberRepository::class)->findOneBy(['email' => 'email@dmain.com']);
         $crawler = $client->request('GET', '/adhesion/saison-' . $season->getId() . '/' . $member->getFirstName() . '.' . $member->getLastName());
         $buttonCrawlerNode = $crawler->selectButton('Passer à l\'étape suivante');
         $form = $buttonCrawlerNode->form();
@@ -51,8 +50,9 @@ class EnrollmentControllerTest extends WebTestCase
     public function testEnrollYoung()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
         $crawler = $client->request('GET', '/membre/edit');
         $buttonCrawlerNode = $crawler->selectButton('Ajouter le membre');
         $form = $buttonCrawlerNode->form();
@@ -82,10 +82,11 @@ class EnrollmentControllerTest extends WebTestCase
     public function testEnrollNotOwned()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
-        $season = $doctrine->getRepository(Season::class)->findOneBy(['year' => 'Current Season']);
-        $member = $doctrine->getRepository(Member::class)->findOneBy(['email' => 'email@dmain.fr']);
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
+        $season = static::getContainer()->get(SeasonRepository::class)->findOneBy(['year' => 'Current Season']);
+        $member = static::getContainer()->get(MemberRepository::class)->findOneBy(['email' => 'email@dmain.fr']);
         $client->request('GET', '/adhesion/saison-' . $season->getId() . '/' . $member->getFirstName() . '.' . $member->getLastName());
         $crawler = $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-danger');
@@ -95,10 +96,11 @@ class EnrollmentControllerTest extends WebTestCase
     public function testFinalise()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
-        $season = $doctrine->getRepository(Season::class)->findOneBy(['year' => 'Current Season']);
-        $member = $doctrine->getRepository(Member::class)->findOneBy(['email' => 'email@dmain.com']);
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
+        $season = static::getContainer()->get(SeasonRepository::class)->findOneBy(['year' => 'Current Season']);
+        $member = static::getContainer()->get(MemberRepository::class)->findOneBy(['email' => 'email@dmain.com']);
         $crawler = $client->request('GET', '/adhesion/saison-' . $season->getId() . '/' . $member->getFirstName() . '.' . $member->getLastName());
         $buttonCrawlerNode = $crawler->selectButton('Passer à l\'étape suivante');
         $form = $buttonCrawlerNode->form();
@@ -118,10 +120,11 @@ class EnrollmentControllerTest extends WebTestCase
     public function testFinaliseYoung()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
-        $season = $doctrine->getRepository(Season::class)->findOneBy(['year' => 'Current Season']);
-        $member = $doctrine->getRepository(Member::class)->findOneBy(['email' => 'young@dmain.fr']);
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
+        $season = static::getContainer()->get(SeasonRepository::class)->findOneBy(['year' => 'Current Season']);
+        $member = static::getContainer()->get(MemberRepository::class)->findOneBy(['email' => 'young@dmain.fr']);
         $crawler = $client->request('GET', '/adhesion/saison-' . $season->getId() . '/' . $member->getFirstName() . '.' . $member->getLastName());
         $buttonCrawlerNode = $crawler->selectButton('Passer à l\'étape suivante');
         $form = $buttonCrawlerNode->form();
