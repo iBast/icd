@@ -2,15 +2,12 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\User;
-use App\Tests\Toolbox\NeedLogin;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ShopControllerTest extends WebTestCase
 {
-    use NeedLogin;
-
     public function testIndexNotConnected()
     {
         $client = static::createClient();
@@ -22,8 +19,9 @@ class ShopControllerTest extends WebTestCase
     public function testIndexConnected()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
         $client->request('GET', '/boutique');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
@@ -31,8 +29,9 @@ class ShopControllerTest extends WebTestCase
     public function testCategoryPage()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
         $client->request('GET', '/boutique/Category');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
@@ -40,8 +39,9 @@ class ShopControllerTest extends WebTestCase
     public function testProductPage()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
         $client->request('GET', '/boutique/Category/Product');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }

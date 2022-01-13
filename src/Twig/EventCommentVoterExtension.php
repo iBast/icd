@@ -26,7 +26,7 @@ class EventCommentVoterExtension extends AbstractExtension
         $this->eventCommentVoter = $eventCommentVoter;
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('commentCanRead', [$this, 'commentCanRead']),
@@ -37,17 +37,17 @@ class EventCommentVoterExtension extends AbstractExtension
 
 
 
-    public function commentCanRead(EventComment $item)
+    public function commentCanRead(EventComment $item): bool
     {
         return $this->eventCommentVoter->canRead($item, $this->security->getUser());
     }
 
-    public function commentCanUpdate(EventComment $item)
+    public function commentCanUpdate(EventComment $item): bool
     {
         return $this->eventCommentVoter->canUpdate($item, $this->security->getUser());
     }
 
-    public function commentCanDelete(EventComment $item)
+    public function commentCanDelete(EventComment $item): bool
     {
         return $this->eventCommentVoter->canDelete($item, $this->security->getUser());
     }

@@ -2,15 +2,12 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\User;
-use App\Tests\Toolbox\NeedLogin;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class HomeControllerTest extends WebTestCase
 {
-    use NeedLogin;
-
     public function testIndexNotConnected()
     {
         $client = static::createClient();
@@ -22,8 +19,9 @@ class HomeControllerTest extends WebTestCase
     public function testIndexConnected()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
         $client->request('GET', '/');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
@@ -31,8 +29,9 @@ class HomeControllerTest extends WebTestCase
     public function testAccountPage()
     {
         $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
-        $this->login($client, $doctrine->getRepository(User::class)->findOneBy(['email' => 'email@domain.com']));
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
+        $client->loginUser($testUser);
         $client->request('GET', '/mon-compte');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
