@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 
 class PurchaseCrudController extends AbstractCrudController
 {
@@ -103,6 +104,7 @@ class PurchaseCrudController extends AbstractCrudController
             MoneyField::new('total', 'Montant')->setCurrency('EUR'),
             TextField::new('status', 'Statut'),
             TextField::new('paymentMethod', 'Mode de règlment'),
+            BooleanField::new('isPaid', 'Paiement fait'),
             AssociationField::new('purchaseItems', 'Détail de la commande')->formatValue(function ($value, $entity) {
                 $str = $entity->getPurchaseItems()[0];
                 for ($i = 1; $i < $entity->getPurchaseItems()->count(); $i++) {
