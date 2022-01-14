@@ -61,6 +61,11 @@ class Purchase implements EntityInterface
      */
     private $PaymentMethod;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isPaid;
+
     public function __construct()
     {
         $this->purchaseItems = new ArrayCollection();
@@ -176,5 +181,22 @@ class Purchase implements EntityInterface
         if ($this->status == $status) {
             return true;
         }
+    }
+
+    public function __toString()
+    {
+        return $this->user->getFirstName() . ' ' . $this->user->getLastName() . ' - ' . $this->purchasedAt->format('d/m/Y');
+    }
+
+    public function getIsPaid(): ?bool
+    {
+        return $this->isPaid;
+    }
+
+    public function setIsPaid(?bool $isPaid): self
+    {
+        $this->isPaid = $isPaid;
+
+        return $this;
     }
 }
