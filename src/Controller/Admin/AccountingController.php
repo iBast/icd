@@ -85,12 +85,12 @@ class AccountingController extends AbstractController
     #[Route('admin/tresorerie/bilan', name: 'admin_accounting_bilan')]
     public function bilan(Request $request, $begining = null, $end = null)
     {
-        if ($begining == null) {
+        if ($begining === null) {
             $date = (new DateTime());
             $date->setDate(date("Y", $date->getTimestamp()), 11, 1)->setTime(0, 0, 0);
             $begining = date('Y-m-d H:i:s', strtotime('-1 year', $date->getTimestamp()));
         }
-        if ($end == null) {
+        if ($end === null) {
             $date = (new DateTime())->setDate(date("Y", $date->getTimestamp()), 10, 31);
             $end = date('Y-m-d H:i:s', $date->getTimestamp());
         }

@@ -26,7 +26,7 @@ class AccountManager extends AbstractManager
 
     public function createAccount(int $number, string $name)
     {
-        if ($this->accountRepository->findOneBy(['number' => $number]) == null) {
+        if ($this->accountRepository->findOneBy(['number' => $number]) === null) {
             $account = new Account;
             $account->setName($name)->setNumber($number);
             $this->save($account);

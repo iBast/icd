@@ -424,7 +424,7 @@ class Enrollment implements EntityInterface
 
     public function checkPayment()
     {
-        if ($this->paymentAt != null) {
+        if ($this->paymentAt !== null) {
             return false;
         }
         return true;
@@ -432,7 +432,7 @@ class Enrollment implements EntityInterface
 
     public function checkDocuments()
     {
-        if ($this->isDocsValid == true) {
+        if ($this->isDocsValid === true) {
             return false;
         }
         return true;
@@ -440,7 +440,7 @@ class Enrollment implements EntityInterface
 
     public function checkEmail()
     {
-        if ($this->isDocsValid == true && $this->paymentAt != null) {
+        if ($this->isDocsValid === true && $this->paymentAt !== null) {
             return false;
         }
         return true;
@@ -448,7 +448,7 @@ class Enrollment implements EntityInterface
 
     public function checkFinalValidation()
     {
-        if ($this->isDocsValid == true && $this->paymentAt != null && $this->endedAt == null) {
+        if ($this->isDocsValid === true && $this->paymentAt !== null && $this->endedAt === null) {
             return true;
         }
         return false;

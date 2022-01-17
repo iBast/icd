@@ -69,7 +69,7 @@ class EnrollmentYoungManager extends AbstractManager
         $season = $this->seasonRepository->findOneBy(['year' => $enrollment->getSeason()->getYear()]);
 
         $totalAmount = $season->getYoungCost() + $enrollment->getLicence()->getCost();
-        if ($enrollment->getHasPoolAcces() == true) {
+        if ($enrollment->getHasPoolAcces() === true) {
             $totalAmount = $totalAmount + $season->getSwimCost();
         }
 
@@ -109,10 +109,10 @@ class EnrollmentYoungManager extends AbstractManager
     public function sendEmailMissingDocs(EnrollmentYoung $enrollment)
     {
         $items = [];
-        if ($enrollment->getIsDocsValid() == false) {
+        if ($enrollment->getIsDocsValid() === false) {
             $items[] = 'Les documents n\'ont pas pu être validés ou sont manquants';
         }
-        if ($enrollment->getPaymentAt() == null) {
+        if ($enrollment->getPaymentAt() === null) {
             $items[] = 'Le paiement n\'a pas été réceptionné';
         }
         $email = (new TemplatedEmail())

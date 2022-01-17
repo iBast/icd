@@ -56,11 +56,11 @@ class EnrollmentController extends AbstractController
 
         foreach ($this->getUser()->getMembers() as $member) {
             if ($member->getBirthday() < new DateTime('-18years')) {
-                if ($this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]) == null) {
+                if ($this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]) === null) {
                     $this->manager->enroll($member, $this->getUser(), $season);
                 }
             } else {
-                if ($this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]) == null) {
+                if ($this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]) === null) {
                     $this->youngManager->enroll($member, $this->getUser(), $season);
                 }
             }

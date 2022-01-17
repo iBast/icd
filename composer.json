@@ -110,5 +110,11 @@
             "allow-contrib": false,
             "require": "5.4.*"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:iBast/icd.git"
+        }
+    ]
 }
