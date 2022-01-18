@@ -107,7 +107,8 @@ class PurchaseCrudController extends AbstractCrudController
             BooleanField::new('isPaid', 'Paiement fait'),
             AssociationField::new('purchaseItems', 'Détail de la commande')->formatValue(function ($value, Purchase $entity) {
                 $str = $entity->getPurchaseItems()[0];
-                for ($i = 1; $i < $entity->getPurchaseItems()->count(); $i++) {
+                $count = $entity->getPurchaseItems()->count();
+                for ($i = 1; $i < $count; $i++) {
                     $str = $str . "</br> " . $entity->getPurchaseItems()[$i];
                 }
                 return $str;

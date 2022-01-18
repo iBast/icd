@@ -58,7 +58,7 @@ class AccountManager extends AbstractManager
     {
         $debit = $this->accountRepository->findOneBy(['number' => $debitAccount]);
         $credit = $this->accountRepository->findOneBy(['number' => $creditAccount]);
-        $date = ($date == null) ? new DateTimeImmutable() : $date;
+        $date = ($date === null) ? new DateTimeImmutable() : $date;
         $this->debit($debit, $wording, $amount, $date);
         $this->credit($credit, $wording, $amount, $date);
     }

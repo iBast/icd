@@ -87,13 +87,13 @@ class EnrollmentController extends AbstractController
         }
 
         if ($member->getBirthday() < new DateTime('-18years')) {
-            if ($this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]) == null) {
+            if ($this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]) === null) {
                 $this->manager->enroll($member, $this->getUser(), $season);
             }
             $enrollment = $this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]);
             $form = $this->createForm(EnrollmentStep1Type::class, $enrollment);
         } else {
-            if ($this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]) == null) {
+            if ($this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]) === null) {
                 $this->youngManager->enroll($member, $this->getUser(), $season);
             }
             $enrollment = $this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]);
