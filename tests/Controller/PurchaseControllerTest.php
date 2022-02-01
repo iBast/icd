@@ -6,7 +6,7 @@ use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class PurcahseControllerTest extends WebTestCase
+class PurchaseControllerTest extends WebTestCase
 {
     public function testIndexNotConnected()
     {

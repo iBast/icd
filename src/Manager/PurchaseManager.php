@@ -53,11 +53,12 @@ class PurchaseManager extends AbstractManager
                 ->setProductPrice($cartItem->variant->getProduct()->getPrice())
                 ->setVariantName($cartItem->variant->getName());
 
-            /*
+
             if ($purchaseItem->getProductVariant()->getStock() - $cartItem->qty < 0) {
-                return;
+                $error = $this->error('danger', 'Stock insufisant pour le produit ' . $purchaseItem->getProductName() . ' - ' . $purchaseItem->getVariantName() . ' Stock restant : ' . $purchaseItem->getProductVariant()->getStock(), 'shop_cart');
+                return $error;
             }
-            $purchaseItem->getProductVariant()->setStock($purchaseItem->getProductVariant()->getStock() - $cartItem->qty); */
+            $purchaseItem->getProductVariant()->setStock($purchaseItem->getProductVariant()->getStock() - $cartItem->qty);
 
             $this->em->persist($purchaseItem);
         }

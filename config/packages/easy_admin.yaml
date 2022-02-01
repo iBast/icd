@@ -27,4 +27,3 @@ easy_admin:
                     - { property: 'description', type: 'text_editor' }
     list:
         actions: ['show', 'export']
-    
