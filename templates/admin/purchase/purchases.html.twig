@@ -25,6 +25,7 @@
 				<table class="table">
 					<thead>
 						<tr>
+							<th>Référence</th>
 							<th>Produit</th>
 							<th>Modèle</th>
 							<th>Quantité</th>
@@ -33,7 +34,9 @@
 					<tbody>
 						{% for item in items %}
 							<tr>
-								<td>{{item.ProductName}}</td>
+								<td>{{item.reference}}</td>
+								<td>{{item.ProductName}}
+								</td>
 								<td>{{item.variantName}}</td>
 								<td>
 									{{item.count}}</td>

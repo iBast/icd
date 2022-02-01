@@ -71,9 +71,10 @@ class PurchaseManager extends AbstractManager
     {
         $orders = $this->getPurchseItemRepository()->findPurchasedItemOrdered();
 
-        $rows = array('Produit,Modèle,Quantité');
+        $rows = array('Référence,Produit,Modèle,Quantité');
         foreach ($orders as $order) {
             $data = array(
+                $order['reference'],
                 $order['ProductName'],
                 $order['variantName'],
                 $order['count']

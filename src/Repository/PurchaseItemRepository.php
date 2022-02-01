@@ -4,9 +4,11 @@ namespace App\Repository;
 
 use App\Entity\Purchase;
 use App\Entity\PurchaseItem;
-use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Repository\PurchaseRepository;
+use App\Repository\ShopProductRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\ShopProductVariantRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method PurchaseItem|null find($id, $lockMode = null, $lockVersion = null)
@@ -28,11 +30,14 @@ class PurchaseItemRepository extends ServiceEntityRepository
         return $this->createQueryBuilder(self::ALIAS)
             ->select(self::ALIAS . '.ProductName')
             ->addSelect(self::ALIAS . '.variantName')
+            ->addSelect(ShopProductRepository::ALIAS . '.reference')
             ->addSelect('SUM(' . self::ALIAS . '.quantity) as count')
             ->Join(self::ALIAS . '.purchase', PurchaseRepository::ALIAS)
+            ->Join(self::ALIAS . '.productVariant', ShopProductVariantRepository::ALIAS)
+            ->Join(ShopProductVariantRepository::ALIAS . '.product', ShopProductRepository::ALIAS)
             ->where(PurchaseRepository::ALIAS . '.status = :status')
             ->setParameter('status', Purchase::STATUS_ACCEPTED)
-            ->groupBy(self::ALIAS . '.ProductName, ' . self::ALIAS . '.variantName')
+            ->groupBy(self::ALIAS . '.ProductName, ' . self::ALIAS . '.variantName,' . ShopProductRepository::ALIAS . '.reference')
             ->orderBy(self::ALIAS . '.ProductName')
             ->getQuery()
             ->getScalarResult();
