@@ -33,8 +33,7 @@ class CartControllerTest extends WebTestCase
         $testUser = $userRepository->findOneBy(['email' => 'email@domain.com']);
         $client->loginUser($testUser);
         $crawler = $client->request('GET', '/boutique/Category/Product');
-        $buttonCrawlerNode = $crawler->selectButton('Ajouter au panier');
-        $form = $buttonCrawlerNode->form();
+        $form = $crawler->selectButton('Ajouter au panier')->form();
         $client->submit($form, [
             'product[quantity]' => 1,
             'product[variant]' => '1'
