@@ -30,7 +30,14 @@
 							{% for race in races %}
 								<tr>
 									<td>{{race.date | date('d/m/Y')}}</td>
-									<td>{{race.name}}</td>
+									<td>{{race.name}}
+										{% if race.isForAdults %}
+											<span class="badge bg-info">Adultes</span>
+										{% endif %}
+										{% if race.isForYoungs %}
+											<span class="badge bg-info">Jeunes</span>
+										{% endif %}
+									</td>
 									<td>{{race.location}}</td>
 									<td>
 										{{race.registratedMember | length}}</td>
@@ -45,7 +52,14 @@
 				<div class="d-md-none">
 					{% for race in races %}
 						<div class="card mb-3">
-							<h3 class="card-header">{{race.name}}</h3>
+							<h3 class="card-header">{{race.name}}
+								{% if race.isForAdults %}
+									<span class="badge bg-info">Adultes</span>
+								{% endif %}
+								{% if race.isForYoungs %}
+									<span class="badge bg-info">Jeunes</span>
+								{% endif %}
+							</h3>
 							<div class="card-body d-flex justify-content-between">
 								<div>
 									<h5 class="card-title">{{race.date | date('d/m/Y')}}</h5>
