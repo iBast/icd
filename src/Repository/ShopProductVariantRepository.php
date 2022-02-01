@@ -14,6 +14,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ShopProductVariantRepository extends ServiceEntityRepository
 {
+    const ALIAS = "spv";
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ShopProductVariant::class);
@@ -21,7 +23,7 @@ class ShopProductVariantRepository extends ServiceEntityRepository
 
     public function findAllWithStock()
     {
-        return $this->createQueryBuilder('p')
+        return $this->createQueryBuilder(self::ALIAS)
             ->andWhere('p.stock > 0')
             ->getQuery()
             ->getResult();

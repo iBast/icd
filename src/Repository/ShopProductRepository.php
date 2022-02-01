@@ -14,6 +14,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ShopProductRepository extends ServiceEntityRepository
 {
+    const ALIAS = "sp";
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ShopProduct::class);

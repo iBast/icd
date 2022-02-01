@@ -69,6 +69,16 @@ class Race implements EntityInterface
      */
     private $raceReports;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isForAdults;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isForYoungs;
+
     public function __construct()
     {
         $this->registratedMember = new ArrayCollection();
@@ -245,6 +255,30 @@ class Race implements EntityInterface
                 $raceReport->setRace(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsForAdults(): ?bool
+    {
+        return $this->isForAdults;
+    }
+
+    public function setIsForAdults(?bool $isForAdults): self
+    {
+        $this->isForAdults = $isForAdults;
+
+        return $this;
+    }
+
+    public function getIsForYoungs(): ?bool
+    {
+        return $this->isForYoungs;
+    }
+
+    public function setIsForYoungs(?bool $isForYoungs): self
+    {
+        $this->isForYoungs = $isForYoungs;
 
         return $this;
     }
