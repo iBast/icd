@@ -6,15 +6,26 @@
 
 {% block body %}
 	<h1>Mon Compte</h1>
-	<h4>Informations du compte</h4>
+	<div class="row">
+		<div class="col-9">
+			<h4>Informations du compte</h4>
 
-	{{ form_start(form) }}
-	{{ form_row(form.email) }}
-	{{ form_row(form.firstName) }}
-	{{ form_row(form.lastName) }}
+			{{ form_start(form) }}
+			{{ form_row(form.email) }}
+			{{ form_row(form.firstName) }}
+			{{ form_row(form.lastName) }}
 
-	<div class="d-grid gap-2">
-		<button type="submit" class="btn btn-lg btn-primary mt-2">Modifier les information</button>
+			<div class="d-grid gap-2">
+				<button type="submit" class="btn btn-lg btn-primary mt-2">Modifier les information</button>
+			</div>
+			{{ form_end(form) }}
+		</div>
+		<div class="col-3">
+			<h4>Mot de passe</h4>
+			<div class="d-grid gap-2">
+				<a href="{{path('user_change_password')}}" class="btn btn-lg btn-info">Modifier le mot de passe</a>
+
+			</div>
+		</div>
 	</div>
-	{{ form_end(form) }}
 {% endblock %}
