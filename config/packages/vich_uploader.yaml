@@ -26,4 +26,3 @@ vich_uploader:
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
             delete_on_update: true
             delete_on_remove: true
-        

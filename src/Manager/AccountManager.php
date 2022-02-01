@@ -26,7 +26,7 @@ class AccountManager extends AbstractManager
 
     public function createAccount(int $number, string $name)
     {
-        if ($this->accountRepository->findOneBy(['number' => $number]) == null) {
+        if ($this->accountRepository->findOneBy(['number' => $number]) === null) {
             $account = new Account;
             $account->setName($name)->setNumber($number);
             $this->save($account);
@@ -58,7 +58,7 @@ class AccountManager extends AbstractManager
     {
         $debit = $this->accountRepository->findOneBy(['number' => $debitAccount]);
         $credit = $this->accountRepository->findOneBy(['number' => $creditAccount]);
-        $date = ($date == null) ? new DateTimeImmutable() : $date;
+        $date = ($date === null) ? new DateTimeImmutable() : $date;
         $this->debit($debit, $wording, $amount, $date);
         $this->credit($credit, $wording, $amount, $date);
     }

@@ -18,6 +18,7 @@ class PurchaseController extends AbstractController
     protected $cartService;
     protected $em;
     protected $manager;
+    protected $error = false;
 
     public function __construct(CartService $cartService, EntityManagerInterface $em, PurchaseManager $manager)
     {
@@ -47,7 +48,13 @@ class PurchaseController extends AbstractController
 
         /** @var Purchase */
         $purchase = $form->getData();
-        $this->manager->storePurchase($purchase);
+
+        $reslut = $this->manager->storePurchase($purchase);
+        if (is_array($reslut)) {
+            $this->addFlash($reslut['type'], $reslut['message']);
+            return $this->redirectToRoute($reslut['redirection']);
+        }
+
         $this->addFlash('success', 'La commande a été crée.');
 
 

@@ -6,9 +6,9 @@
 {% block body %}
 	<p>
 		Si un compte existe pour l'email rensigné un email a été envoyé avec un lien de ré initialisation.
-				        Le lien expirara dans :
+								        Le lien expirara dans :
 		{{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
 	</p>
-	<p>Si vous n'avez rien recçu vérifier les sapams ou
+	<p>Si vous n'avez rien reçu, vérifiez les spams ou
 		<a href="{{ path('app_forgot_password_request') }}">essayez à nouveau</a>.</p>
 {% endblock %}
