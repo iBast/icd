@@ -11,6 +11,12 @@
 				<i class="fas fa-plus"></i>
 				Ajouter un entrainement
 			</a>
+			{% if is_granted('ROLE_COMITE') %}
+				<a class="btn btn-warning" href="{{path('training_settings')}}" role="button">
+					<i class="fas fa-cog"></i>
+					Paramètres
+				</a>
+			{% endif %}
 		</div>
 	</div>
 	<div class="row">
@@ -30,7 +36,9 @@
 						<td>Course à pied</td>
 						<td>Séance collective</td>
 						<td>
-							<a href="" class="btn btn-primary">Voir</a>
+							<a href="" class="btn btn-primary">
+								<i class="fas fa-eye"></i>
+								Voir</a>
 						</td>
 					</tr>
 				</tbody>

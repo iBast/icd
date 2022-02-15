@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entrainements
+{% endblock %}
+
+{% block body %}
+	<h1>Paramètres</h1>
+	<div class="row">
+		<div class="col-12">
+			<h2>Sports :</h2>
+			<a href="" class="btn btn-success">
+				<i class="fas fa-plus"></i>
+				Ajouter un sport</a>
+			{% for sport in sports %}
+				{{sport.name}}
+			{% endfor %}
+		</div>
+	</div>
+
+{% endblock %}

@@ -37,3 +37,35 @@ jobs:
       env:
         DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
       run: vendor/bin/phpunit
+    - name: Symfon CLI  
+      run: |
+          curl -sS https://get.symfony.com/cli/installer | bash
+          mv /home/runner/.symfony/bin/symfony /usr/local/bin/symfony
+      
+    - name: Symfony check vulnerabilities
+      run: symfony check:security
+        
+    - name: PHP-CS-Fixer
+      run: |
+          composer require friendsofphp/php-cs-fixer 
+          ./vendor/bin/php-cs-fixer fix --dry-run
+          
+    - name: PHP Stan
+      run: |
+          ./vendor/bin/simple-phpunit install
+          composer require phpstan/phpstan
+          composer require phpstan/extension-installer
+          composer require phpstan/phpstan-symfony
+          ./vendor/bin/phpstan analyse src --memory-limit 1G
+          
+    - name: Lint YAML files
+      run: ./bin/console lint:yaml config --parse-tags
+        
+    - name: Lint Twig templates
+      run: ./bin/console lint:twig templates --env=prod
+        
+    - name: Lint Parameters and Services
+      run: ./bin/console lint:container --no-debug
+        
+    - name: Lint Doctrine entities
+      run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
