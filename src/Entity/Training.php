@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=TrainingRepository::class)
  */
-class Training
+class Training implements EntityInterface
 {
     /**
      * @ORM\Id

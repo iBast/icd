@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=SportRepository::class)
  */
-class Sport
+class Sport implements EntityInterface
 {
     /**
      * @ORM\Id

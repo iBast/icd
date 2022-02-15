@@ -1,10 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Entrainements
+{% block title %}Entrainement
 {% endblock %}
 
 {% block body %}
-	<h1>Entrainement du 16/11/1990 :</h1>
+	<a href="{{ path('training') }}" class="btn btn-link">
+		<i class="fas fa-chevron-left"></i>
+		Retour</a>
+	<h1>Entrainement du
+		{{training.date | date('d/m/Y')}}
+		:</h1>
+	<span class="badge bg-primary">{{training.sport.name}}</span>
+	<div class="row mt-2">
+		<div class="col-12">
+			{{training.content | raw}}
 
+		</div>
+	</div>
 
 {% endblock %}
