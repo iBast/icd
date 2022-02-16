@@ -1,12 +1,21 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
-use App\Entity\User;
 use App\Entity\Member;
 use App\Entity\Season;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Member|null find($id, $lockMode = null, $lockVersion = null)
@@ -26,12 +35,12 @@ class MemberRepository extends ServiceEntityRepository
     public function findMembersUnregistrated(Season $season, User $user)
     {
         return $this->createQueryBuilder(self::ALIAS)
-            ->where(self::ALIAS . '.User = :user')
+            ->where(self::ALIAS.'.User = :user')
             ->setParameter('User', $user)
             //->andWhere(EnrollmentRepository::ALIAS . '.season != :season')
             ->setParameter('season', $season)
             ->getQuery()
-            ->execute();;
+            ->execute();
     }
 
     // /**

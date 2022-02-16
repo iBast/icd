@@ -1,28 +1,35 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
-use DateTime;
 use App\Entity\Enrollment;
 use App\Entity\EnrollmentYoung;
-use App\Manager\AccountManager;
-use App\Manager\InvoiceManager;
 use App\Form\EnrollmentStep1Type;
 use App\Form\EnrollmentStep2Type;
 use App\Form\EnrollmentYoungType;
+use App\Manager\AccountManager;
 use App\Manager\EnrollmentManager;
-use App\Repository\MemberRepository;
-use App\Repository\SeasonRepository;
-use App\Repository\AccountRepository;
-use App\Repository\LicenceRepository;
 use App\Manager\EnrollmentYoungManager;
+use App\Manager\InvoiceManager;
 use App\Repository\EnrollmentRepository;
 use App\Repository\EnrollmentYoungRepository;
+use App\Repository\LicenceRepository;
+use App\Repository\MemberRepository;
+use App\Repository\SeasonRepository;
+use DateTime;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class EnrollmentController extends AbstractController
 {
@@ -56,11 +63,11 @@ class EnrollmentController extends AbstractController
 
         foreach ($this->getUser()->getMembers() as $member) {
             if ($member->getBirthday() < new DateTime('-18years')) {
-                if ($this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]) === null) {
+                if (null === $this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season])) {
                     $this->manager->enroll($member, $this->getUser(), $season);
                 }
             } else {
-                if ($this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]) === null) {
+                if (null === $this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season])) {
                     $this->youngManager->enroll($member, $this->getUser(), $season);
                 }
             }
@@ -83,17 +90,18 @@ class EnrollmentController extends AbstractController
 
         if (!$this->getUser()->getMembers()->contains($member)) {
             $this->addFlash('danger', 'Tu n\'es pas autorisé à modifier ce membre !');
+
             return $this->redirectToRoute('home');
         }
 
         if ($member->getBirthday() < new DateTime('-18years')) {
-            if ($this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]) === null) {
+            if (null === $this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season])) {
                 $this->manager->enroll($member, $this->getUser(), $season);
             }
             $enrollment = $this->enrollmentRepository->findOneBy(['memberId' => $member, 'Season' => $season]);
             $form = $this->createForm(EnrollmentStep1Type::class, $enrollment);
         } else {
-            if ($this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]) === null) {
+            if (null === $this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season])) {
                 $this->youngManager->enroll($member, $this->getUser(), $season);
             }
             $enrollment = $this->enrollmentYoungRepository->findOneBy(['owner' => $member, 'season' => $season]);
@@ -104,18 +112,19 @@ class EnrollmentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($member->getBirthday() < new DateTime('-18years')) {
                 $this->manager->draft($enrollment);
+
                 return $this->redirectToRoute('enrollment_finalise', ['id' => $enrollment->getId()]);
-            } else {
-                $this->youngManager->draft($enrollment);
-                return $this->redirectToRoute('enrollment_finalise_young', ['id' => $enrollment->getId()]);
             }
+            $this->youngManager->draft($enrollment);
+
+            return $this->redirectToRoute('enrollment_finalise_young', ['id' => $enrollment->getId()]);
         }
 
         return $this->render('enrollment/enroll.html.twig', [
             'season' => $season,
             'member' => $member,
             'form' => $form->createView(),
-            'licences' => $licenceRepository->findAll()
+            'licences' => $licenceRepository->findAll(),
         ]);
     }
 
@@ -127,11 +136,13 @@ class EnrollmentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->finalise($enrollment);
             $this->addFlash('success', 'Ton adhésion est enregistrée, elle sera validé prochainement, sous réserve de réception du paiement ainsi que des documents');
+
             return $this->redirectToRoute('home');
         }
+
         return $this->render('enrollment/finalise.html.twig', [
             'enrollment' => $enrollment,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -143,15 +154,17 @@ class EnrollmentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $manager->finalise($enrollment);
             $this->addFlash('success', 'Ton adhésion est enregistrée, elle sera validé prochainement, sous réserve de réception du paiement ainsi que des documents');
+
             return $this->redirectToRoute('home');
         }
+
         return $this->render('enrollment/finalise.html.twig', [
             'enrollment' => $enrollment,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 }
 
 /*
-* Statut : 1. Demande crée, 2.Demande faite, 
+* Statut : 1. Demande crée, 2.Demande faite,
 */

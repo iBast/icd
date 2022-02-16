@@ -1,15 +1,24 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller\Admin;
 
-use DateTime;
 use App\Entity\Account;
 use App\Form\DatePickerType;
-use App\Repository\AccountRepository;
 use App\Repository\AccountingRepository;
+use App\Repository\AccountRepository;
+use DateTime;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AccountingController extends AbstractController
 {
@@ -26,7 +35,7 @@ class AccountingController extends AbstractController
     public function accounts()
     {
         return $this->render('admin/accounting/accounts.html.twig', [
-            'accounts' => $this->accountRepository->findAll()
+            'accounts' => $this->accountRepository->findAll(),
         ]);
     }
 
@@ -34,7 +43,7 @@ class AccountingController extends AbstractController
     public function account(Account $account)
     {
         return $this->render('admin/accounting/account.html.twig', [
-            'account' => $account
+            'account' => $account,
         ]);
     }
 
@@ -59,7 +68,7 @@ class AccountingController extends AbstractController
             'products' => $products,
             'charges' => $charges,
             'totalcharge' => $totalCharge,
-            'totalproduct' => $totalProduct
+            'totalproduct' => $totalProduct,
         ]);
     }
 
@@ -78,20 +87,20 @@ class AccountingController extends AbstractController
         return $this->render('admin/accounting/balance.html.twig', [
             'accounts' => $accounts,
             'debit' => $debit,
-            'credit' => $credit
+            'credit' => $credit,
         ]);
     }
 
     #[Route('admin/tresorerie/bilan', name: 'admin_accounting_bilan')]
     public function bilan(Request $request, $begining = null, $end = null)
     {
-        if ($begining === null) {
+        if (null === $begining) {
             $date = (new DateTime());
-            $date->setDate(date("Y", $date->getTimestamp()), 11, 1)->setTime(0, 0, 0);
+            $date->setDate(date('Y', $date->getTimestamp()), 11, 1)->setTime(0, 0, 0);
             $begining = date('Y-m-d H:i:s', strtotime('-1 year', $date->getTimestamp()));
         }
-        if ($end === null) {
-            $date = (new DateTime())->setDate(date("Y", $date->getTimestamp()), 10, 31);
+        if (null === $end) {
+            $date = (new DateTime())->setDate(date('Y', $date->getTimestamp()), 10, 31);
             $end = date('Y-m-d H:i:s', $date->getTimestamp());
         }
 
@@ -116,28 +125,28 @@ class AccountingController extends AbstractController
         $soldechargeavance = 0;
 
         foreach ($accounts as $account) {
-            if (substr($account->getAccount(), 0, 2) == '41') {
+            if ('41' === mb_substr($account->getAccount(), 0, 2)) {
                 $soldeadherents += $account->getDebit() - $account->getCredit();
             }
-            if (substr($account->getAccount(), 0, 1) == '5') {
+            if ('5' === mb_substr($account->getAccount(), 0, 1)) {
                 $soldebanque += $account->getDebit() - $account->getCredit();
             }
-            if (substr($account->getAccount(), 0, 3) == '401') {
+            if ('401' === mb_substr($account->getAccount(), 0, 3)) {
                 $soldefournisseurs += $account->getCredit() - $account->getDebit();
             }
-            if (substr($account->getAccount(), 0, 1) == '7') {
+            if ('7' === mb_substr($account->getAccount(), 0, 1)) {
                 $produits += $account->getCredit() - $account->getDebit();
             }
-            if (substr($account->getAccount(), 0, 1) == '6') {
+            if ('6' === mb_substr($account->getAccount(), 0, 1)) {
                 $charges += $account->getDebit() - $account->getCredit();
             }
-            if (substr($account->getAccount(), 0, 1) == '1') {
+            if ('1' === mb_substr($account->getAccount(), 0, 1)) {
                 $soldereports += $account->getCredit() - $account->getDebit();
             }
-            if (substr($account->getAccount(), 0, 3) == '487') {
+            if ('487' === mb_substr($account->getAccount(), 0, 3)) {
                 $soldeproduitavance += $account->getCredit() - $account->getDebit();
             }
-            if (substr($account->getAccount(), 0, 3) == '486') {
+            if ('486' === mb_substr($account->getAccount(), 0, 3)) {
                 $soldechargeavance += $account->getDebit() - $account->getCredit();
             }
         }
@@ -152,7 +161,7 @@ class AccountingController extends AbstractController
             'reports' => $soldereports,
             'PCA' => $soldeproduitavance,
             'CCA' => $soldechargeavance,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 

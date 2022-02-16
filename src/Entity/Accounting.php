@@ -1,12 +1,20 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
-use App\Entity\EntityInterface;
+use App\Repository\AccountingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\AccountingRepository;
 
 /**
  * @ORM\Entity(repositoryClass=AccountingRepository::class)
@@ -24,7 +32,6 @@ class Accounting implements EntityInterface
      * @ORM\Column(type="datetime_immutable")
      */
     private $date;
-
 
     /**
      * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="accountings")
@@ -124,7 +131,7 @@ class Accounting implements EntityInterface
 
     public function __toString()
     {
-        return $this->getDate()->format('d/m/Y') . ' ' . $this->getWording() . ' ' . $this->getDebit() / 100 . ' ' . $this->getCredit() / 100;
+        return $this->getDate()->format('d/m/Y').' '.$this->getWording().' '.$this->getDebit() / 100 .' '.$this->getCredit() / 100;
     }
 
     /**

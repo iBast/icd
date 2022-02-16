@@ -1,13 +1,22 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
-use App\Shop\CartService;
 use App\Form\CartConfirmationType;
+use App\Repository\ShopProductVariantRepository;
+use App\Shop\CartService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\ShopProductVariantRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CartController extends AbstractController
 {
@@ -19,7 +28,6 @@ class CartController extends AbstractController
         $this->productRepository = $productRepository;
         $this->cartService = $cartService;
     }
-
 
     #[Route('/boutique/panier/ajout', name: 'shop_cart_add')]
     public function add(Request $request)
@@ -39,7 +47,7 @@ class CartController extends AbstractController
 
         $this->cartService->add($product->getId(), $qty);
 
-        $this->addFlash('success', "Le produit a bien été ajouté au panier");
+        $this->addFlash('success', 'Le produit a bien été ajouté au panier');
 
         if ($request->query->get('returnToCart')) {
             return $this->redirectToRoute('shop_cart');
@@ -47,7 +55,7 @@ class CartController extends AbstractController
 
         return $this->redirectToRoute('shop_show', [
             'category_slug' => $product->getProduct()->getCategory()->getSlug(),
-            'slug' => $product->getProduct()->getSlug()
+            'slug' => $product->getProduct()->getSlug(),
         ]);
     }
 
@@ -62,7 +70,7 @@ class CartController extends AbstractController
         return $this->render('shop/cart.html.twig', [
             'items' => $detailedCart,
             'total' => $total,
-            'confirmationForm' => $form->createView()
+            'confirmationForm' => $form->createView(),
         ]);
     }
 
@@ -75,9 +83,9 @@ class CartController extends AbstractController
         }
         $this->cartService->remove($id);
 
-        $this->addFlash("success", "Le produit a bien été supprimé du panier");
+        $this->addFlash('success', 'Le produit a bien été supprimé du panier');
 
-        return $this->redirectToRoute("shop_cart");
+        return $this->redirectToRoute('shop_cart');
     }
 
     #[Route('/boutique/panier/retirer/{id}', name: 'shop_cart_decrement', requirements: ['id' => '\d+'])]
@@ -90,8 +98,8 @@ class CartController extends AbstractController
 
         $this->cartService->decrement($id);
 
-        $this->addFlash("success", "La quantité a bien été modifiée");
+        $this->addFlash('success', 'La quantité a bien été modifiée');
 
-        return $this->redirectToRoute("shop_cart");
+        return $this->redirectToRoute('shop_cart');
     }
 }

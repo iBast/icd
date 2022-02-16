@@ -1,24 +1,29 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
-use App\Entity\Race;
-use App\Entity\User;
-use App\Entity\Member;
-use App\Form\RaceType;
 use App\Entity\EventComment;
+use App\Entity\Race;
 use App\Entity\RaceReport;
-use App\Form\RaceReportType;
-use App\Manager\RaceManager;
 use App\Form\RaceCommentType;
-use App\Repository\RaceRepository;
-use App\Security\EventCommentVoter;
-use App\Repository\MemberRepository;
+use App\Form\RaceReportType;
+use App\Form\RaceType;
+use App\Manager\RaceManager;
 use App\Repository\EventCommentRepository;
+use App\Security\EventCommentVoter;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class RacesController extends AbstractController
 {
@@ -34,41 +39,44 @@ class RacesController extends AbstractController
     {
         $races = $this->manager->getRaceRepository()->findUpComingRaces();
         $pastRaces = $this->manager->getRaceRepository()->findLastRaces();
+
         return $this->render('races/index.html.twig', [
             'races' => $races,
-            'pastRaces' => $pastRaces
+            'pastRaces' => $pastRaces,
         ]);
     }
 
     #[Route('/courses/ajouter', name: 'races_new')]
     public function new(Request $request): Response
     {
-        $race = new Race;
+        $race = new Race();
         $form = $this->createForm(RaceType::class, $race);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->add($race);
             $this->addFlash('success', 'La course a bien été ajoutée.');
+
             return $this->redirectToRoute('races_home');
         }
 
         return $this->render('races/new.html.twig', [
             'form' => $form->createView(),
-            'race' => $race
+            'race' => $race,
         ]);
     }
 
     #[Route('/courses/{slug}', name: 'races_show')]
     public function show(Race $race, Request $request, EventCommentRepository $eventCommentRepository): Response
     {
-        $comment = new EventComment;
+        $comment = new EventComment();
         $form = $this->createForm(RaceCommentType::class, $comment);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->comment($comment, $race, $this->getUser());
             $this->addFlash('success', 'Le commentaire a bien été ajouté.');
+
             return $this->redirectToRoute('races_show', ['slug' => $race->getSlug()]);
         }
 
@@ -76,7 +84,7 @@ class RacesController extends AbstractController
             'race' => $race,
             'form' => $form->createView(),
             'comments' => $eventCommentRepository->findComments($race),
-            'pinnedComments' => $eventCommentRepository->findPinnedComments($race)
+            'pinnedComments' => $eventCommentRepository->findPinnedComments($race),
         ]);
     }
 
@@ -87,6 +95,7 @@ class RacesController extends AbstractController
         $event = $comment->getEvent();
         $this->manager->deleteComment($comment);
         $this->addFlash('success', 'Le commentaire a été supprimé');
+
         return $this->redirectToRoute('races_show', ['slug' => $event->getSlug()]);
     }
 
@@ -95,6 +104,7 @@ class RacesController extends AbstractController
     {
         $this->manager->changeState($comment);
         $this->addFlash('success', 'Action prise en compte');
+
         return $this->redirectToRoute('races_show', ['slug' => $comment->getEvent()->getSlug()]);
     }
 
@@ -105,6 +115,7 @@ class RacesController extends AbstractController
         $race = $this->manager->getRaceRepository()->findOneBy(['slug' => $slug]);
         $this->manager->participate($member, $race);
         $this->addFlash('success', 'Action prise en compte');
+
         return $this->redirectToRoute('races_show', ['slug' => $race->getSlug()]);
     }
 
@@ -117,12 +128,13 @@ class RacesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->add($race);
             $this->addFlash('success', 'La course a bien été ajoutée.');
+
             return $this->redirectToRoute('races_home');
         }
 
         return $this->render('races/new.html.twig', [
             'form' => $form->createView(),
-            'race' => $race
+            'race' => $race,
         ]);
     }
 
@@ -132,7 +144,7 @@ class RacesController extends AbstractController
         $member = $this->manager->getMemberRepository()->find($id);
         $race = $this->manager->getRaceRepository()->findOneBy(['slug' => $slug]);
 
-        $raceReport = new RaceReport;
+        $raceReport = new RaceReport();
         $raceReport->setParticipant($member)->setRace($race);
         $form = $this->createForm(RaceReportType::class, $raceReport);
 
@@ -140,13 +152,14 @@ class RacesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->manager->save($raceReport);
             $this->addFlash('success', 'Le résumé a été enregistré. Merci de ta contribution.');
+
             return $this->redirectToRoute('races_show', ['slug' => $race->getSlug()]);
         }
 
         return $this->render('races/addReport.html.twig', [
             'form' => $form->createView(),
             'race' => $race,
-            'member' => $member
+            'member' => $member,
         ]);
     }
 
@@ -154,9 +167,10 @@ class RacesController extends AbstractController
     public function reports(Race $race)
     {
         $this->denyAccessUnlessGranted('ROLE_COMMUNITY');
+
         return $this->render('races/reports.html.twig', [
             'reports' => $race->getRaceReports(),
-            'race' => $race
+            'race' => $race,
         ]);
     }
 
@@ -166,6 +180,7 @@ class RacesController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_COMITE');
         $this->manager->remove($race);
         $this->addFlash('success', 'La course a bien été supprimée.');
+
         return $this->redirectToRoute('races_home');
     }
 }

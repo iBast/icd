@@ -1,15 +1,23 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
-use App\Entity\EntityInterface;
+use App\Repository\AccountingDocumentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
-use App\Repository\AccountingDocumentRepository;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=AccountingDocumentRepository::class)
@@ -31,7 +39,7 @@ class AccountingDocument implements EntityInterface
 
     /**
      * @Vich\UploadableField(mapping="accountingFile", fileNameProperty="path")
-     * 
+     *
      * @var File|null
      */
     private $accountingFile;
@@ -45,7 +53,6 @@ class AccountingDocument implements EntityInterface
      * @ORM\Column(type="integer", nullable=true)
      */
     private $totalAmount;
-
 
     private $createdAt;
 
@@ -127,7 +134,7 @@ class AccountingDocument implements EntityInterface
 
     public function __toString()
     {
-        return $this->id . ' - ' . $this->totalAmount / 100 . ' €';
+        return $this->id.' - '.$this->totalAmount / 100 .' €';
     }
 
     /**

@@ -1,23 +1,25 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form;
 
-use App\Entity\Licence;
-use App\Form\MemberType;
 use App\Entity\Enrollment;
-use App\Repository\LicenceRepository;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\AbstractType;
-use Vich\UploaderBundle\Form\Type\VichFileType;
-use Symfony\Component\Form\FormBuilderInterface;
+use App\Entity\Licence;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\RadioType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class EnrollmentStep1Type extends AbstractType
 {
@@ -28,27 +30,27 @@ class EnrollmentStep1Type extends AbstractType
                 'label' => 'Choix de la licence',
                 'placeholder' => '-- Choisir le type d\'adhésion --',
                 'class' => Licence::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ])
             ->add('hasPoolAcces', CheckboxType::class, [
                 'label' => 'Accès piscine',
-                'required' => false
+                'required' => false,
             ])
             ->add('hasPhotoAuthorization', CheckboxType::class, [
                 'label' => 'Droit à l\'image - J\'autorise l’Iron Club de Dannemarie à utiliser des photos pendant les compétitions/Entrainement/stage pour ses plaquettes d’information, article de presse, et tout support numérique (site web, page Facebook)',
-                'required' => false
+                'required' => false,
             ])
             ->add('medicalFile', VichFileType::class, [
                 'label' => 'Certificat médical',
-                'required' => false
+                'required' => false,
             ])
             ->add('FFTriDocFile', VichFileType::class, [
                 'label' => 'Document transmis par la FF TRI',
-                'required' => false
+                'required' => false,
             ])
             ->add('FFTriDoc2File', VichFileType::class, [
                 'label' => '2ème page (si besoin)',
-                'required' => false
+                'required' => false,
             ])
             ->add('paymentMethod', ChoiceType::class, [
                 'label' => 'Mode de règlement',
@@ -56,8 +58,8 @@ class EnrollmentStep1Type extends AbstractType
                 'choices' => [
                     'Virement (à privilégier)' => 'Virement',
                     'Espèces (à donner dans une enveloppe a son nom)' => 'Espèces',
-                    'Chèque' => 'Chèque'
-                ]
+                    'Chèque' => 'Chèque',
+                ],
             ]);
     }
 

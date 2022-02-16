@@ -1,16 +1,23 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -22,20 +29,20 @@ class RegistrationFormType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Email',
                 'attr' => [
-                    'placeholder' => 'Insérez un email valide'
-                ]
+                    'placeholder' => 'Insérez un email valide',
+                ],
             ])
             ->add('firstName', TextType::class, [
                 'label' => 'Votre prénom',
                 'attr' => [
-                    'placeholder' => 'Votre prénom'
-                ]
+                    'placeholder' => 'Votre prénom',
+                ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Votre nom',
                 'attr' => [
-                    'placeholder' => 'Votre nom'
-                ]
+                    'placeholder' => 'Votre nom',
+                ],
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
@@ -45,7 +52,7 @@ class RegistrationFormType extends AbstractType
                 'help' => 'Le mot de passe doit avoir au moins 6 caractères',
                 'attr' => [
                     'autocomplete' => 'new-password',
-                    'placeholder' => 'Choisissez un mot de passe'
+                    'placeholder' => 'Choisissez un mot de passe',
                 ],
                 'constraints' => [
                     new NotBlank([

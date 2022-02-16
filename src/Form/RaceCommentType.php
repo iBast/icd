@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form;
 
 use App\Entity\EventComment;
@@ -16,8 +25,8 @@ class RaceCommentType extends AbstractType
             ->add('content', TextareaType::class, [
                 'label' => 'Ton commentaire',
                 'attr' => [
-                    'placeholder' => 'Tu \'occupes du covoiturage ?'
-                ]
+                    'placeholder' => 'Tu \'occupes du covoiturage ?',
+                ],
             ]);
     }
 
