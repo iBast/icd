@@ -351,7 +351,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addEventComments(EventComment $eventComments): self
     {
-        if (!$this->coneventCommentstent->contains($eventComments)) {
+        if (!$this->eventComments->contains($eventComments)) {
             $this->eventComments[] = $eventComments;
             $eventComments->setUser($this);
         }

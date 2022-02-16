@@ -11,14 +11,15 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Purchase;
-use App\Form\CartConfirmationType;
-use App\Manager\PurchaseManager;
 use App\Shop\CartService;
+use App\Manager\PurchaseManager;
+use App\Form\CartConfirmationType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PurchaseController extends AbstractController
 {

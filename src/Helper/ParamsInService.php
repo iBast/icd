@@ -52,10 +52,10 @@ class ParamsInService
      * Récupère la valeur paramètre présente dans le fichiers config/services.yaml.
      * Utiliser les constantes présentes dans cette classe.
      */
-    public function get(string $param_name): string
+    public function get(string $param_name): mixed
     {
         if (!\in_array($param_name, $this->datas, true)) {
-            throw new InvalidArgumentException('Ce paramètre est inconnu : '.$param_name);
+            throw new InvalidArgumentException('Ce paramètre est inconnu : ' . $param_name);
         }
 
         return $this->params->get($param_name);
