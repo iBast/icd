@@ -25,7 +25,7 @@ class TrainingController extends AbstractController
     public function index(): Response
     {
         return $this->render('training/index.html.twig', [
-            'controller_name' => 'TrainingController',
+            'trainings' => $this->manager->getTrainingRepository()->findAll(),
         ]);
     }
 

@@ -4,9 +4,17 @@
 {% endblock %}
 
 {% block body %}
-	<a href="{{ path('training') }}" class="btn btn-link">
-		<i class="fas fa-chevron-left"></i>
-		Retour</a>
+	<div class="row">
+		<div class="col-12 d-flex justify-content-between">
+			<a href="{{ path('training') }}" class="btn btn-link">
+				<i class="fas fa-chevron-left"></i>
+				Retour</a>
+			<a href="{{ path('training_edit', {'id': training.id}) }}" class="btn btn-primary">
+				<i class="fas fa-pen"></i>
+				Editer</a>
+		</div>
+	</div>
+
 	<h1>Entrainement du
 		{{training.date | date('d/m/Y')}}
 		:</h1>
