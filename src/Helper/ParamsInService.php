@@ -55,7 +55,7 @@ class ParamsInService
     public function get(string $param_name): mixed
     {
         if (!\in_array($param_name, $this->datas, true)) {
-            throw new InvalidArgumentException('Ce paramètre est inconnu : ' . $param_name);
+            throw new InvalidArgumentException('Ce paramètre est inconnu : '.$param_name);
         }
 
         return $this->params->get($param_name);
