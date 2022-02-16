@@ -11,14 +11,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Account;
-use App\Entity\Accounting;
 use App\Entity\Member;
 use App\Form\MemberType;
 use App\Helper\ParamsInService;
-use App\Manager\AccountManager;
 use App\Manager\MemberManager;
-use App\Repository\AccountRepository;
 use App\Repository\MemberRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\UserRepository;
@@ -56,7 +52,7 @@ class MemberController extends AbstractController
     }
 
     #[Route('/membre/edit/{id?}', name: 'member_add')]
-    public function add($id, Request $request, AccountManager $accountManager, SeasonRepository $seasonRepository): Response
+    public function add($id, Request $request, SeasonRepository $seasonRepository): Response
     {
         if (!$id) {
             $member = new Member();
@@ -74,8 +70,7 @@ class MemberController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $member->addUser($this->getUser());
             $this->manager->save($member);
-            $this->addFlash('success', 'Le compte membre de'.$member->getFirstName().'a été crée');
-            $accountManager->createAccount('411'.str_pad($member->getId(), 3, '0', \STR_PAD_LEFT), 'Membre '.$member->getFirstName().' '.$member->getLastName());
+            $this->addFlash('success', 'Le compte membre de' . $member->getFirstName() . 'a été crée');
             $season = $seasonRepository->findOneBy(['enrollmentStatus' => 1]);
             if ($season) {
                 return $this->redirectToRoute('enrollment_member', [

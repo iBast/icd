@@ -16,10 +16,8 @@ use App\Entity\EnrollmentYoung;
 use App\Form\EnrollmentStep1Type;
 use App\Form\EnrollmentStep2Type;
 use App\Form\EnrollmentYoungType;
-use App\Manager\AccountManager;
 use App\Manager\EnrollmentManager;
 use App\Manager\EnrollmentYoungManager;
-use App\Manager\InvoiceManager;
 use App\Repository\EnrollmentRepository;
 use App\Repository\EnrollmentYoungRepository;
 use App\Repository\LicenceRepository;
@@ -129,7 +127,7 @@ class EnrollmentController extends AbstractController
     }
 
     #[Route('/adhesion/validation/adulte/{id}', name: 'enrollment_finalise')]
-    public function finalise(Enrollment $enrollment, Request $request, AccountManager $accountManager, InvoiceManager $invoiceManager)
+    public function finalise(Enrollment $enrollment, Request $request)
     {
         $form = $this->createForm(EnrollmentStep2Type::class);
         $form->handleRequest($request);
@@ -147,7 +145,7 @@ class EnrollmentController extends AbstractController
     }
 
     #[Route('/adhesion/validation/jeune/{id}', name: 'enrollment_finalise_young')]
-    public function finaliseYoung(EnrollmentYoung $enrollment, Request $request, AccountManager $accountManager, EnrollmentYoungManager $manager, InvoiceManager $invoiceManager)
+    public function finaliseYoung(EnrollmentYoung $enrollment, Request $request, EnrollmentYoungManager $manager)
     {
         $form = $this->createForm(EnrollmentStep2Type::class);
         $form->handleRequest($request);

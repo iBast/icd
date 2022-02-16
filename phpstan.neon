@@ -11,7 +11,6 @@ parameters:
     ignoreErrors:
         - '#no type specified#'
         - '#Component#'
-        - '#expects int, string given#'
         - '#has no return type specified#'
         - '#Cannot call method#'
         - '#Parameter#'
