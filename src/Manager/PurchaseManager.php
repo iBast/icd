@@ -1,14 +1,23 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Manager;
 
-use App\Entity\Purchase;
-use App\Shop\CartService;
-use App\Entity\PurchaseItem;
 use App\Entity\EntityInterface;
+use App\Entity\Purchase;
+use App\Entity\PurchaseItem;
 use App\Repository\PurchaseItemRepository;
 use App\Repository\PurchaseRepository;
 use App\Repository\ShopProductVariantRepository;
+use App\Shop\CartService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -36,6 +45,7 @@ class PurchaseManager extends AbstractManager
     {
         //interface
     }
+
     public function storePurchase(Purchase $purchase)
     {
         $purchase->setUser($this->security->getUser())
@@ -43,7 +53,7 @@ class PurchaseManager extends AbstractManager
 
         $this->em->persist($purchase);
         foreach ($this->cartService->getDetailedCartItems() as $cartItem) {
-            $purchaseItem = new PurchaseItem;
+            $purchaseItem = new PurchaseItem();
             $purchaseItem
                 ->setPurchase($purchase)
                 ->setProductVariant($cartItem->variant)
@@ -53,9 +63,9 @@ class PurchaseManager extends AbstractManager
                 ->setProductPrice($cartItem->variant->getProduct()->getPrice())
                 ->setVariantName($cartItem->variant->getName());
 
-
             if ($purchaseItem->getProductVariant()->getStock() - $cartItem->qty < 0) {
-                $error = $this->error('danger', 'Stock insufisant pour le produit ' . $purchaseItem->getProductName() . ' - ' . $purchaseItem->getVariantName() . ' Stock restant : ' . $purchaseItem->getProductVariant()->getStock(), 'shop_cart');
+                $error = $this->error('danger', 'Stock insufisant pour le produit '.$purchaseItem->getProductName().' - '.$purchaseItem->getVariantName().' Stock restant : '.$purchaseItem->getProductVariant()->getStock(), 'shop_cart');
+
                 return $error;
             }
             $purchaseItem->getProductVariant()->setStock($purchaseItem->getProductVariant()->getStock() - $cartItem->qty);
@@ -71,14 +81,14 @@ class PurchaseManager extends AbstractManager
     {
         $orders = $this->getPurchseItemRepository()->findPurchasedItemOrdered();
 
-        $rows = array('Référence,Produit,Modèle,Quantité');
+        $rows = ['Référence,Produit,Modèle,Quantité'];
         foreach ($orders as $order) {
-            $data = array(
+            $data = [
                 $order['reference'],
                 $order['ProductName'],
                 $order['variantName'],
-                $order['count']
-            );
+                $order['count'],
+            ];
 
             $rows[] = implode(',', $data);
         }

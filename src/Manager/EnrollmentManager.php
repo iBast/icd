@@ -1,17 +1,25 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Manager;
 
-use App\Entity\User;
-use App\Entity\Member;
-use App\Entity\Season;
-use DateTimeImmutable;
 use App\Entity\Enrollment;
 use App\Entity\EntityInterface;
+use App\Entity\Member;
+use App\Entity\Season;
+use App\Entity\User;
 use App\Helper\ParamsInService;
-use App\Manager\AbstractManager;
-use App\Repository\SeasonRepository;
 use App\Repository\EnrollmentRepository;
+use App\Repository\SeasonRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
@@ -31,24 +39,22 @@ class EnrollmentManager extends AbstractManager
         EntityManagerInterface $em,
         MailerInterface $mailer,
         ParamsInService $paramsInService,
-        AccountManager $accountManager
     ) {
         parent::__construct($em);
         $this->enrollmentRepository = $enrollmentRepository;
         $this->seasonRepository = $seasonRepository;
         $this->mailer = $mailer;
         $this->paramsInService = $paramsInService;
-        $this->accountManager = $accountManager;
     }
 
     public function initialise(EntityInterface $entity)
     {
-        //interface   
+        //interface
     }
 
     public function enroll(Member $member, User $user, Season $season)
     {
-        $enrollment = new Enrollment;
+        $enrollment = new Enrollment();
         $enrollment
             ->setIsMember(false)
             ->setHasPoolAcces(false)
@@ -65,7 +71,7 @@ class EnrollmentManager extends AbstractManager
         $season = $this->seasonRepository->findOneBy(['year' => $enrollment->getSeason()->getYear()]);
 
         $totalAmount = $season->getMembershipCost() + $enrollment->getLicence()->getCost();
-        if ($enrollment->getHasPoolAcces() === true) {
+        if (true === $enrollment->getHasPoolAcces()) {
             $totalAmount = $totalAmount + $season->getSwimCost();
         }
 
@@ -100,16 +106,15 @@ class EnrollmentManager extends AbstractManager
     {
         $enrollment->setPaymentAt(new DateTimeImmutable());
         $this->save($enrollment);
-        $this->accountManager->newEntry('512000', $this->paramsInService->get(ParamsInService::APP_ACCOUNTPREFIX_MEMBER) . str_pad($enrollment->getMemberId()->getId(), 3, '0', STR_PAD_LEFT), 'Règlement adhésion ' . $enrollment->getMemberId()->getFirstName(), $enrollment->getTotalAmount());
     }
 
     public function sendEmailMissingDocs(Enrollment $enrollment)
     {
         $items = [];
-        if ($enrollment->getIsDocsValid() === false) {
+        if (false === $enrollment->getIsDocsValid()) {
             $items[] = 'Les documents n\'ont pas pu être validés ou sont manquants';
         }
-        if ($enrollment->getPaymentAt() === null) {
+        if (null === $enrollment->getPaymentAt()) {
             $items[] = 'Le paiement n\'a pas été réceptionné';
         }
         $email = (new TemplatedEmail())
@@ -119,7 +124,7 @@ class EnrollmentManager extends AbstractManager
             ->htmlTemplate('email/missingEnroll.html.twig')
             ->context(['items' => $items, 'member' => $enrollment->getMemberId(), 'season' => $enrollment->getSeason()]);
 
-        if ($enrollment->getMemberId()->getEmail() != $enrollment->getUser()->getEmail()) {
+        if ($enrollment->getMemberId()->getEmail() !== $enrollment->getUser()->getEmail()) {
             $email->cc($enrollment->getMemberId()->getEmail());
         }
 

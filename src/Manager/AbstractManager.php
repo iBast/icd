@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Manager;
 
 use App\Entity\EntityInterface;
@@ -7,7 +16,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 abstract class AbstractManager implements ManagerInterface
 {
-
     protected $em;
 
     public function __construct(EntityManagerInterface $em)
@@ -32,6 +40,7 @@ abstract class AbstractManager implements ManagerInterface
     public function error($type, $message, $redirection, $options = null)
     {
         $error = ['type' => $type, 'message' => $message, 'redirection' => $redirection, 'options' => $options];
+
         return $error;
     }
 }

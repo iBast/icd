@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -17,7 +26,7 @@ class ResetPasswordRequestFormType extends AbstractType
                 'label' => 'Email',
                 'attr' => [
                     'autocomplete' => 'email',
-                    'placeholder' => 'Indiquez votre email de connexion'
+                    'placeholder' => 'Indiquez votre email de connexion',
                 ],
                 'constraints' => [
                     new NotBlank([

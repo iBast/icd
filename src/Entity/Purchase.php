@@ -1,14 +1,21 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
-use DateTime;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\PreFlush;
-use Doctrine\ORM\Mapping\PrePersist;
 use App\Repository\PurchaseRepository;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=PurchaseRepository::class)
@@ -16,7 +23,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Purchase implements EntityInterface
 {
-
     public const STATUS_CREATED = 'Commande crée';
     public const STATUS_ACCEPTED = 'Commande prise en compte';
     public const STATUS_PAID = 'Commande payée';
@@ -52,6 +58,7 @@ class Purchase implements EntityInterface
 
     /**
      * @ORM\OneToMany(targetEntity=PurchaseItem::class, mappedBy="purchase", orphanRemoval=true)
+     *
      * @var Collection<PurchaseItem>
      */
     private $purchaseItems;
@@ -178,14 +185,14 @@ class Purchase implements EntityInterface
 
     public function checkStatus($status)
     {
-        if ($this->status == $status) {
+        if ($this->status === $status) {
             return true;
         }
     }
 
     public function __toString()
     {
-        return $this->user->getFirstName() . ' ' . $this->user->getLastName() . ' - ' . $this->purchasedAt->format('d/m/Y');
+        return $this->user->getFirstName().' '.$this->user->getLastName().' - '.$this->purchasedAt->format('d/m/Y');
     }
 
     public function getIsPaid(): ?bool

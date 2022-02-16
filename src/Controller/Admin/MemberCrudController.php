@@ -1,13 +1,22 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller\Admin;
 
 use App\Entity\Member;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class MemberCrudController extends AbstractCrudController
 {
@@ -23,6 +32,7 @@ class MemberCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('Membre')
             ->setEntityLabelInPlural('Membres');
     }
+
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -34,8 +44,7 @@ class MemberCrudController extends AbstractCrudController
             TextField::new('adress', 'Adresse')->hideOnIndex(),
             TextField::new('postCode', 'CP')->hideOnIndex(),
             TextField::new('city', 'Ville'),
-            DateField::new('birthday', 'Date d\'anniversaire')
-
+            DateField::new('birthday', 'Date d\'anniversaire'),
         ];
     }
 }

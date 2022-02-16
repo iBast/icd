@@ -1,14 +1,20 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\Purchase;
 use App\Entity\PurchaseItem;
-use App\Repository\PurchaseRepository;
-use App\Repository\ShopProductRepository;
-use Doctrine\Persistence\ManagerRegistry;
-use App\Repository\ShopProductVariantRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method PurchaseItem|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,7 +24,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class PurchaseItemRepository extends ServiceEntityRepository
 {
-    const ALIAS = "pi";
+    public const ALIAS = 'pi';
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -28,17 +34,17 @@ class PurchaseItemRepository extends ServiceEntityRepository
     public function findPurchasedItemOrdered()
     {
         return $this->createQueryBuilder(self::ALIAS)
-            ->select(self::ALIAS . '.ProductName')
-            ->addSelect(self::ALIAS . '.variantName')
-            ->addSelect(ShopProductRepository::ALIAS . '.reference')
-            ->addSelect('SUM(' . self::ALIAS . '.quantity) as count')
-            ->Join(self::ALIAS . '.purchase', PurchaseRepository::ALIAS)
-            ->Join(self::ALIAS . '.productVariant', ShopProductVariantRepository::ALIAS)
-            ->Join(ShopProductVariantRepository::ALIAS . '.product', ShopProductRepository::ALIAS)
-            ->where(PurchaseRepository::ALIAS . '.status = :status')
+            ->select(self::ALIAS.'.ProductName')
+            ->addSelect(self::ALIAS.'.variantName')
+            ->addSelect(ShopProductRepository::ALIAS.'.reference')
+            ->addSelect('SUM('.self::ALIAS.'.quantity) as count')
+            ->Join(self::ALIAS.'.purchase', PurchaseRepository::ALIAS)
+            ->Join(self::ALIAS.'.productVariant', ShopProductVariantRepository::ALIAS)
+            ->Join(ShopProductVariantRepository::ALIAS.'.product', ShopProductRepository::ALIAS)
+            ->where(PurchaseRepository::ALIAS.'.status = :status')
             ->setParameter('status', Purchase::STATUS_ACCEPTED)
-            ->groupBy(self::ALIAS . '.ProductName, ' . self::ALIAS . '.variantName,' . ShopProductRepository::ALIAS . '.reference')
-            ->orderBy(self::ALIAS . '.ProductName')
+            ->groupBy(self::ALIAS.'.ProductName, '.self::ALIAS.'.variantName,'.ShopProductRepository::ALIAS.'.reference')
+            ->orderBy(self::ALIAS.'.ProductName')
             ->getQuery()
             ->getScalarResult();
     }

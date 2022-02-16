@@ -1,13 +1,21 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Twig;
 
-use App\Entity\User;
-use Twig\TwigFilter;
 use App\Entity\EventComment;
 use App\Security\EventCommentVoter;
-use Twig\Extension\AbstractExtension;
 use Symfony\Component\Security\Core\Security;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 class EventCommentVoterExtension extends AbstractExtension
 {
@@ -20,7 +28,6 @@ class EventCommentVoterExtension extends AbstractExtension
     public function __construct(
         Security $security,
         EventCommentVoter $eventCommentVoter
-
     ) {
         $this->security = $security;
         $this->eventCommentVoter = $eventCommentVoter;
@@ -34,8 +41,6 @@ class EventCommentVoterExtension extends AbstractExtension
             new TwigFilter('commentCanDelete', [$this, 'commentCanDelete']),
         ];
     }
-
-
 
     public function commentCanRead(EventComment $item): bool
     {

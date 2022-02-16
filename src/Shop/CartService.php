@@ -1,11 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Shop;
 
-use App\Shop\CartItem;
 use App\Repository\ShopProductVariantRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class CartService
 {
@@ -32,7 +39,7 @@ class CartService
     {
         $cart = $this->getCart();
 
-        if (!array_key_exists($id, $cart)) {
+        if (!\array_key_exists($id, $cart)) {
             $cart[$id] = 0;
         }
         $cart[$id] = $cart[$id] + $qty;
@@ -50,11 +57,11 @@ class CartService
             }
             $total += $variant->getProduct()->getPrice() * $qty;
         }
+
         return $total;
     }
 
     /**
-     * 
      * @return CartItem[]
      */
     public function getDetailedCartItems(): array
@@ -67,6 +74,7 @@ class CartService
             }
             $detailedCart[] = new CartItem($product, $qty);
         }
+
         return $detailedCart;
     }
 
@@ -83,15 +91,15 @@ class CartService
     {
         $cart = $this->getCart();
 
-        if (!array_key_exists($id, $cart)) {
+        if (!\array_key_exists($id, $cart)) {
             return;
         }
 
-        if ($cart[$id] == 1) {
+        if (1 === $cart[$id]) {
             return $this->remove($id);
         }
 
-        $cart[$id]--;
+        --$cart[$id];
 
         $this->saveCart($cart);
     }

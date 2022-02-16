@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entrainements
+{% endblock %}
+
+{% block body %}
+	<a href="{{ path('training') }}" class="btn btn-link">
+		<i class="fas fa-chevron-left"></i>
+		Retour</a>
+	<h1>Paramètres</h1>
+	<div class="row">
+		<div class="col-12">
+			<h2>Sports :</h2>
+			{{form_start(form)}}
+			<div class="row">
+				<div class="col-12 col-md-9">
+					{{form_row(form.name)}}
+				</div>
+				<div class="col-12 col-md-3 mb-3">
+					<div class="d-grid gap-2 mt-2">
+						<button type="submit" class="btn btn-success  mt-4">Ajouter le sport</button>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<ul class="list-group">
+						{% for sport in sports %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								{{sport.name}}
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+			{{form_end(form)}}
+
+		</div>
+	</div>
+
+{% endblock %}

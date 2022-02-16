@@ -1,12 +1,20 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form;
 
 use App\Entity\ShopProduct;
 use App\Entity\ShopProductVariant;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,13 +26,13 @@ class ProductType extends AbstractType
         $builder
             ->add('quantity', ChoiceType::class, [
                 'label' => 'Quantité',
-                'choices' => $options['quantity']
+                'choices' => $options['quantity'],
             ])
             ->add('variant', EntityType::class, [
                 'class' => ShopProductVariant::class,
                 'choices' => $options['product']->getShopProductVariants(),
                 'choice_label' => 'name',
-                'label' => 'Modèle'
+                'label' => 'Modèle',
             ]);
     }
 
@@ -42,7 +50,7 @@ class ProductType extends AbstractType
                 '7' => 7,
                 '8' => 8,
                 '9' => 9,
-            ]
+            ],
         ]);
     }
 }

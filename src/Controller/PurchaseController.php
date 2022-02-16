@@ -1,17 +1,25 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Purchase;
-use App\Shop\CartService;
+use App\Entity\User;
 use App\Form\CartConfirmationType;
 use App\Manager\PurchaseManager;
+use App\Shop\CartService;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
 
 class PurchaseController extends AbstractController
 {
@@ -35,14 +43,16 @@ class PurchaseController extends AbstractController
         $form->handleRequest($request);
 
         if (!$form->isSubmitted()) {
-            $this->addFlash('warning', "Vous devez remplir le formulaire de confirmation");
+            $this->addFlash('warning', 'Vous devez remplir le formulaire de confirmation');
+
             return $this->redirectToRoute('shop_cart');
         }
 
         $cartItems = $this->cartService->getDetailedCartItems();
 
-        if (count($cartItems) === 0) {
-            $this->addFlash('warning', "Vous ne pouvez pas confirmer une commande avec un panier vide");
+        if (0 === \count($cartItems)) {
+            $this->addFlash('warning', 'Vous ne pouvez pas confirmer une commande avec un panier vide');
+
             return $this->redirectToRoute('shop_cart');
         }
 
@@ -50,13 +60,13 @@ class PurchaseController extends AbstractController
         $purchase = $form->getData();
 
         $reslut = $this->manager->storePurchase($purchase);
-        if (is_array($reslut)) {
+        if (\is_array($reslut)) {
             $this->addFlash($reslut['type'], $reslut['message']);
+
             return $this->redirectToRoute($reslut['redirection']);
         }
 
         $this->addFlash('success', 'La commande a été crée.');
-
 
         return $this->redirectToRoute('shop_orders');
     }
@@ -68,7 +78,7 @@ class PurchaseController extends AbstractController
         $user = $this->getUser();
 
         return $this->render('shop/orders.html.twig', [
-            'purchases' => $user->getPurchases()
+            'purchases' => $user->getPurchases(),
         ]);
     }
 }

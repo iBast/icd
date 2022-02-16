@@ -1,12 +1,20 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
-use App\Entity\EntityInterface;
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AccountRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=AccountRepository::class)
@@ -34,7 +42,6 @@ class Account implements EntityInterface
      * @ORM\OneToMany(targetEntity=Accounting::class, mappedBy="account")
      */
     private $accountings;
-
 
     public function __construct()
     {
@@ -102,7 +109,7 @@ class Account implements EntityInterface
 
     public function __toString()
     {
-        return $this->getNumber() . ' ' . $this->getName();
+        return $this->getNumber().' '.$this->getName();
     }
 
     public function getDebit()

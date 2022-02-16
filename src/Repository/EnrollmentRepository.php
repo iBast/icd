@@ -1,14 +1,21 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
-use App\Entity\User;
-use App\Entity\Season;
 use App\Entity\Enrollment;
-use App\Entity\Member;
-use DateTime;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Season;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Enrollment|null find($id, $lockMode = null, $lockVersion = null)
@@ -25,21 +32,19 @@ class EnrollmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Enrollment::class);
     }
 
-
     public function findBySeasonAndUser(Season $season, User $user)
     {
         $qb = $this->createQueryBuilder(self::ALIAS)
-            ->where(self::ALIAS . '.Season
+            ->where(self::ALIAS.'.Season
             = :season')
             ->setParameter('season', $season)
-            ->andWhere(self::ALIAS . '.User = :user')
+            ->andWhere(self::ALIAS.'.User = :user')
             ->setParameter('user', $user)
             ->getQuery()
             ->execute();
+
         return $qb;
     }
-
-
 
     // /**
     //  * @return Enrollment[] Returns an array of Enrollment objects
