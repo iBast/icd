@@ -39,14 +39,12 @@ class EnrollmentManager extends AbstractManager
         EntityManagerInterface $em,
         MailerInterface $mailer,
         ParamsInService $paramsInService,
-        AccountManager $accountManager
     ) {
         parent::__construct($em);
         $this->enrollmentRepository = $enrollmentRepository;
         $this->seasonRepository = $seasonRepository;
         $this->mailer = $mailer;
         $this->paramsInService = $paramsInService;
-        $this->accountManager = $accountManager;
     }
 
     public function initialise(EntityInterface $entity)
@@ -108,7 +106,6 @@ class EnrollmentManager extends AbstractManager
     {
         $enrollment->setPaymentAt(new DateTimeImmutable());
         $this->save($enrollment);
-        $this->accountManager->newEntry('512000', $this->paramsInService->get(ParamsInService::APP_ACCOUNTPREFIX_MEMBER).str_pad($enrollment->getMemberId()->getId(), 3, '0', \STR_PAD_LEFT), 'Règlement adhésion '.$enrollment->getMemberId()->getFirstName(), $enrollment->getTotalAmount());
     }
 
     public function sendEmailMissingDocs(Enrollment $enrollment)

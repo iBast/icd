@@ -70,7 +70,7 @@ class MemberController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $member->addUser($this->getUser());
             $this->manager->save($member);
-            $this->addFlash('success', 'Le compte membre de' . $member->getFirstName() . 'a été crée');
+            $this->addFlash('success', 'Le compte membre de'.$member->getFirstName().'a été crée');
             $season = $seasonRepository->findOneBy(['enrollmentStatus' => 1]);
             if ($season) {
                 return $this->redirectToRoute('enrollment_member', [
