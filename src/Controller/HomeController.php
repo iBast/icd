@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\User;
@@ -7,13 +16,12 @@ use App\Form\UserType;
 use App\Repository\SeasonRepository;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\Mime\Address;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Twig\Markup;
 
 class HomeController extends AbstractController
@@ -21,7 +29,7 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(SeasonRepository $seasonRepository): Response
     {
-        if ($this->getUser() && $this->getUser()->isVerified() === false) {
+        if ($this->getUser() && false === $this->getUser()->isVerified()) {
             $message = new Markup(
                 $this->renderView('message/_emailFlash.html.twig', ['user' => $this->getUser()]),
                 'UTF-8'
@@ -34,8 +42,9 @@ class HomeController extends AbstractController
         }
 
         $season = $seasonRepository->findOneBy(['enrollmentStatus' => 1]);
+
         return $this->render('home/index.html.twig', [
-            'season' => $season
+            'season' => $season,
         ]);
     }
 
@@ -63,11 +72,12 @@ class HomeController extends AbstractController
 
             // do anything else you need here, like send an email
             $this->addFlash('success', 'Modification du compte enregistrée');
+
             return $this->redirectToRoute('account');
         }
 
         return $this->render('home/account.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 }

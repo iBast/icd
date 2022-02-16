@@ -1,31 +1,39 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller\Admin;
 
-use App\Entity\Enrollment;
 use App\Entity\EnrollmentYoung;
 use App\Helper\ParamsInService;
 use App\Manager\EnrollmentYoungManager;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\NullFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\NullFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class EnrollmentYoungCrudController extends AbstractCrudController
 {
@@ -35,6 +43,7 @@ class EnrollmentYoungCrudController extends AbstractCrudController
     {
         $this->params = $params;
     }
+
     public static function getEntityFqcn(): string
     {
         return EnrollmentYoung::class;
@@ -57,7 +66,7 @@ class EnrollmentYoungCrudController extends AbstractCrudController
             ->add(ChoiceFilter::new('status')->setChoices([
                 $this->params->get(ParamsInService::APP_ENROLLMENT_NEW) => $this->params->get(ParamsInService::APP_ENROLLMENT_NEW),
                 $this->params->get(ParamsInService::APP_ENROLLMENT_PENDING) => $this->params->get(ParamsInService::APP_ENROLLMENT_PENDING),
-                $this->params->get(ParamsInService::APP_ENROLLMENT_DONE) => $this->params->get(ParamsInService::APP_ENROLLMENT_DONE)
+                $this->params->get(ParamsInService::APP_ENROLLMENT_DONE) => $this->params->get(ParamsInService::APP_ENROLLMENT_DONE),
             ]));
     }
 
@@ -90,14 +99,14 @@ class EnrollmentYoungCrudController extends AbstractCrudController
             ->setPermissions(['pending' => 'ROLE_ADHESIONS', 'validate' => 'ROLE_ADHESIONS', 'paymentOk' => 'ROLE_TRESORIER']);
     }
 
-
     public function validate(AdminContext $context, EnrollmentYoungManager $manager, AdminUrlGenerator $adminUrlGenerator)
     {
         /** @var EnrollmentYoung */
         $enrollmentYoung = $context->getEntity()->getInstance();
         $manager->validate($enrollmentYoung);
         $this->addFlash('success', 'Les documents ont étés validés');
-        return $this->redirect($adminUrlGenerator->setController(Self::class)->setAction(Action::INDEX)->generateUrl());
+
+        return $this->redirect($adminUrlGenerator->setController(self::class)->setAction(Action::INDEX)->generateUrl());
     }
 
     public function missingEmail(AdminContext $context, EnrollmentYoungManager $manager, AdminUrlGenerator $adminUrlGenerator)
@@ -105,7 +114,8 @@ class EnrollmentYoungCrudController extends AbstractCrudController
         $enrollmentYoung = $context->getEntity()->getInstance();
         $manager->sendEmailMissingDocs($enrollmentYoung);
         $this->addFlash('success', 'L\'email a bien été envoyé');
-        return $this->redirect($adminUrlGenerator->setController(Self::class)->setAction(Action::INDEX)->generateUrl());
+
+        return $this->redirect($adminUrlGenerator->setController(self::class)->setAction(Action::INDEX)->generateUrl());
     }
 
     public function paymentOk(AdminContext $context, EnrollmentYoungManager $manager, AdminUrlGenerator $adminUrlGenerator)
@@ -114,7 +124,8 @@ class EnrollmentYoungCrudController extends AbstractCrudController
         $enrollmentYoung = $context->getEntity()->getInstance();
         $manager->paymentOk($enrollmentYoung);
         $this->addFlash('success', 'Le paiement a été validé');
-        return $this->redirect($adminUrlGenerator->setController(Self::class)->setAction(Action::INDEX)->generateUrl());
+
+        return $this->redirect($adminUrlGenerator->setController(self::class)->setAction(Action::INDEX)->generateUrl());
     }
 
     public function finalValidation(AdminContext $context, EnrollmentYoungManager $manager, AdminUrlGenerator $adminUrlGenerator)
@@ -122,7 +133,8 @@ class EnrollmentYoungCrudController extends AbstractCrudController
         $enrollment = $context->getEntity()->getInstance();
         $manager->finalValidation($enrollment);
         $this->addFlash('success', 'Le dossier a été validé');
-        return $this->redirect($adminUrlGenerator->setController(EnrollmentYoungCrudController::class)->setAction(Action::INDEX)->generateUrl());
+
+        return $this->redirect($adminUrlGenerator->setController(self::class)->setAction(Action::INDEX)->generateUrl());
     }
 
     public function configureFields(string $pageName): iterable
@@ -147,7 +159,7 @@ class EnrollmentYoungCrudController extends AbstractCrudController
             ChoiceField::new('status', 'Statut')->setChoices(fn () => [
                 $this->params->get(ParamsInService::APP_ENROLLMENT_NEW) => $this->params->get(ParamsInService::APP_ENROLLMENT_NEW),
                 $this->params->get(ParamsInService::APP_ENROLLMENT_PENDING) => $this->params->get(ParamsInService::APP_ENROLLMENT_PENDING),
-                $this->params->get(ParamsInService::APP_ENROLLMENT_DONE) => $this->params->get(ParamsInService::APP_ENROLLMENT_DONE)
+                $this->params->get(ParamsInService::APP_ENROLLMENT_DONE) => $this->params->get(ParamsInService::APP_ENROLLMENT_DONE),
             ]),
             BooleanField::new('isMember', 'Membre')->hideOnIndex(),
             AssociationField::new('licence')->hideOnIndex(),
@@ -176,7 +188,7 @@ class EnrollmentYoungCrudController extends AbstractCrudController
                 ->setFormType(VichImageType::class),
             TextareaField::new('antiDopingFile', 'Attestation anti dopage')
                 ->onlyOnForms()
-                ->setFormType(VichImageType::class)
+                ->setFormType(VichImageType::class),
         ];
     }
 }

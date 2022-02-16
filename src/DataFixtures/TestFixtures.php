@@ -1,20 +1,29 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\DataFixtures;
 
-use DateTime;
-use App\Entity\Race;
-use App\Entity\User;
-use App\Entity\Member;
-use DateTimeImmutable;
-use App\Entity\ShopProduct;
 use App\Entity\EventComment;
 use App\Entity\Licence;
+use App\Entity\Member;
+use App\Entity\Race;
 use App\Entity\Season;
 use App\Entity\ShopCategory;
+use App\Entity\ShopProduct;
 use App\Entity\ShopProductVariant;
-use Doctrine\Persistence\ObjectManager;
+use App\Entity\User;
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class TestFixtures extends Fixture
@@ -28,7 +37,6 @@ class TestFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-
         // $product = new Product();
         // $manager->persist($product);
         $user = new User();

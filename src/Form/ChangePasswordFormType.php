@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -20,7 +29,7 @@ class ChangePasswordFormType extends AbstractType
                 'first_options' => [
                     'attr' => [
                         'autocomplete' => 'new-password',
-                        'placeholder' => 'Choisiez un nouveau mot de passe'
+                        'placeholder' => 'Choisiez un nouveau mot de passe',
                     ],
                     'constraints' => [
                         new NotBlank([
@@ -38,7 +47,7 @@ class ChangePasswordFormType extends AbstractType
                 'second_options' => [
                     'attr' => [
                         'autocomplete' => 'new-password',
-                        'placeholder' => 'Répétez le nouveau mot de passe'
+                        'placeholder' => 'Répétez le nouveau mot de passe',
                     ],
                     'label' => 'Répétez le mot de passe',
                 ],

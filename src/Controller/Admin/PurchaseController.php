@@ -1,12 +1,20 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller\Admin;
 
-use App\Entity\Purchase;
 use App\Manager\PurchaseManager;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PurchaseController extends AbstractController
 {
@@ -21,7 +29,7 @@ class PurchaseController extends AbstractController
     public function showOrderedProducts()
     {
         return $this->render('admin/purchase/purchases.html.twig', [
-            'items' => $this->manager->getPurchseItemRepository()->findPurchasedItemOrdered()
+            'items' => $this->manager->getPurchseItemRepository()->findPurchasedItemOrdered(),
         ]);
     }
 

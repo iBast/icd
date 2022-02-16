@@ -1,12 +1,21 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
-use App\Entity\User;
-use App\Entity\Season;
 use App\Entity\EnrollmentYoung;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Season;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method EnrollmentYoung|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +26,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 class EnrollmentYoungRepository extends ServiceEntityRepository
 {
     public const ALIAS = 'y';
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, EnrollmentYoung::class);
@@ -25,13 +35,14 @@ class EnrollmentYoungRepository extends ServiceEntityRepository
     public function findBySeasonAndUser(Season $season, User $user)
     {
         $qb = $this->createQueryBuilder(self::ALIAS)
-            ->where(self::ALIAS . '.season
+            ->where(self::ALIAS.'.season
             = :season')
             ->setParameter('season', $season)
-            ->andWhere(self::ALIAS . '.user = :user')
+            ->andWhere(self::ALIAS.'.user = :user')
             ->setParameter('user', $user)
             ->getQuery()
             ->execute();
+
         return $qb;
     }
 

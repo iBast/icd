@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Security;
 
 use App\Entity\EventComment;
@@ -9,15 +18,15 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class EventCommentVoter extends Voter
 {
-    const READ = 'read';
-    const UPDATE = 'update';
-    const DELETE = 'delete';
-    const CREATE = 'create';
+    public const READ = 'read';
+    public const UPDATE = 'update';
+    public const DELETE = 'delete';
+    public const CREATE = 'create';
 
     protected function supports($attribute, $subject): bool
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, [self::READ, self::UPDATE, self::DELETE, self::CREATE])) {
+        if (!\in_array($attribute, [self::READ, self::UPDATE, self::DELETE, self::CREATE], true)) {
             return false;
         }
 
@@ -60,14 +69,14 @@ class EventCommentVoter extends Voter
 
     public function canUpdate(EventComment $comment, User $user): bool
     {
-        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+        if (\in_array('ROLE_ADMIN', $user->getRoles(), true)) {
             return true;
         }
 
-        if (in_array('ROLE_USER', $user->getRoles()) && $comment->getUser() == $user) {
-
+        if (\in_array('ROLE_USER', $user->getRoles(), true) && $comment->getUser() === $user) {
             return true;
         }
+
         return false;
     }
 
@@ -78,9 +87,10 @@ class EventCommentVoter extends Voter
 
     public function canCreate(User $user): bool
     {
-        if (in_array('ROLE_USER', $user->getRoles())) {
+        if (\in_array('ROLE_USER', $user->getRoles(), true)) {
             return true;
         }
+
         return false;
     }
 }

@@ -1,15 +1,24 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\ShopCategory;
 use App\Entity\ShopProduct;
 use App\Form\ProductType;
 use App\Manager\ShopManager;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ShopController extends AbstractController
 {
@@ -24,7 +33,7 @@ class ShopController extends AbstractController
     public function index(): Response
     {
         return $this->render('shop/index.html.twig', [
-            'products' => $this->manager->getProductRepository()->findVisible()
+            'products' => $this->manager->getProductRepository()->findVisible(),
         ]);
     }
 
@@ -32,9 +41,10 @@ class ShopController extends AbstractController
     public function category(ShopCategory $category): Response
     {
         $products = $this->manager->getProductRepository()->findBy(['category' => $category, 'isVisible' => true]);
+
         return $this->render('shop/category.html.twig', [
             'category' => $category,
-            'products' => $products
+            'products' => $products,
         ]);
     }
 
@@ -42,9 +52,10 @@ class ShopController extends AbstractController
     public function show(ShopProduct $product, Request $request): Response
     {
         $form = $this->createForm(ProductType::class, null, ['product' => $product]);
+
         return $this->render('shop/show.html.twig', [
             'product' => $product,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 }

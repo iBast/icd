@@ -1,11 +1,19 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
-use DateTime;
 use App\Entity\Accounting;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Accounting|null find($id, $lockMode = null, $lockVersion = null)
@@ -25,12 +33,13 @@ class AccountingRepository extends ServiceEntityRepository
     public function findByDates($begining, $end)
     {
         $qb = $this->createQueryBuilder(self::ALIAS)
-            ->where(self::ALIAS . '.date >= :begining')
-            ->andWhere(self::ALIAS . '.date <= :end')
+            ->where(self::ALIAS.'.date >= :begining')
+            ->andWhere(self::ALIAS.'.date <= :end')
             ->setParameter('begining', $begining)
             ->setParameter('end', $end)
             ->getQuery()
             ->execute();
+
         return $qb;
     }
 

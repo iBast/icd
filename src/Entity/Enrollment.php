@@ -1,15 +1,21 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
-use App\Entity\Member;
-use App\Entity\Season;
-use App\Entity\EntityInterface;
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\EnrollmentRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=EnrollmentRepository::class)
@@ -81,7 +87,6 @@ class Enrollment implements EntityInterface
      */
     private $hasPhotoAuthorization;
 
-
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -89,7 +94,7 @@ class Enrollment implements EntityInterface
 
     /**
      * @Vich\UploadableField(mapping="enrollment_docs", fileNameProperty="medicalAuthPath")
-     * 
+     *
      * @var File|null
      */
     private $medicalFile;
@@ -101,7 +106,7 @@ class Enrollment implements EntityInterface
 
     /**
      * @Vich\UploadableField(mapping="enrollment_docs", fileNameProperty="FFTriDocPath")
-     * 
+     *
      * @var File|null
      */
     private $FFTriDocFile;
@@ -128,7 +133,7 @@ class Enrollment implements EntityInterface
 
     /**
      * @Vich\UploadableField(mapping="enrollment_docs", fileNameProperty="FFTriDoc2Path")
-     * 
+     *
      * @var File|null
      */
     private $FFTriDoc2File;
@@ -296,7 +301,7 @@ class Enrollment implements EntityInterface
 
     public function __toString()
     {
-        return $this->getMemberId()->getFirstName() . ' ' . $this->getMemberId()->getLastName() . ' - ' . $this->getStatus();
+        return $this->getMemberId()->getFirstName().' '.$this->getMemberId()->getLastName().' - '.$this->getStatus();
     }
 
     public function getLicence(): ?Licence
@@ -424,33 +429,37 @@ class Enrollment implements EntityInterface
 
     public function checkPayment()
     {
-        if ($this->paymentAt !== null) {
+        if (null !== $this->paymentAt) {
             return false;
         }
+
         return true;
     }
 
     public function checkDocuments()
     {
-        if ($this->isDocsValid === true) {
+        if (true === $this->isDocsValid) {
             return false;
         }
+
         return true;
     }
 
     public function checkEmail()
     {
-        if ($this->isDocsValid === true && $this->paymentAt !== null) {
+        if (true === $this->isDocsValid && null !== $this->paymentAt) {
             return false;
         }
+
         return true;
     }
 
     public function checkFinalValidation()
     {
-        if ($this->isDocsValid === true && $this->paymentAt !== null && $this->endedAt === null) {
+        if (true === $this->isDocsValid && null !== $this->paymentAt && null === $this->endedAt) {
             return true;
         }
+
         return false;
     }
 }
