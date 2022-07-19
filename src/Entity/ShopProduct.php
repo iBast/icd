@@ -86,6 +86,11 @@ class ShopProduct implements EntityInterface
      */
     private $Description;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="shopProducts")
+     */
+    private $seller;
+
     public function __construct()
     {
         $this->shopProductVariants = new ArrayCollection();
@@ -248,6 +253,18 @@ class ShopProduct implements EntityInterface
     public function setDescription(?string $Description): self
     {
         $this->Description = $Description;
+
+        return $this;
+    }
+
+    public function getSeller(): ?User
+    {
+        return $this->seller;
+    }
+
+    public function setSeller(?User $seller): self
+    {
+        $this->seller = $seller;
 
         return $this;
     }

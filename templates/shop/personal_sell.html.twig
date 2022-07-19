@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes annonces
+{% endblock %}
+
+{% block body %}
+    <h1>Mes annonces</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Image</th>
+            <th>Titre de l'annonce</th>
+            <th>Prix</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in annonces %}
+            <tr>
+                <td><img src="/uploads/shop/{{ product.picturePath }}" alt="Product image" class="img-thumbnail"
+                         style="max-width: 150px;"></td>
+                <td>{{ product.name }}</td>
+                <td>{{ (product.price/100)|number_format(2, ',', ' ') }} €</td>
+                <td>
+                    {% if product.isVisible %}
+                        <a href="{{ path('troc_change_state', {'id': product.id}) }}" class="btn btn-danger">Retirer de la vente</a>
+                    {% else %}
+                        <a href="{{ path('troc_change_state', {'id': product.id}) }}" class="btn btn-primary">Mettre en vente</a>
+                    {% endif %}
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

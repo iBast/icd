@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Boutique
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('home') }}">Accueil</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ path('shop') }}">Boutique</a>
+            </li>
+            <li class="breadcrumb-item active">Déposer une annonce</li>
+        </ol>
+        <div>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('shop_orders') }}">
+                        <i class="fas fa-box-open"></i>
+                        Mes commandes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('shop_cart') }}">
+                        <i class="fas fa-shopping-cart"></i>
+                        Panier ({{ cartService.total | amount }})</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <h1>Déposer une annonce</h1>
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            {{ form_row(form.picturePath) }}
+
+            <h2>Attention :</h2>
+            L'adresse mail ci-dessous sera visible des autres membres afin de vous contacter :
+            <ul class="list-group">
+                <li class="list-group-item active"><i class="fas fa-envelope"></i> {{ app.user.email }} <i class="text-right"><a href="{{ path('account') }}">Modifier l'adresse</a></i></li>
+
+            </ul>
+
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-12">
+                    {{ form_row(form.name) }}
+                </div>
+                <div class="col-6">
+                    {{ form_row(form.price) }}
+                </div>
+                <div class="col-6">
+                    {{ form_row(form.size) }}
+                </div>
+                {{ form_row(form.description) }}
+                <button class="btn btn-success" type="submit">Créer mon annonce</button>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+
+{% endblock %}
