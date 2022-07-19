@@ -13,6 +13,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Purchase;
 use App\Manager\PurchaseManager;
+use Doctrine\ORM\Mapping\Entity;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -113,6 +114,7 @@ class PurchaseCrudController extends AbstractCrudController
     {
         return [
             DateField::new('purchasedAt', 'Date de commande'),
+            AssociationField::new('user', 'Utilisateur')->setFormattedValue('firstName'),
             MoneyField::new('total', 'Montant')->setCurrency('EUR'),
             TextField::new('status', 'Statut'),
             TextField::new('paymentMethod', 'Mode de règlment'),
@@ -121,7 +123,7 @@ class PurchaseCrudController extends AbstractCrudController
                 $str = $entity->getPurchaseItems()[0];
                 $count = $entity->getPurchaseItems()->count();
                 for ($i = 1; $i < $count; ++$i) {
-                    $str = $str.'</br> '.$entity->getPurchaseItems()[$i];
+                    $str = $str . '</br> ' . $entity->getPurchaseItems()[$i];
                 }
 
                 return $str;

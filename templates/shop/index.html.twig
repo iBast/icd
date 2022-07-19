@@ -5,7 +5,7 @@
 
 {% block body %}
 	<div class="d-flex justify-content-between flex-wrap">
-		<ol class="breadcrumb">
+		<ol class="breadcrumb d-none d-md-flex">
 			<li class="breadcrumb-item">
 				<a href="{{ path('home') }}">Accueil</a>
 			</li>
@@ -13,6 +13,16 @@
 		</ol>
 		<div>
 			<ul class="nav nav-pills">
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('shop_troc') }}">
+						<i class="fas fa-plus"></i>
+						Déposer une annonce</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('troc_personal') }}">
+						<i class="fas fa-warehouse"></i>
+						Mes annonces</a>
+				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="{{ path('shop_orders') }}">
 						<i class="fas fa-box-open"></i>

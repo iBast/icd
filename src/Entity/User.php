@@ -95,6 +95,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $purchases;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ShopProduct::class, mappedBy="seller")
+     */
+    private $shopProducts;
+
     public const ROLES = [
         'Utilisateur' => 'ROLE_USER',
         'Administrateur' => 'ROLE_ADMIN',
@@ -114,6 +119,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->enrollmentYoungs = new ArrayCollection();
         $this->eventComments = new ArrayCollection();
         $this->purchases = new ArrayCollection();
+        $this->shopProducts = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->firstName . ' ' . $this->lastName;
     }
 
     public function getId(): ?int
@@ -395,6 +406,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($purchase->getUser() === $this) {
                 $purchase->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ShopProduct[]
+     */
+    public function getShopProducts(): Collection
+    {
+        return $this->shopProducts;
+    }
+
+    public function addShopProduct(ShopProduct $shopProduct): self
+    {
+        if (!$this->shopProducts->contains($shopProduct)) {
+            $this->shopProducts[] = $shopProduct;
+            $shopProduct->setSeller($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShopProduct(ShopProduct $shopProduct): self
+    {
+        if ($this->shopProducts->removeElement($shopProduct)) {
+            // set the owning side to null (unless already changed)
+            if ($shopProduct->getSeller() === $this) {
+                $shopProduct->setSeller(null);
             }
         }
 

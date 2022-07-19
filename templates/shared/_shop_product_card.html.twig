@@ -1,21 +1,28 @@
 <div class="col-6 col-md-4 col-lg-3 mb-3 ">
-	<div class="card mt-3 bg-light h-100">
-		<a href="{{path('shop_show', {'category_slug': product.category.slug, 'slug': product.slug})}} ">
-			<img src="/uploads/shop/{{product.picturePath}}" alt="image du produit" class="img-fluid">
-		</a>
-		<div class="card-body">
-			<p class="">
+    <div class="card mt-3 bg-light h-100">
+        <a href="{{ path('shop_show', {'category_slug': product.category.slug, 'slug': product.slug}) }} ">
+            <img src="/uploads/shop/{{ product.picturePath }}" alt="image du produit" class="img-fluid">
+        </a>
+        <div class="card-body">
+            <p class="">
 				<span>
-					<a href="{{path('shop_show', {'category_slug': product.category.slug, 'slug': product.slug}) }}" class="card-link">{{product.name}}</a>
+					<a href="{{ path('shop_show', {'category_slug': product.category.slug, 'slug': product.slug}) }}"
+                       class="card-link">{{ product.name }}</a>
 					<br>
-					<a href="{{ path('shop_category', {'slug': product.category.slug}) }}" class="badge bg-dark btn">{{product.category.name}}</a>
+					<a href="{{ path('shop_category', {'slug': product.category.slug}) }}"
+                       class="badge bg-dark btn">{{ product.category.name }}</a>
 				</span>
-
-			</p>
-			<p class="d-flex justify-content-between mb-0">
-				<span class="">{{product.price | amount}}</span>
-				<a href="{{ path('shop_show', {'category_slug': product.category.slug, 'slug': product.slug}) }}" class="btn btn-primary">Voir</a>
-			</p>
-		</div>
-	</div>
+                {% if product.seller %}
+                    <span class="align-items-center">Taille : {% for variant in product.shopProductVariants %}
+                            {{ variant.name }}
+                        {% endfor %}</span>
+                {% endif %}
+            </p>
+            <p class="d-flex justify-content-between mb-0">
+                <span class="">{{ product.price | amount }}</span>
+                <a href="{{ path('shop_show', {'category_slug': product.category.slug, 'slug': product.slug}) }}"
+                   class="btn btn-primary">Voir</a>
+            </p>
+        </div>
+    </div>
 </div>
